@@ -43,34 +43,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game\Globals.cs" />
-    <Compile Include="Game\Level\Level.cs" />
-    <Compile Include="Game\Level\LevelUtils.cs" />
-    <Compile Include="Game\Level\TileDefinition.cs" />
-    <Compile Include="Game\Level\TileType.cs" />
-    <Compile Include="Game\Objects\Amoeba.cs" />
-    <Compile Include="Game\Objects\Boulder.cs" />
-    <Compile Include="Game\Objects\Brick.cs" />
-    <Compile Include="Game\Objects\Butterfly.cs" />
-    <Compile Include="Game\Objects\Camera.cs" />
-    <Compile Include="Game\Objects\Diamond.cs" />
-    <Compile Include="Game\Objects\DiamondSpawner.cs" />
-    <Compile Include="Game\Objects\Dirt.cs" />
-    <Compile Include="Game\Objects\Door.cs" />
-    <Compile Include="Game\Objects\Firefly.cs" />
-    <Compile Include="Game\Objects\MagicWall.cs" />
-    <Compile Include="Game\Objects\SteelWall.cs" />
-    <Compile Include="Game\Objects\World.cs" />
-    <Compile Include="Game\Objects\Player.cs" />
-    <Compile Include="Game\Utils\BitmapCache.cs" />
     <Compile Include="Game\Utils\Debug.cs" />
     <Compile Include="Game\Utils\Math.cs" />
-    <Compile Include="Game\Utils\Misc.cs" />
     <Compile Include="Game\Utils\Rand.cs" />
     <Compile Include="Game\Utils\RandomNumberGenerator.cs" />
+    <Compile Include="Game\Utils\XmlLoader.cs" />
     <Compile Include="Game\Program.cs" />
     <Compile Include="Game\Properties\AssemblyInfo.cs" />
-    <Compile Include="Game\Utils\UITextures.cs" />
-    <Compile Include="Game\Utils\ValueTuple.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -82,85 +61,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="data\Levels\GameLevels\Level1.xml" />
-    <Content Include="data\Levels\GameLevels\Level2.xml" />
-    <Content Include="data\Levels\GameLevels\Level3.xml" />
-    <Content Include="data\Levels\GameLevels\Level4.xml" />
-    <Content Include="data\Levels\GameLevels\Level5.xml" />
-    <Content Include="data\Levels\GameLevels\Level6.xml" />
-    <Content Include="data\Levels\GameLevels\Level7.xml" />
-    <Content Include="data\Levels\TiledLevels\Level1.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level10.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level11.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level12.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level13.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level14.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level15.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level16.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level17.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level18.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level19.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level2.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level20.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level3.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level4.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level5.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level6.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level7.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level8.tmx" />
-    <Content Include="data\Levels\TiledLevels\Level9.tmx" />
-    <Content Include="data\Levels\Tilesets\Main.xml" />
-    <Content Include="data\sounds\boulder_end.wav" />
-    <Content Include="data\sounds\boulder_start.wav" />
-    <Content Include="data\sounds\enough_diamonds.wav" />
-    <Content Include="data\sounds\move_dirt.wav" />
-    <Content Include="data\sounds\move_empty.wav" />
-    <Content Include="data\sounds\pickup_diamond.wav" />
-    <Content Include="data\tiles\amoeba.png" />
-    <Content Include="data\tiles\butterfly.png" />
-    <Content Include="data\tiles\diamond.png" />
-    <Content Include="data\tiles\diamondSpawner.png" />
-    <Content Include="data\tiles\firefly.png" />
-    <Content Include="data\tiles\magicWall.png" />
-    <Content Include="data\tiles\playerIdle.png" />
-    <Content Include="data\tiles\playerIdleBlink.png" />
-    <Content Include="data\tiles\playerIdleTap.png" />
-    <Content Include="data\tiles\playerIdleBlinkTap.png" />
-    <Content Include="data\tiles\playerLeft.png" />
-    <Content Include="data\tiles\playerRight.png" />
-    <Content Include="data\tiles\steelWall.png" />
-    <Content Include="data\tiles\door.png" />
-    <Content Include="data\tiles\brick.png" />
-    <Content Include="data\tiles\boulder.png" />
-    <Content Include="data\tiles\dirt.png" />
-    <Content Include="data\UI\0W.png" />
-    <Content Include="data\UI\0Y.png" />
-    <Content Include="data\UI\1W.png" />
-    <Content Include="data\UI\1Y.png" />
-    <Content Include="data\UI\2W.png" />
-    <Content Include="data\UI\2Y.png" />
-    <Content Include="data\UI\3W.png" />
-    <Content Include="data\UI\3Y.png" />
-    <Content Include="data\UI\4W.png" />
-    <Content Include="data\UI\4Y.png" />
-    <Content Include="data\UI\5W.png" />
-    <Content Include="data\UI\5Y.png" />
-    <Content Include="data\UI\6W.png" />
-    <Content Include="data\UI\6Y.png" />
-    <Content Include="data\UI\7W.png" />
-    <Content Include="data\UI\7Y.png" />
-    <Content Include="data\UI\8W.png" />
-    <Content Include="data\UI\8Y.png" />
-    <Content Include="data\UI\9W.png" />
-    <Content Include="data\UI\9Y.png" />
-    <Content Include="data\UI\B.png" />
-    <Content Include="data\UI\DW.png" />
-    <Content Include="data\UI\DY.png" />
-    <Content Include="Game\TODO.md" />
-    <Content Include="Game\GameDescription.txt" />
+    <Folder Include="data" />
+    <Folder Include="lib" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="data\Levels\Tilesets\Main.tsx" />
+    <Content Include="lib\COPYING.txt" />
+    <Content Include="lib\Fmod.License.txt" />
+    <Content Include="lib\fmodex.dll" />
+    <Content Include="lib\glfw.dll" />
+    <Content Include="lib\libfmodex-4.34.05.so" />
+    <Content Include="lib\libfmodex.dylib" />
+    <Content Include="lib\libglfw.dylib" />
+    <Content Include="lib\libglfw.so" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
