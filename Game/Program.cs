@@ -12,6 +12,9 @@ namespace Game {
             Rand.Seed = Time.now;
             Input.AddAxis("Horizontal", new List<int> {Key.A, Key.LEFT}, new List<int> {Key.D, Key.RIGHT});
             Input.AddAxis("Vertical", new List<int> {Key.W, Key.UP}, new List<int> {Key.S, Key.DOWN});
+            
+            World world = new World(128);
+            AddChild(world);
         }
 
         public static void Main(string[] args) {
