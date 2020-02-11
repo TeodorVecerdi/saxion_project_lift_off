@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game\Globals.cs" />
+    <Compile Include="Game\TileGrid.cs" />
     <Compile Include="Game\Tiles.cs" />
     <Compile Include="Game\Utils\Debug.cs" />
     <Compile Include="Game\Utils\Math.cs" />
@@ -67,10 +68,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="data\background.png" />
+    <Content Include="data\background_test.jpg" />
     <Content Include="data\dirt.png" />
+    <Content Include="data\empty.png" />
+    <Content Include="data\fuelstation.png" />
+    <Content Include="data\motherload_drill.png" />
     <Content Include="data\stone.png" />
     <Content Include="data\test_tile.png" />
-    <Content Include="data\test_tile2.png" />
     <Content Include="lib\COPYING.txt" />
     <Content Include="lib\Fmod.License.txt" />
     <Content Include="lib\fmodex.dll" />

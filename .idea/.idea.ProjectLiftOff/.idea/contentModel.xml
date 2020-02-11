@@ -8,10 +8,13 @@
       <e p="bin" t="ExcludeRecursive" />
       <e p="data" t="Include">
         <e p="background.png" t="Include" />
+        <e p="background_test.jpg" t="Include" />
         <e p="dirt.png" t="Include" />
+        <e p="empty.png" t="Include" />
+        <e p="fuelstation.png" t="Include" />
+        <e p="motherload_drill.png" t="Include" />
         <e p="stone.png" t="Include" />
         <e p="test_tile.png" t="Include" />
-        <e p="test_tile2.png" t="Include" />
       </e>
       <e p="Game" t="Include">
         <e p="Globals.cs" t="Include" />
@@ -19,6 +22,7 @@
         <e p="Properties" t="Include">
           <e p="AssemblyInfo.cs" t="Include" />
         </e>
+        <e p="TileGrid.cs" t="Include" />
         <e p="Tiles.cs" t="Include" />
         <e p="Utils" t="Include">
           <e p="Debug.cs" t="Include" />

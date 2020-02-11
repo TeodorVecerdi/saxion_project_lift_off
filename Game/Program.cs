@@ -13,7 +13,7 @@ namespace Game {
             Input.AddAxis("Horizontal", new List<int> {Key.A, Key.LEFT}, new List<int> {Key.D, Key.RIGHT});
             Input.AddAxis("Vertical", new List<int> {Key.W, Key.UP}, new List<int> {Key.S, Key.DOWN});
             
-            World world = new World(128);
+            World world = new World();
             AddChild(world);
         }
 
