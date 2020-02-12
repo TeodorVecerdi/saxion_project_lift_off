@@ -6,7 +6,7 @@ namespace Game {
         public Program() : base(Globals.WIDTH, Globals.HEIGHT, Globals.FULLSCREEN, Globals.VSYNC,
             pPixelArt: Globals.PIXEL_ART) {
             ShowMouse(true);
-            targetFps = 24;
+            targetFps = 1000;
             
             Rand.PushState();
             Rand.Seed = Time.now;

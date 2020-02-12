@@ -135,7 +135,7 @@ namespace GXPEngine {
         public static float Round(float f) {
             return (float) Math.Round(f);
         }
-        
+
         /// <summary>
         /// Returns <paramref name="f"/> rounded to the nearest integer
         /// </summary>
@@ -341,6 +341,46 @@ namespace GXPEngine {
         /// </summary>
         public static float LerpUnclamped(float a, float b, float t) {
             return a + (b - a) * t;
+        }
+
+        public static float SmoothDamp(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed) {
+            float deltaTime = Time.deltaTime;
+            return SmoothDamp(current, target, ref currentVelocity, smoothTime, maxSpeed, deltaTime);
+        }
+
+        public static float SmoothDamp(float current, float target, ref float currentVelocity, float smoothTime) {
+            float deltaTime = Time.deltaTime;
+            float maxSpeed = Infinity;
+            return SmoothDamp(current, target, ref currentVelocity, smoothTime, maxSpeed, deltaTime);
+        }
+
+        // Gradually changes a value towards a desired goal over time.
+        public static float SmoothDamp(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed, float deltaTime) {
+            // Based on Game Programming Gems 4 Chapter 1.10
+            smoothTime = Mathf.Max(0.0001F, smoothTime);
+            float omega = 2F / smoothTime;
+
+            float x = omega * deltaTime;
+            float exp = 1F / (1F + x + 0.48F * x * x + 0.235F * x * x * x);
+            float change = current - target;
+            float originalTo = target;
+
+            // Clamp maximum speed
+            float maxChange = maxSpeed * smoothTime;
+            change = Clamp(change, -maxChange, maxChange);
+            target = current - change;
+
+            float temp = (currentVelocity + omega * change) * deltaTime;
+            currentVelocity = (currentVelocity - omega * temp) * exp;
+            float output = target + (change + temp) * exp;
+
+            // Prevent overshooting
+            if (originalTo - current > 0.0F == output > originalTo) {
+                output = originalTo;
+                currentVelocity = (output - originalTo) / deltaTime;
+            }
+
+            return output;
         }
     }
 }

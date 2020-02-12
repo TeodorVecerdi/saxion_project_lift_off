@@ -113,5 +113,7 @@ namespace GXPEngine {
 			if (Axes[axisName].Item2.Any(GetKeyDown)) value += 1f;
 			return value;
 		}
+		
+		
     }
 }

@@ -11,13 +11,20 @@
         <e p="background_test.jpg" t="Include" />
         <e p="dirt.png" t="Include" />
         <e p="empty.png" t="Include" />
+        <e p="fuel_station.png" t="Include" />
+        <e p="fuelbar_background.png" t="Include" />
+        <e p="fuelbar_border.png" t="Include" />
+        <e p="fuelbar_finished.psd" t="Include" />
+        <e p="fuelbar_fuel.png" t="Include" />
         <e p="fuelstation.png" t="Include" />
         <e p="motherload_drill.png" t="Include" />
         <e p="stone.png" t="Include" />
         <e p="test_tile.png" t="Include" />
       </e>
       <e p="Game" t="Include">
+        <e p="FuelBar.cs" t="Include" />
         <e p="Globals.cs" t="Include" />
+        <e p="Player.cs" t="Include" />
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">
           <e p="AssemblyInfo.cs" t="Include" />

@@ -3,55 +3,122 @@ using GXPEngine.Core;
 
 namespace Game {
     public class TileGrid : GameObject {
-        private int topOffset = 6;
+        private const int topOffset = 6;
+        private const int renderDistance = 10;
 
         private int tilesHorizontal;
         private int tilesVertical;
 
-        private int[,] tiles;
-        private int[,] tilesBackground;
+        private ObjectType[,] tiles;
+        private ObjectType[,] tilesBackground;
+        private Camera camera;
+        private Player player;
+        private FuelBar fuelBar;
+
+        private const float gravityFrequency = 0.25f;
+        private const float playerMovementThreshold = 1f;
+        private float gravityTimeLeft = gravityFrequency;
+        private float timeSinceLastMovement;
+        private float cameraVelocity;
 
         public TileGrid(int tilesVertical) {
             tilesHorizontal = (int) (Globals.WIDTH / Globals.TILE_SIZE);
             this.tilesVertical = tilesVertical;
-            tiles = new int[tilesHorizontal, tilesVertical];
-            tilesBackground = new int[tilesHorizontal, tilesVertical];
+            tiles = new ObjectType[tilesHorizontal, tilesVertical];
+            tilesBackground = new ObjectType[tilesHorizontal, tilesVertical];
 
             //GENERATE WORLD
             for (int i = 0; i < tilesHorizontal; i++) {
                 for (int j = topOffset; j < tilesVertical; j++) {
-                    tilesBackground[i, j] = 4;
+                    tilesBackground[i, j] = ObjectType.Background;
                     int precentage = Rand.Range(0, 100);
-                    if (precentage <= 90) tiles[i, j] = 1; // dirt
-                    else tiles[i, j] = 2;                  // stone
+                    if (precentage <= 90) tiles[i, j] = ObjectType.Dirt;
+                    else tiles[i, j] = ObjectType.Stone;
                 }
             }
 
             for (int x = 0; x < 4; x++) {
-                tiles[x, topOffset] = 2;
+                tiles[x, topOffset] = ObjectType.Stone;
             }
 
             int spawnLocation = Rand.Range(6, tilesHorizontal - 1);
-            tiles[spawnLocation, topOffset - 1] = 3; // player
+            tiles[spawnLocation, topOffset - 1] = ObjectType.Player; // player
+
+            player = new Player();
+            player.SetXY(spawnLocation * Globals.TILE_SIZE, (topOffset - 1) * Globals.TILE_SIZE);
+            AddChild(player);
+
+            camera = new Camera(-(int) (Globals.WIDTH / 2f), 0, Globals.WIDTH, Globals.HEIGHT);
+            AddChild(camera);
+
+            fuelBar = new FuelBar();
+            camera.AddChild(fuelBar);
         }
 
         void Update() {
-            // Remove a random tile
-            if (Input.GetKeyDown(Key.SPACE)) {
-                int x = Rand.Range(0, tilesHorizontal);
-                int y = Rand.Range(0, tilesVertical);
-                tiles[x, y] = 0;
+            Debug.Log($"FPS: {game.currentFps}");
+            #region GRAVITY
+            if (timeSinceLastMovement > playerMovementThreshold && gravityTimeLeft <= 0) {
+                var playerPosition = new Vector2Int((int) (player.x / Globals.TILE_SIZE), (int) (player.y / Globals.TILE_SIZE));
+                if (playerPosition.y + 1 < tilesVertical && tiles[playerPosition.x, playerPosition.y + 1] == ObjectType.Empty) {
+                    player.Move(0, Globals.TILE_SIZE);
+                    tiles[playerPosition.x, playerPosition.y] = ObjectType.Empty;
+                    tiles[playerPosition.x, playerPosition.y + 1] = ObjectType.Player;
+                }
+
+                gravityTimeLeft = gravityFrequency;
             }
+            #endregion
+            #region PLAYER MOVEMENT
+            // Get input
+            Vector2Int movement = new Vector2Int((int) Input.GetAxisDown("Horizontal"), (int) Input.GetAxisDown("Vertical"));
+            if (movement.x != 0 && movement.y != 0) {
+                movement.x = 0;
+            }
+
+            if (movement != Vector2Int.zero) {
+                int playerX = (int) (player.x / Globals.TILE_SIZE);
+                int playerY = (int) (player.y / Globals.TILE_SIZE);
+                Vector2Int desiredPosition = movement + new Vector2Int(playerX, playerY);
+                // Check if player can move
+                if (desiredPosition.x >= 0 && desiredPosition.x < tilesHorizontal && desiredPosition.y >= 0 && desiredPosition.y < tilesVertical
+                    && Tiles.TypeToTile[tiles[desiredPosition.x, desiredPosition.y]].Passable) {
+                    player.Move(movement.x * Globals.TILE_SIZE, movement.y * Globals.TILE_SIZE);
+                    tiles[playerX, playerY] = ObjectType.Empty;
+                    tiles[playerX + movement.x, playerY + movement.y] = ObjectType.Player;
+                }
+
+                timeSinceLastMovement = 0f;
+                gravityTimeLeft = gravityFrequency;
+            }
+            #endregion
+            #region TIMERS
+            timeSinceLastMovement += Time.deltaTime;
+            if (timeSinceLastMovement > playerMovementThreshold) {
+                gravityTimeLeft -= Time.deltaTime;
+            }
+            #endregion
+            #region UPDATE CAMERA
+            if (Mathf.Abs(camera.y - player.y) > 1f) {
+                camera.y = Mathf.SmoothDamp(camera.y, player.y, ref cameraVelocity, 0.3f);
+            }
+            #endregion
+            // Change fuel
+            fuelBar.ChangeFuel(-500 * Time.deltaTime); // -500 mL per second
         }
 
         protected override void RenderSelf(GLContext glContext) {
             glContext.SetColor(0xff, 0xff, 0xff, 0xff);
+            int playerY = (int) (player.y / Globals.TILE_SIZE);
+            int startY = Mathf.Max(playerY - renderDistance, 0);
+            int endY = Mathf.Min(playerY + renderDistance, tilesVertical);
+            
             for (int i = 0; i < tilesHorizontal; i++) {
-                for (int j = 0; j < tilesVertical; j++) {
+                for (int j = startY; j <= endY; j++) {
                     float[] verts = {i * Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE, i * Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE};
-                    Tiles.IdToTile[tilesBackground[i, j]].Texture.Bind();
+                    Tiles.TypeToTile[tilesBackground[i, j]].Texture.Bind();
                     glContext.DrawQuad(verts, Globals.QUAD_UV);
-                    Tiles.IdToTile[tiles[i, j]].Texture.Bind();
+                    Tiles.TypeToTile[tiles[i, j]].Texture.Bind();
                     glContext.DrawQuad(verts, Globals.QUAD_UV);
                 }
             }
