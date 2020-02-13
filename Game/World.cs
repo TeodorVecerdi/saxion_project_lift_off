@@ -29,7 +29,8 @@ namespace Game {
             gameOver = new Sprite("data/gameover.png", true, false);
             gameOver.SetScaleXY(2.732f, 2.85f);
             gameOver.visible = false;
-            AddChild(gameOver);
+            gameOver.Move(0, -Globals.HEIGHT / 2f);
+            grid.Camera.AddChild(gameOver);
         }
         void Update()
         {

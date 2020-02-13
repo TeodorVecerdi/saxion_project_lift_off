@@ -5,13 +5,14 @@ namespace Game {
     public class TileGrid : GameObject {
         private const int topOffset = 6;
         private const int renderDistance = 10;
+        private int fuelRefills = 0;
 
         private int tilesHorizontal;
         private int tilesVertical;
 
         private ObjectType[,] tiles;
         private ObjectType[,] tilesBackground;
-        private Camera camera;
+        public Camera Camera;
         private Transformable player;
         public FuelBar FuelBar;
 
@@ -57,11 +58,11 @@ namespace Game {
             player = new Transformable();
             player.SetXY(spawnLocation * Globals.TILE_SIZE, (topOffset - 1) * Globals.TILE_SIZE);
 
-            camera = new Camera(-(int) (Globals.WIDTH / 2f), 0, Globals.WIDTH, Globals.HEIGHT);
-            AddChild(camera);
+            Camera = new Camera(-(int) (Globals.WIDTH / 2f), 0, Globals.WIDTH, Globals.HEIGHT);
+            AddChild(Camera);
 
             FuelBar = new FuelBar();
-            camera.AddChild(FuelBar);
+            Camera.AddChild(FuelBar);
         }
 
         void Update() {
@@ -84,14 +85,21 @@ namespace Game {
 
             #region PLAYER MOVEMENT
             // Get input
+            var (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
             var movement = new Vector2Int((int) Input.GetAxisDown("Horizontal"), (int) Input.GetAxisDown("Vertical"));
             var isDrilling = Input.GetKey(Key.SPACE);
             if (movement.x != 0 && movement.y != 0) {
                 movement.x = 0;
             }
+            if (playerX == 3 && playerY == topOffset - 1 && Input.GetKeyDown(Key.LEFT_CTRL)&&fuelRefills <=9)
+            {
+                FuelBar.FuelAmount = 100000f;
+                fuelRefills += 1;
 
+
+            }
             if (movement != Vector2Int.zero) {
-                var (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
+               
                 var desiredPosition = movement.Add(playerX, playerY);
 
                 // Check if player can move
@@ -125,13 +133,13 @@ namespace Game {
             #endregion
 
             #region UPDATE CAMERA
-            if (Mathf.Abs(camera.y - player.y) > 1f) {
-                camera.y = Mathf.SmoothDamp(camera.y, player.y, ref cameraVelocity, 0.3f);
+            if (Mathf.Abs(Camera.y - player.y) > 1f) {
+                Camera.y = Mathf.SmoothDamp(Camera.y, player.y, ref cameraVelocity, 0.3f);
             }
             #endregion
 
             // Change fuel
-            FuelBar.ChangeFuel(-500 * Time.deltaTime); // -500 mL per second
+            FuelBar.ChangeFuel(-1000 * Time.deltaTime); // -500 mL per second
            
         }
 
