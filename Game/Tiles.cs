@@ -5,6 +5,7 @@ namespace Game {
     public class TileDefinition {
         public bool Passable;
         public Texture2D Texture;
+        public float ScoreAmount;
     }
 
     public enum ObjectType {
@@ -17,7 +18,6 @@ namespace Game {
         Gold,
         Emerald,
         Saphire
-
     }
 
     public static class Tiles {

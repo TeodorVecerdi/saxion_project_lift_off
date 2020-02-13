@@ -9,7 +9,9 @@
       <e p="data" t="Include">
         <e p="background.png" t="Include" />
         <e p="background_test.jpg" t="Include" />
+        <e p="coal.png" t="Include" />
         <e p="dirt.png" t="Include" />
+        <e p="emerald.png" t="Include" />
         <e p="empty.png" t="Include" />
         <e p="fuel_station.png" t="Include" />
         <e p="fuelbar_background.png" t="Include" />
@@ -17,14 +19,15 @@
         <e p="fuelbar_finished.psd" t="Include" />
         <e p="fuelbar_fuel.png" t="Include" />
         <e p="fuelstation.png" t="Include" />
+        <e p="gold.png" t="Include" />
         <e p="motherload_drill.png" t="Include" />
+        <e p="saphire.png" t="Include" />
         <e p="stone.png" t="Include" />
         <e p="test_tile.png" t="Include" />
       </e>
       <e p="Game" t="Include">
         <e p="FuelBar.cs" t="Include" />
         <e p="Globals.cs" t="Include" />
-        <e p="Player.cs" t="Include" />
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">
           <e p="AssemblyInfo.cs" t="Include" />
@@ -33,6 +36,7 @@
         <e p="Tiles.cs" t="Include" />
         <e p="Utils" t="Include">
           <e p="Debug.cs" t="Include" />
+          <e p="ExtensionMethods.cs" t="Include" />
           <e p="Math.cs" t="Include" />
           <e p="Rand.cs" t="Include" />
           <e p="RandomNumberGenerator.cs" t="Include" />

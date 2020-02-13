@@ -12,7 +12,7 @@ namespace Game {
         private ObjectType[,] tiles;
         private ObjectType[,] tilesBackground;
         private Camera camera;
-        private Player player;
+        private Transformable player;
         private FuelBar fuelBar;
 
         private const float gravityFrequency = 0.25f;
@@ -32,14 +32,14 @@ namespace Game {
                 for (int j = topOffset; j < tilesVertical; j++) {
                     tilesBackground[i, j] = ObjectType.Background;
                     int precentage = Rand.Range(0, 100);
-                    if (precentage <= 85)
-                    {
+                    if (precentage <= 85) {
                         tiles[i, j] = ObjectType.Dirt;
+                    } else if (precentage >= 85 && precentage <= 95) {
+                        tiles[i, j] = ObjectType.Stone;
+                    } else if (precentage > 95) {
+                        tiles[i, j] = ObjectType.Coal;
                     }
-                    else if (precentage >= 85 && precentage <= 95) { tiles[i, j] = ObjectType.Stone; }
-                    else if (precentage > 95) { tiles[i, j] = ObjectType.Coal; }
                 }
-
             }
 
             for (int x = 0; x < 4; x++) {
@@ -49,9 +49,8 @@ namespace Game {
             int spawnLocation = Rand.Range(6, tilesHorizontal - 1);
             tiles[spawnLocation, topOffset - 1] = ObjectType.Player; // player
 
-            player = new Player();
+            player = new Transformable();
             player.SetXY(spawnLocation * Globals.TILE_SIZE, (topOffset - 1) * Globals.TILE_SIZE);
-            AddChild(player);
 
             camera = new Camera(-(int) (Globals.WIDTH / 2f), 0, Globals.WIDTH, Globals.HEIGHT);
             AddChild(camera);
@@ -62,9 +61,12 @@ namespace Game {
 
         void Update() {
             Debug.Log($"FPS: {game.currentFps}");
+
             #region GRAVITY
             if (timeSinceLastMovement > playerMovementThreshold && gravityTimeLeft <= 0) {
-                var playerPosition = new Vector2Int((int) (player.x / Globals.TILE_SIZE), (int) (player.y / Globals.TILE_SIZE));
+                var playerPosition = player.position.ToGrid().ToInt();
+
+                // var playerPosition = new Vector2Int((int) (player.x / Globals.TILE_SIZE), (int) (player.y / Globals.TILE_SIZE));
                 if (playerPosition.y + 1 < tilesVertical && tiles[playerPosition.x, playerPosition.y + 1] == ObjectType.Empty) {
                     player.Move(0, Globals.TILE_SIZE);
                     tiles[playerPosition.x, playerPosition.y] = ObjectType.Empty;
@@ -74,40 +76,55 @@ namespace Game {
                 gravityTimeLeft = gravityFrequency;
             }
             #endregion
+
             #region PLAYER MOVEMENT
             // Get input
-            Vector2Int movement = new Vector2Int((int) Input.GetAxisDown("Horizontal"), (int) Input.GetAxisDown("Vertical"));
+            var movement = new Vector2Int((int) Input.GetAxisDown("Horizontal"), (int) Input.GetAxisDown("Vertical"));
+            var isDrilling = Input.GetKey(Key.SPACE);
             if (movement.x != 0 && movement.y != 0) {
                 movement.x = 0;
             }
 
             if (movement != Vector2Int.zero) {
-                int playerX = (int) (player.x / Globals.TILE_SIZE);
-                int playerY = (int) (player.y / Globals.TILE_SIZE);
-                Vector2Int desiredPosition = movement + new Vector2Int(playerX, playerY);
+                var (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
+                var desiredPosition = movement.Add(playerX, playerY);
+
                 // Check if player can move
-                if (desiredPosition.x >= 0 && desiredPosition.x < tilesHorizontal && desiredPosition.y >= 0 && desiredPosition.y < tilesVertical
-                    && Tiles.TypeToTile[tiles[desiredPosition.x, desiredPosition.y]].Passable) {
-                    player.Move(movement.x * Globals.TILE_SIZE, movement.y * Globals.TILE_SIZE);
+                var rangeCheck = desiredPosition.x >= 0 && desiredPosition.x < tilesHorizontal && desiredPosition.y >= 0 && desiredPosition.y < tilesVertical;
+                if (rangeCheck && tiles[desiredPosition.x, desiredPosition.y] == ObjectType.Empty) {
+                    // PLAYER MOVEMENT
+                    player.Move(movement.ToWorld().ToVec2());
                     tiles[playerX, playerY] = ObjectType.Empty;
-                    tiles[playerX + movement.x, playerY + movement.y] = ObjectType.Player;
+                    tiles[desiredPosition.x, desiredPosition.y] = ObjectType.Player;
+                } else if (rangeCheck && isDrilling && Tiles.TypeToTile[tiles[desiredPosition.x, desiredPosition.y]].Passable) {
+                    // PLAYER DRILLING
+                    var isDrillingUp = movement.y == -1;
+                    var hasGroundUnder = playerY + 1 == tilesVertical || tiles[playerX, playerY + 1] != ObjectType.Empty;
+                    if (!isDrillingUp && hasGroundUnder) {
+                        player.Move(movement.ToWorld().ToVec2());
+                        tiles[playerX, playerY] = ObjectType.Empty;
+                        tiles[desiredPosition.x, desiredPosition.y] = ObjectType.Player;
+                    }
                 }
 
                 timeSinceLastMovement = 0f;
                 gravityTimeLeft = gravityFrequency;
             }
             #endregion
+
             #region TIMERS
             timeSinceLastMovement += Time.deltaTime;
             if (timeSinceLastMovement > playerMovementThreshold) {
                 gravityTimeLeft -= Time.deltaTime;
             }
             #endregion
+
             #region UPDATE CAMERA
             if (Mathf.Abs(camera.y - player.y) > 1f) {
                 camera.y = Mathf.SmoothDamp(camera.y, player.y, ref cameraVelocity, 0.3f);
             }
             #endregion
+
             // Change fuel
             fuelBar.ChangeFuel(-500 * Time.deltaTime); // -500 mL per second
         }
@@ -117,7 +134,7 @@ namespace Game {
             int playerY = (int) (player.y / Globals.TILE_SIZE);
             int startY = Mathf.Max(playerY - renderDistance, 0);
             int endY = Mathf.Min(playerY + renderDistance, tilesVertical);
-            
+
             for (int i = 0; i < tilesHorizontal; i++) {
                 for (int j = startY; j <= endY; j++) {
                     float[] verts = {i * Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE, i * Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE};

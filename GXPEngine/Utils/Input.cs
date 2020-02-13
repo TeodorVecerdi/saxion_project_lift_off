@@ -90,7 +90,7 @@ namespace GXPEngine {
         }
 
 		public static void AddAxis(string axisName, List<int> negativeKeys, List<int> positiveKeys) {
-			Axes.Add(axisName, ValueTuple<List<int>,List<int>>.Create(negativeKeys, positiveKeys));
+			Axes.Add(axisName, ValueTuple.Create(negativeKeys, positiveKeys));
 		}
 
 		public static float GetAxis(string axisName) {

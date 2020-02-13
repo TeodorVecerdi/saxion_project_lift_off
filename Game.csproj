@@ -44,10 +44,10 @@
   <ItemGroup>
     <Compile Include="Game\FuelBar.cs" />
     <Compile Include="Game\Globals.cs" />
-    <Compile Include="Game\Player.cs" />
     <Compile Include="Game\TileGrid.cs" />
     <Compile Include="Game\Tiles.cs" />
     <Compile Include="Game\Utils\Debug.cs" />
+    <Compile Include="Game\Utils\ExtensionMethods.cs" />
     <Compile Include="Game\Utils\Math.cs" />
     <Compile Include="Game\Utils\Rand.cs" />
     <Compile Include="Game\Utils\RandomNumberGenerator.cs" />
@@ -71,7 +71,9 @@
   <ItemGroup>
     <Content Include="data\background.png" />
     <Content Include="data\background_test.jpg" />
+    <Content Include="data\coal.png" />
     <Content Include="data\dirt.png" />
+    <Content Include="data\emerald.png" />
     <Content Include="data\empty.png" />
     <Content Include="data\fuelbar_background.png" />
     <Content Include="data\fuelbar_border.png" />
@@ -79,7 +81,9 @@
     <Content Include="data\fuelbar_fuel.png" />
     <Content Include="data\fuelstation.png" />
     <Content Include="data\fuel_station.png" />
+    <Content Include="data\gold.png" />
     <Content Include="data\motherload_drill.png" />
+    <Content Include="data\saphire.png" />
     <Content Include="data\stone.png" />
     <Content Include="data\test_tile.png" />
     <Content Include="lib\COPYING.txt" />
