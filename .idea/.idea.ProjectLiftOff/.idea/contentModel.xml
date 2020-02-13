@@ -21,7 +21,8 @@
         <e p="fuelstation.png" t="Include" />
         <e p="gold.png" t="Include" />
         <e p="motherload_drill.png" t="Include" />
-        <e p="saphire.png" t="Include" />
+        <e p="sapphire.png" t="Include" />
+        <e p="stone.jpg" t="Include" />
         <e p="stone.png" t="Include" />
         <e p="test_tile.png" t="Include" />
       </e>

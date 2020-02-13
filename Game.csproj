@@ -83,6 +83,7 @@
     <Content Include="data\fuel_station.png" />
     <Content Include="data\gold.png" />
     <Content Include="data\motherload_drill.png" />
+    <Content Include="data\stone.jpg" />
     <Content Include="data\sapphire.png" />
     <Content Include="data\stone.png" />
     <Content Include="data\test_tile.png" />

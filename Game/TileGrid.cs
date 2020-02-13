@@ -36,13 +36,12 @@ namespace Game {
                     
                     if (precentage <= 85) { tiles[i, j] = ObjectType.Dirt; }
                     else if (precentage >= 85 && precentage <= 95) { tiles[i, j] = ObjectType.Stone; }
-                    else if (precentage > 95)
-                    {
-                        int orechance = Rand.Range(0, 100);
-                        if ( orechance <=10){ tiles[i, j] = ObjectType.Sapphire; }
-                        if (orechance >10 && orechance <= 30 ){ tiles[i, j] = ObjectType.Emerald; }
-                        if (orechance >30 && orechance <= 60) { tiles[i, j] = ObjectType.Gold; }
-                        if (orechance >60 && orechance <= 100) { tiles[i, j] = ObjectType.Coal; }
+                    else if (precentage > 95) { // 5%
+                        var oreChance = Rand.Range(0, 100);
+                        if ( oreChance <=10){ tiles[i, j] = ObjectType.Sapphire; } //10%
+                        if (oreChance >10 && oreChance <= 30 ){ tiles[i, j] = ObjectType.Emerald; } //20%
+                        if (oreChance >30 && oreChance <= 60) { tiles[i, j] = ObjectType.Gold; } //30%
+                        if (oreChance >60 && oreChance <= 100) { tiles[i, j] = ObjectType.Coal; } //40%
                     }
                     
                 }
