@@ -13,7 +13,7 @@ namespace Game {
         private ObjectType[,] tilesBackground;
         private Camera camera;
         private Transformable player;
-        private FuelBar fuelBar;
+        public FuelBar FuelBar;
 
         private const float gravityFrequency = 0.25f;
         private const float playerMovementThreshold = 1f;
@@ -32,13 +32,18 @@ namespace Game {
                 for (int j = topOffset; j < tilesVertical; j++) {
                     tilesBackground[i, j] = ObjectType.Background;
                     int precentage = Rand.Range(0, 100);
-                    if (precentage <= 85) {
-                        tiles[i, j] = ObjectType.Dirt;
-                    } else if (precentage >= 85 && precentage <= 95) {
-                        tiles[i, j] = ObjectType.Stone;
-                    } else if (precentage > 95) {
-                        tiles[i, j] = ObjectType.Coal;
+                    
+                    if (precentage <= 85) { tiles[i, j] = ObjectType.Dirt; }
+                    else if (precentage >= 85 && precentage <= 95) { tiles[i, j] = ObjectType.Stone; }
+                    else if (precentage > 95)
+                    {
+                        int orechance = Rand.Range(0, 100);
+                        if ( orechance <=10){ tiles[i, j] = ObjectType.Sapphire; }
+                        if (orechance >10 && orechance <= 30 ){ tiles[i, j] = ObjectType.Emerald; }
+                        if (orechance >30 && orechance <= 60) { tiles[i, j] = ObjectType.Gold; }
+                        if (orechance >60 && orechance <= 100) { tiles[i, j] = ObjectType.Coal; }
                     }
+                    
                 }
             }
 
@@ -55,8 +60,8 @@ namespace Game {
             camera = new Camera(-(int) (Globals.WIDTH / 2f), 0, Globals.WIDTH, Globals.HEIGHT);
             AddChild(camera);
 
-            fuelBar = new FuelBar();
-            camera.AddChild(fuelBar);
+            FuelBar = new FuelBar();
+            camera.AddChild(FuelBar);
         }
 
         void Update() {
@@ -126,15 +131,16 @@ namespace Game {
             #endregion
 
             // Change fuel
-            fuelBar.ChangeFuel(-500 * Time.deltaTime); // -500 mL per second
+            FuelBar.ChangeFuel(-500 * Time.deltaTime); // -500 mL per second
+           
         }
 
         protected override void RenderSelf(GLContext glContext) {
             glContext.SetColor(0xff, 0xff, 0xff, 0xff);
             int playerY = (int) (player.y / Globals.TILE_SIZE);
             int startY = Mathf.Max(playerY - renderDistance, 0);
-            int endY = Mathf.Min(playerY + renderDistance, tilesVertical);
-
+            int endY = Mathf.Min(playerY + renderDistance, tilesVertical-1);
+            
             for (int i = 0; i < tilesHorizontal; i++) {
                 for (int j = startY; j <= endY; j++) {
                     float[] verts = {i * Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE, i * Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE};
