@@ -32,9 +32,14 @@ namespace Game {
                 for (int j = topOffset; j < tilesVertical; j++) {
                     tilesBackground[i, j] = ObjectType.Background;
                     int precentage = Rand.Range(0, 100);
-                    if (precentage <= 90) tiles[i, j] = ObjectType.Dirt;
-                    else tiles[i, j] = ObjectType.Stone;
+                    if (precentage <= 85)
+                    {
+                        tiles[i, j] = ObjectType.Dirt;
+                    }
+                    else if (precentage >= 85 && precentage <= 95) { tiles[i, j] = ObjectType.Stone; }
+                    else if (precentage > 95) { tiles[i, j] = ObjectType.Coal; }
                 }
+
             }
 
             for (int x = 0; x < 4; x++) {
