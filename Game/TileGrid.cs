@@ -8,25 +8,32 @@ namespace Game {
     public class TileGrid : GameObject {
         private const int topOffset = 6;
         private const int renderDistance = 10;
-        private int fuelRefills = 0;
-        private int score = 0;
-
+        private int fuelRefills;
+        private int score;
         private int tilesHorizontal;
         private int tilesVertical;
-
-        private ObjectType[,] tiles;
-        private ObjectType[,] tilesBackground;
-        public Camera Camera;
-        private Transformable player;
-        public FuelBar FuelBar;
-        private Canvas HUD;
-        private Font hudFont16, hudFont24, hudFont32, hudFont48, hudFont64;
 
         private const float gravityFrequency = 0.25f;
         private const float playerMovementThreshold = 1f;
         private float gravityTimeLeft = gravityFrequency;
         private float timeSinceLastMovement;
         private float cameraVelocity;
+        private float drillTimeLeft;
+        private float drillTimeOriginal;
+
+        private bool startedDrilling;
+        private bool canStartDrilling;
+
+        private ObjectType[,] tiles;
+        private ObjectType[,] tilesBackground;
+        private Camera camera;
+        private Transformable player;
+        private FuelBar fuelBar;
+        private Canvas HUD;
+        private Font hudFont16, hudFont24, hudFont32, hudFont48, hudFont64;
+        private Sprite gameOver;
+        private Vector2Int lastDrillDirection = Vector2Int.zero;
+        private Sprite drillProgressIndicator;
 
         public TileGrid(int tilesVertical) {
             tilesHorizontal = (int) (Globals.WIDTH / Globals.TILE_SIZE);
@@ -38,6 +45,8 @@ namespace Game {
             hudFont32 = FontLoader.Instance.GetFont(32);
             hudFont48 = FontLoader.Instance.GetFont(48);
             hudFont64 = FontLoader.Instance.GetFont(64);
+            drillProgressIndicator = new Sprite("data/drillIndicator2.png");
+            drillProgressIndicator.alpha = 0;
 
             //GENERATE WORLD
             for (int i = 0; i < tilesHorizontal; i++) {
@@ -69,67 +78,109 @@ namespace Game {
             player = new Transformable();
             player.SetXY(spawnLocation * Globals.TILE_SIZE, (topOffset - 1) * Globals.TILE_SIZE);
 
-            Camera = new Camera(-(int) (Globals.WIDTH / 2f), 0, Globals.WIDTH, Globals.HEIGHT);
-            AddChild(Camera);
+            camera = new Camera(0, 0, Globals.WIDTH, Globals.HEIGHT) {x = (int) (Globals.WIDTH / 2f)};
+            AddChild(camera);
 
-            FuelBar = new FuelBar();
-            Camera.AddChild(FuelBar);
+            fuelBar = new FuelBar();
+            fuelBar.Move(-Globals.WIDTH / 2f, 0f); // weird camera behaviour fix
+            camera.AddChild(fuelBar);
             HUD = new Canvas(Globals.WIDTH, Globals.HEIGHT, false);
             HUD.Move(0, -Globals.HEIGHT / 2f);
-            Camera.AddChild(HUD);
+            HUD.Move(-Globals.WIDTH / 2f, 0f); // weird camera behaviour fix
+            camera.AddChild(HUD);
+
+            gameOver = new Sprite("data/gameover.png", true, false);
+            gameOver.SetScaleXY(2.732f, 2.85f);
+            gameOver.visible = false;
+            gameOver.Move(0, -Globals.HEIGHT / 2f);
+            gameOver.Move(-Globals.WIDTH / 2f, 0f); // weird camera behaviour fix
+            camera.LateAddChild(gameOver);
+            AddChild(drillProgressIndicator);
         }
 
-        void Update() {
-            Debug.Log($"FPS: {game.currentFps}");
-            HUD.graphics.Clear(Color.Empty);
-            HUD.graphics.DrawString("SCORE: " + score, hudFont64, Brushes.FloralWhite, Globals.WIDTH / 2f, 24, FontLoader.Instance.Center);
+        private void Update() {
+            DrawHud();
+
+            // Poll Events
+            var (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
+            var movementDirection = new Vector2Int((int) Input.GetAxisDown("Horizontal"), (int) Input.GetAxisDown("Vertical"));
+            var drillDirection = new Vector2Int((int) Input.GetAxis("Horizontal"), (int) Input.GetAxis("Vertical"));
+            var desiredPosition = movementDirection.Add(playerX, playerY);
+            var desiredDrillDirection = drillDirection.Add(playerX, playerY);
+            var rangeCheck = desiredPosition.x >= 0 && desiredPosition.x < tilesHorizontal && desiredPosition.y >= 0 && desiredPosition.y < tilesVertical;
+
+
+            #region DRILL
+            if (!canStartDrilling && movementDirection != Vector2Int.zero) {
+                canStartDrilling = true;
+            }
+
+            var wantsToDrill = Input.GetKey(Key.SPACE) && drillDirection != Vector2Int.zero;
+            var isDrillingUp = drillDirection.y == -1;
+            var hasGroundUnder = playerY + 1 == tilesVertical || tiles[playerX, playerY + 1] != ObjectType.Empty;
+            if (canStartDrilling && wantsToDrill && !isDrillingUp && hasGroundUnder && rangeCheck && Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].Passable && Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].Drillable) {
+                if (lastDrillDirection != drillDirection || !startedDrilling) {
+                    drillTimeOriginal = Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].TimeToDrill;
+                    drillTimeLeft = drillTimeOriginal;
+                }
+
+                drillProgressIndicator.visible = true;
+                drillProgressIndicator.SetXY(desiredDrillDirection.x * Globals.TILE_SIZE, desiredDrillDirection.y * Globals.TILE_SIZE);
+                startedDrilling = true;
+            } else {
+                drillProgressIndicator.alpha = 0;
+                drillProgressIndicator.visible = false;
+                startedDrilling = false;
+                canStartDrilling = false;
+            }
+
+            // BREAK TILE IF TIME IS DONE
+            if (startedDrilling && drillTimeLeft <= 0) {
+                score += Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].ScoreAmount;
+                player.Move(drillDirection.ToWorld().ToVec2());
+                tiles[playerX, playerY] = ObjectType.Empty;
+                tiles[desiredDrillDirection.x, desiredDrillDirection.y] = ObjectType.Player;
+                
+                drillProgressIndicator.alpha = 0;
+                drillProgressIndicator.visible = false;
+                startedDrilling = false;
+                canStartDrilling = false;
+            }
+
+            lastDrillDirection = drillDirection;
+            #endregion
 
             #region GRAVITY
             if (timeSinceLastMovement > playerMovementThreshold && gravityTimeLeft <= 0) {
-                var playerPosition = player.position.ToGrid().ToInt();
-                if (playerPosition.y + 1 < tilesVertical && tiles[playerPosition.x, playerPosition.y + 1] == ObjectType.Empty) {
+                if (playerY + 1 < tilesVertical && tiles[playerX, playerY + 1] == ObjectType.Empty) {
                     player.Move(0, Globals.TILE_SIZE);
-                    tiles[playerPosition.x, playerPosition.y] = ObjectType.Empty;
-                    tiles[playerPosition.x, playerPosition.y + 1] = ObjectType.Player;
+                    tiles[playerX, playerY] = ObjectType.Empty;
+                    tiles[playerX, playerY + 1] = ObjectType.Player;
+                    playerY += 1;
                 }
 
                 gravityTimeLeft = gravityFrequency;
             }
             #endregion
-            #region PLAYER MOVEMENT
-            // Get input
-            var (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
-            var movement = new Vector2Int((int) Input.GetAxisDown("Horizontal"), (int) Input.GetAxisDown("Vertical"));
-            var isDrilling = Input.GetKey(Key.SPACE);
-            if (movement.x != 0 && movement.y != 0) {
-                movement.x = 0;
-            }
 
-            if (playerX == 3 && playerY == topOffset - 1 && Input.GetKeyDown(Key.LEFT_CTRL) && fuelRefills <= 9) {
-                FuelBar.FuelAmount = 100000f;
+            // Refuel
+            if (playerX == 3 && playerY == topOffset - 1 && Input.GetKeyDown(Key.X) && fuelRefills <= 9) {
+                fuelBar.Refuel();
                 fuelRefills += 1;
             }
 
-            if (movement != Vector2Int.zero) {
-                var desiredPosition = movement.Add(playerX, playerY);
+            #region PLAYER MOVEMENT
+            if (movementDirection.x != 0 && movementDirection.y != 0) {
+                movementDirection.x = 0;
+            }
 
+            if (movementDirection != Vector2Int.zero) {
                 // Check if player can move
-                var rangeCheck = desiredPosition.x >= 0 && desiredPosition.x < tilesHorizontal && desiredPosition.y >= 0 && desiredPosition.y < tilesVertical;
                 if (rangeCheck && tiles[desiredPosition.x, desiredPosition.y] == ObjectType.Empty) {
                     // PLAYER MOVEMENT
-                    player.Move(movement.ToWorld().ToVec2());
+                    player.Move(movementDirection.ToWorld().ToVec2());
                     tiles[playerX, playerY] = ObjectType.Empty;
                     tiles[desiredPosition.x, desiredPosition.y] = ObjectType.Player;
-                } else if (rangeCheck && isDrilling && Tiles.TypeToTile[tiles[desiredPosition.x, desiredPosition.y]].Passable) {
-                    // PLAYER DRILLING
-                    var isDrillingUp = movement.y == -1;
-                    var hasGroundUnder = playerY + 1 == tilesVertical || tiles[playerX, playerY + 1] != ObjectType.Empty;
-                    if (!isDrillingUp && hasGroundUnder) {
-                        score += Tiles.TypeToTile[tiles[desiredPosition.x, desiredPosition.y]].ScoreAmount;
-                        player.Move(movement.ToWorld().ToVec2());
-                        tiles[playerX, playerY] = ObjectType.Empty;
-                        tiles[desiredPosition.x, desiredPosition.y] = ObjectType.Player;
-                    }
                 }
 
                 timeSinceLastMovement = 0f;
@@ -142,24 +193,39 @@ namespace Game {
             if (timeSinceLastMovement > playerMovementThreshold) {
                 gravityTimeLeft -= Time.deltaTime;
             }
+
+            if (startedDrilling) {
+                drillTimeLeft -= Time.deltaTime;
+                drillProgressIndicator.alpha = Math.Map(drillTimeLeft, drillTimeOriginal, 0f, 0f, 1f);
+            }
             #endregion
 
             #region UPDATE CAMERA
-            if (Mathf.Abs(Camera.y - player.y) > 1f) {
-                Camera.y = Mathf.SmoothDamp(Camera.y, player.y, ref cameraVelocity, 0.3f);
+            if (Mathf.Abs(camera.y - player.y) > 1f) {
+                camera.y = Mathf.SmoothDamp(camera.y, player.y, ref cameraVelocity, 0.3f);
             }
             #endregion
 
             // Change fuel
-            FuelBar.ChangeFuel(-1000 * Time.deltaTime); // -500 mL per second
+            fuelBar.ChangeFuel(-500 * Time.deltaTime);
+            if (fuelBar.FuelAmount <= 0) {
+                gameOver.visible = true;
+            }
+        }
+
+        private void DrawHud() {
+            HUD.graphics.Clear(Color.Empty);
+            HUD.graphics.DrawString("SCORE: " + score, hudFont64, Brushes.FloralWhite, Globals.WIDTH / 2f, 24, FontLoader.Instance.Center);
+            HUD.graphics.DrawString("FUEL", hudFont64, Brushes.FloralWhite, Globals.WIDTH - 30, Globals.HEIGHT / 2f, FontLoader.Instance.CenterVertical);
+            HUD.graphics.DrawString("FPS: " + game.currentFps, SystemFonts.StatusFont, Brushes.DarkRed, 0, 8, FontLoader.Instance.Left);
         }
 
         protected override void RenderSelf(GLContext glContext) {
             glContext.SetColor(0xff, 0xff, 0xff, 0xff);
+
             int playerY = (int) (player.y / Globals.TILE_SIZE);
             int startY = Mathf.Max(playerY - renderDistance, 0);
             int endY = Mathf.Min(playerY + renderDistance, tilesVertical - 1);
-
             for (int i = 0; i < tilesHorizontal; i++) {
                 for (int j = startY; j <= endY; j++) {
                     float[] verts = {i * Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE, i * Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE};

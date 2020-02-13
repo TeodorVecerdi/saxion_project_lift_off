@@ -11,6 +11,8 @@
         <e p="background_test.jpg" t="Include" />
         <e p="coal.png" t="Include" />
         <e p="dirt.png" t="Include" />
+        <e p="drillIndicator.png" t="Include" />
+        <e p="drillIndicator2.png" t="Include" />
         <e p="emerald.png" t="Include" />
         <e p="empty.png" t="Include" />
         <e p="fuel_station.png" t="Include" />
@@ -18,14 +20,12 @@
         <e p="fuelbar_border.png" t="Include" />
         <e p="fuelbar_finished.psd" t="Include" />
         <e p="fuelbar_fuel.png" t="Include" />
-        <e p="fuelstation.png" t="Include" />
         <e p="gold.png" t="Include" />
         <e p="motherload_drill.png" t="Include" />
         <e p="sapphire.png" t="Include" />
         <e p="spaceage.ttf" t="Include" />
         <e p="stone.jpg" t="Include" />
         <e p="stone.png" t="Include" />
-        <e p="test_tile.png" t="Include" />
       </e>
       <e p="Game" t="Include">
         <e p="FuelBar.cs" t="Include" />
