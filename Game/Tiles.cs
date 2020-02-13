@@ -16,7 +16,7 @@ namespace Game {
         Coal,
         Gold,
         Emerald,
-        Saphire
+        Sapphire
 
     }
 
@@ -26,10 +26,10 @@ namespace Game {
         public static TileDefinition Stone = new TileDefinition {Passable = false, Texture = Texture2D.GetInstance("data/stone.png")};
         public static TileDefinition Player = new TileDefinition {Passable = true, Texture = Texture2D.GetInstance("data/motherload_drill.png")};
         public static TileDefinition Background = new TileDefinition {Passable = true, Texture = Texture2D.GetInstance("data/background.png")};
-        public static TileDefinition Coal = new TileDefinition { Passable = false, Texture = Texture2D.GetInstance("data/coal.png") };
-        public static TileDefinition Gold = new TileDefinition { Passable = false, Texture = Texture2D.GetInstance("data/gold.png") };
-        public static TileDefinition Emerald = new TileDefinition { Passable = false, Texture = Texture2D.GetInstance("data/emerald.png") };
-        public static TileDefinition Saphire = new TileDefinition { Passable = false, Texture = Texture2D.GetInstance("data/saphire.png") };
+        public static TileDefinition Coal = new TileDefinition { Passable = true, Texture = Texture2D.GetInstance("data/coal.png") };
+        public static TileDefinition Gold = new TileDefinition { Passable = true, Texture = Texture2D.GetInstance("data/gold.png") };
+        public static TileDefinition Emerald = new TileDefinition { Passable = true, Texture = Texture2D.GetInstance("data/emerald.png") };
+        public static TileDefinition Sapphire = new TileDefinition { Passable = true, Texture = Texture2D.GetInstance("data/sapphire.png") };
 
         public static Dictionary<ObjectType, TileDefinition> TypeToTile = new Dictionary<ObjectType, TileDefinition> {
             {ObjectType.Empty, Empty},
@@ -40,7 +40,7 @@ namespace Game {
             {ObjectType.Coal, Coal},
             {ObjectType.Gold, Gold},
             {ObjectType.Emerald, Emerald},
-            {ObjectType.Saphire, Saphire},
+            {ObjectType.Sapphire, Sapphire},
         };
     }
 }
