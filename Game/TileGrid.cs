@@ -1,3 +1,6 @@
+using System.Drawing;
+using System.Drawing.Text;
+using System.Runtime.Remoting.Messaging;
 using GXPEngine;
 using GXPEngine.Core;
 
@@ -6,6 +9,7 @@ namespace Game {
         private const int topOffset = 6;
         private const int renderDistance = 10;
         private int fuelRefills = 0;
+        private int score = 0;
 
         private int tilesHorizontal;
         private int tilesVertical;
@@ -15,6 +19,8 @@ namespace Game {
         public Camera Camera;
         private Transformable player;
         public FuelBar FuelBar;
+        private Canvas HUD;
+        private Font hudFont16, hudFont24, hudFont32, hudFont48, hudFont64;
 
         private const float gravityFrequency = 0.25f;
         private const float playerMovementThreshold = 1f;
@@ -27,23 +33,29 @@ namespace Game {
             this.tilesVertical = tilesVertical;
             tiles = new ObjectType[tilesHorizontal, tilesVertical];
             tilesBackground = new ObjectType[tilesHorizontal, tilesVertical];
+            hudFont16 = FontLoader.Instance.GetFont(16);
+            hudFont24 = FontLoader.Instance.GetFont(24);
+            hudFont32 = FontLoader.Instance.GetFont(32);
+            hudFont48 = FontLoader.Instance.GetFont(48);
+            hudFont64 = FontLoader.Instance.GetFont(64);
 
             //GENERATE WORLD
             for (int i = 0; i < tilesHorizontal; i++) {
                 for (int j = topOffset; j < tilesVertical; j++) {
                     tilesBackground[i, j] = ObjectType.Background;
                     int precentage = Rand.Range(0, 100);
-                    
-                    if (precentage <= 85) { tiles[i, j] = ObjectType.Dirt; }
-                    else if (precentage >= 85 && precentage <= 95) { tiles[i, j] = ObjectType.Stone; }
-                    else if (precentage > 95) { // 5%
+
+                    if (precentage <= 85) {
+                        tiles[i, j] = ObjectType.Dirt;
+                    } else if (precentage >= 85 && precentage <= 95) {
+                        tiles[i, j] = ObjectType.Stone;
+                    } else if (precentage > 95) {
                         var oreChance = Rand.Range(0, 100);
-                        if ( oreChance <=10){ tiles[i, j] = ObjectType.Sapphire; } //10%
-                        if (oreChance >10 && oreChance <= 30 ){ tiles[i, j] = ObjectType.Emerald; } //20%
-                        if (oreChance >30 && oreChance <= 60) { tiles[i, j] = ObjectType.Gold; } //30%
-                        if (oreChance >60 && oreChance <= 100) { tiles[i, j] = ObjectType.Coal; } //40%
+                        if (oreChance <= 10) tiles[i, j] = ObjectType.Sapphire;
+                        if (oreChance > 10 && oreChance <= 30) tiles[i, j] = ObjectType.Emerald;
+                        if (oreChance > 30 && oreChance <= 60) tiles[i, j] = ObjectType.Gold;
+                        if (oreChance > 60 && oreChance <= 100) tiles[i, j] = ObjectType.Coal;
                     }
-                    
                 }
             }
 
@@ -62,16 +74,19 @@ namespace Game {
 
             FuelBar = new FuelBar();
             Camera.AddChild(FuelBar);
+            HUD = new Canvas(Globals.WIDTH, Globals.HEIGHT, false);
+            HUD.Move(0, -Globals.HEIGHT / 2f);
+            Camera.AddChild(HUD);
         }
 
         void Update() {
             Debug.Log($"FPS: {game.currentFps}");
+            HUD.graphics.Clear(Color.Empty);
+            HUD.graphics.DrawString("SCORE: " + score, hudFont64, Brushes.FloralWhite, Globals.WIDTH / 2f, 24, FontLoader.Instance.Center);
 
             #region GRAVITY
             if (timeSinceLastMovement > playerMovementThreshold && gravityTimeLeft <= 0) {
                 var playerPosition = player.position.ToGrid().ToInt();
-
-                // var playerPosition = new Vector2Int((int) (player.x / Globals.TILE_SIZE), (int) (player.y / Globals.TILE_SIZE));
                 if (playerPosition.y + 1 < tilesVertical && tiles[playerPosition.x, playerPosition.y + 1] == ObjectType.Empty) {
                     player.Move(0, Globals.TILE_SIZE);
                     tiles[playerPosition.x, playerPosition.y] = ObjectType.Empty;
@@ -81,7 +96,6 @@ namespace Game {
                 gravityTimeLeft = gravityFrequency;
             }
             #endregion
-
             #region PLAYER MOVEMENT
             // Get input
             var (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
@@ -90,15 +104,13 @@ namespace Game {
             if (movement.x != 0 && movement.y != 0) {
                 movement.x = 0;
             }
-            if (playerX == 3 && playerY == topOffset - 1 && Input.GetKeyDown(Key.LEFT_CTRL)&&fuelRefills <=9)
-            {
+
+            if (playerX == 3 && playerY == topOffset - 1 && Input.GetKeyDown(Key.LEFT_CTRL) && fuelRefills <= 9) {
                 FuelBar.FuelAmount = 100000f;
                 fuelRefills += 1;
-
-
             }
+
             if (movement != Vector2Int.zero) {
-               
                 var desiredPosition = movement.Add(playerX, playerY);
 
                 // Check if player can move
@@ -113,6 +125,7 @@ namespace Game {
                     var isDrillingUp = movement.y == -1;
                     var hasGroundUnder = playerY + 1 == tilesVertical || tiles[playerX, playerY + 1] != ObjectType.Empty;
                     if (!isDrillingUp && hasGroundUnder) {
+                        score += Tiles.TypeToTile[tiles[desiredPosition.x, desiredPosition.y]].ScoreAmount;
                         player.Move(movement.ToWorld().ToVec2());
                         tiles[playerX, playerY] = ObjectType.Empty;
                         tiles[desiredPosition.x, desiredPosition.y] = ObjectType.Player;
@@ -139,15 +152,14 @@ namespace Game {
 
             // Change fuel
             FuelBar.ChangeFuel(-1000 * Time.deltaTime); // -500 mL per second
-           
         }
 
         protected override void RenderSelf(GLContext glContext) {
             glContext.SetColor(0xff, 0xff, 0xff, 0xff);
             int playerY = (int) (player.y / Globals.TILE_SIZE);
             int startY = Mathf.Max(playerY - renderDistance, 0);
-            int endY = Mathf.Min(playerY + renderDistance, tilesVertical-1);
-            
+            int endY = Mathf.Min(playerY + renderDistance, tilesVertical - 1);
+
             for (int i = 0; i < tilesHorizontal; i++) {
                 for (int j = startY; j <= endY; j++) {
                     float[] verts = {i * Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE, i * Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE};

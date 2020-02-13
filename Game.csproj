@@ -48,6 +48,7 @@
     <Compile Include="Game\Tiles.cs" />
     <Compile Include="Game\Utils\Debug.cs" />
     <Compile Include="Game\Utils\ExtensionMethods.cs" />
+    <Compile Include="Game\Utils\FontLoader.cs" />
     <Compile Include="Game\Utils\Math.cs" />
     <Compile Include="Game\Utils\Rand.cs" />
     <Compile Include="Game\Utils\RandomNumberGenerator.cs" />
@@ -83,6 +84,7 @@
     <Content Include="data\fuel_station.png" />
     <Content Include="data\gold.png" />
     <Content Include="data\motherload_drill.png" />
+    <Content Include="data\spaceage.ttf" />
     <Content Include="data\stone.jpg" />
     <Content Include="data\sapphire.png" />
     <Content Include="data\stone.png" />

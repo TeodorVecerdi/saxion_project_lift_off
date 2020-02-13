@@ -22,6 +22,7 @@
         <e p="gold.png" t="Include" />
         <e p="motherload_drill.png" t="Include" />
         <e p="sapphire.png" t="Include" />
+        <e p="spaceage.ttf" t="Include" />
         <e p="stone.jpg" t="Include" />
         <e p="stone.png" t="Include" />
         <e p="test_tile.png" t="Include" />
@@ -38,6 +39,7 @@
         <e p="Utils" t="Include">
           <e p="Debug.cs" t="Include" />
           <e p="ExtensionMethods.cs" t="Include" />
+          <e p="FontLoader.cs" t="Include" />
           <e p="Math.cs" t="Include" />
           <e p="Rand.cs" t="Include" />
           <e p="RandomNumberGenerator.cs" t="Include" />
