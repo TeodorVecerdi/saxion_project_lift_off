@@ -1,3 +1,4 @@
+using System.ComponentModel.Design.Serialization;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Runtime.Remoting.Messaging;
@@ -13,6 +14,8 @@ namespace Game {
         private int tilesHorizontal;
         private int tilesVertical;
 
+        private const float idleFuelDepletion = -100f;
+        private const float drillFuelDepletion = -1000f;
         private const float gravityFrequency = 0.25f;
         private const float playerMovementThreshold = 1f;
         private float gravityTimeLeft = gravityFrequency;
@@ -140,7 +143,6 @@ namespace Game {
                 player.Move(drillDirection.ToWorld().ToVec2());
                 tiles[playerX, playerY] = ObjectType.Empty;
                 tiles[desiredDrillDirection.x, desiredDrillDirection.y] = ObjectType.Player;
-                
                 drillProgressIndicator.alpha = 0;
                 drillProgressIndicator.visible = false;
                 startedDrilling = false;
@@ -197,6 +199,7 @@ namespace Game {
             if (startedDrilling) {
                 drillTimeLeft -= Time.deltaTime;
                 drillProgressIndicator.alpha = Math.Map(drillTimeLeft, drillTimeOriginal, 0f, 0f, 1f);
+                fuelBar.ChangeFuel(drillFuelDepletion * Time.deltaTime);
             }
             #endregion
 
@@ -207,7 +210,7 @@ namespace Game {
             #endregion
 
             // Change fuel
-            fuelBar.ChangeFuel(-500 * Time.deltaTime);
+            fuelBar.ChangeFuel(idleFuelDepletion * Time.deltaTime);
             if (fuelBar.FuelAmount <= 0) {
                 gameOver.visible = true;
             }
