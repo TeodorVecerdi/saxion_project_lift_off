@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
 
@@ -6,26 +7,23 @@ namespace Game {
         private static FontLoader instance;
         public static FontLoader Instance => instance ?? (instance = new FontLoader());
 
-        public readonly StringFormat Left, Center, Right;
-        public readonly StringFormat LeftVertical, CenterVertical, RightVertical;
+        public static readonly StringFormat LeftAlignment = new StringFormat {Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center},
+            CenterAlignment = new StringFormat {Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center},
+            RightAlignment = new StringFormat {Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center};
+        public static readonly StringFormat LeftVerticalAlignment = new StringFormat {Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.DirectionVertical},
+            CenterVerticalAlignment = new StringFormat {Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.DirectionVertical},
+            RightVerticalAlignment = new StringFormat {Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.DirectionVertical};
 
-        private PrivateFontCollection collection;
-        private FontFamily fontFamily;
+        private readonly Dictionary<float, Font> fonts;
+        private readonly FontFamily fontFamily;
 
-        public FontLoader() {
-            collection = new PrivateFontCollection();
+        private FontLoader() {
+            var collection = new PrivateFontCollection();
             collection.AddFontFile(@"data\spaceage.ttf");
             fontFamily = new FontFamily("Space Age", collection);
-            Left = new StringFormat {Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center};
-            LeftVertical = new StringFormat {Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.DirectionVertical};
-            Center = new StringFormat {Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center};
-            CenterVertical = new StringFormat {Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.DirectionVertical};
-            Right = new StringFormat {Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center};
-            RightVertical = new StringFormat {Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center, FormatFlags = StringFormatFlags.DirectionVertical};
+            fonts = new Dictionary<float, Font>();
         }
 
-        public Font GetFont(float size) {
-            return new Font(fontFamily, size);
-        }
+        public Font this[float fontSize] => fonts.ContainsKey(fontSize) ? fonts[fontSize] : fonts[fontSize] = new Font(fontFamily, fontSize);
     }
 }

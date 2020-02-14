@@ -10,16 +10,17 @@ namespace Game {
         private int score;
         private int tilesHorizontal;
         private int tilesVertical;
-
-        private const float idleFuelDepletion = -100f;
+        private const float idleFuelDepletion = -333f;
         private const float drillFuelDepletion = -1000f;
-        private const float gravityFrequency = 0.25f;
-        private const float playerMovementThreshold = 1f;
+        private const float gravityFrequency = 0.33333f;
+        private const float playerMovementThreshold = 0.33333f;
         private float gravityTimeLeft = gravityFrequency;
         private float timeSinceLastMovement;
         private float cameraVelocity;
         private float drillTimeLeft;
         private float drillTimeOriginal;
+        private string[] modes = {"REFILL", "DRILL", "PICKUP 1", "PICKUP 2", "PICKUP 3"};
+        private int modeIndex = 0;
 
         private bool startedDrilling;
         private bool canStartDrilling;
@@ -30,7 +31,6 @@ namespace Game {
         private Transformable player;
         private FuelBar fuelBar;
         private Canvas HUD;
-        private Font hudFont16, hudFont24, hudFont32, hudFont48, hudFont64;
         private Sprite gameOver;
         private Vector2Int lastDrillDirection = Vector2Int.zero;
         private Sprite drillProgressIndicator;
@@ -40,11 +40,6 @@ namespace Game {
             this.tilesVertical = tilesVertical;
             tiles = new ObjectType[tilesHorizontal, tilesVertical];
             tilesBackground = new ObjectType[tilesHorizontal, tilesVertical];
-            hudFont16 = FontLoader.Instance.GetFont(16);
-            hudFont24 = FontLoader.Instance.GetFont(24);
-            hudFont32 = FontLoader.Instance.GetFont(32);
-            hudFont48 = FontLoader.Instance.GetFont(48);
-            hudFont64 = FontLoader.Instance.GetFont(64);
             drillProgressIndicator = new Sprite("data/drillIndicator2.png");
             drillProgressIndicator.alpha = 0;
 
@@ -99,6 +94,11 @@ namespace Game {
         }
 
         private void Update() {
+            if (Input.GetKeyDown(Key.ENTER)) {
+                modeIndex++;
+                modeIndex %= modes.Length;
+            }
+            
             // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
             // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
             // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
@@ -241,9 +241,10 @@ namespace Game {
 
         private void DrawHud() {
             HUD.graphics.Clear(Color.Empty);
-            HUD.graphics.DrawString("SCORE: " + score, hudFont64, Brushes.FloralWhite, Globals.WIDTH / 2f, 24, FontLoader.Instance.Center);
-            HUD.graphics.DrawString("FUEL", hudFont64, Brushes.FloralWhite, Globals.WIDTH - 30, Globals.HEIGHT / 2f, FontLoader.Instance.CenterVertical);
-            HUD.graphics.DrawString("FPS: " + game.currentFps, SystemFonts.StatusFont, Brushes.DarkRed, 0, 8, FontLoader.Instance.Left);
+            HUD.graphics.DrawString("SCORE: " + score, FontLoader.Instance[64f], Brushes.FloralWhite, Globals.WIDTH / 2f, 24, FontLoader.CenterAlignment);
+            HUD.graphics.DrawString("FUEL", FontLoader.Instance[64f], Brushes.FloralWhite, Globals.WIDTH - 30, Globals.HEIGHT / 2f, FontLoader.CenterVerticalAlignment);
+            HUD.graphics.DrawString("FPS: " + game.currentFps, SystemFonts.StatusFont, Brushes.DarkRed, 0, 8, FontLoader.LeftAlignment);
+            HUD.graphics.DrawString("MODE " + modes[modeIndex], FontLoader.Instance[64], Brushes.Gold, Globals.WIDTH/2f, Globals.HEIGHT/2f, FontLoader.CenterAlignment);
         }
 
         protected override void RenderSelf(GLContext glContext) {
