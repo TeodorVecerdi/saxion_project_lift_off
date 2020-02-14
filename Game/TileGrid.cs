@@ -1,7 +1,4 @@
-using System.ComponentModel.Design.Serialization;
 using System.Drawing;
-using System.Drawing.Text;
-using System.Runtime.Remoting.Messaging;
 using GXPEngine;
 using GXPEngine.Core;
 
@@ -102,16 +99,46 @@ namespace Game {
         }
 
         private void Update() {
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
+            // TODO: RECALCULATE POSITION IF PLAYER MOVED (GRAVITY, DRILL, MOVEMENT)
             DrawHud();
 
             // Poll Events
             var (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
             var movementDirection = new Vector2Int((int) Input.GetAxisDown("Horizontal"), (int) Input.GetAxisDown("Vertical"));
             var drillDirection = new Vector2Int((int) Input.GetAxis("Horizontal"), (int) Input.GetAxis("Vertical"));
+            // Constrain movement to only one axis, with priority for vertical movement
+            if (movementDirection.x != 0 && movementDirection.y != 0) {
+                movementDirection.x = 0;
+            }
+            if (drillDirection.x != 0 && drillDirection.y != 0) {
+                drillDirection.x = 0;
+            }
+            
             var desiredPosition = movementDirection.Add(playerX, playerY);
             var desiredDrillDirection = drillDirection.Add(playerX, playerY);
             var rangeCheck = desiredPosition.x >= 0 && desiredPosition.x < tilesHorizontal && desiredPosition.y >= 0 && desiredPosition.y < tilesVertical;
-
+            var movedThisFrame = false;
+            
+            
 
             #region DRILL
             if (!canStartDrilling && movementDirection != Vector2Int.zero) {
@@ -126,7 +153,6 @@ namespace Game {
                     drillTimeOriginal = Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].TimeToDrill;
                     drillTimeLeft = drillTimeOriginal;
                 }
-
                 drillProgressIndicator.visible = true;
                 drillProgressIndicator.SetXY(desiredDrillDirection.x * Globals.TILE_SIZE, desiredDrillDirection.y * Globals.TILE_SIZE);
                 startedDrilling = true;
@@ -143,6 +169,7 @@ namespace Game {
                 player.Move(drillDirection.ToWorld().ToVec2());
                 tiles[playerX, playerY] = ObjectType.Empty;
                 tiles[desiredDrillDirection.x, desiredDrillDirection.y] = ObjectType.Player;
+                movedThisFrame = true;
                 drillProgressIndicator.alpha = 0;
                 drillProgressIndicator.visible = false;
                 startedDrilling = false;
@@ -172,13 +199,9 @@ namespace Game {
             }
 
             #region PLAYER MOVEMENT
-            if (movementDirection.x != 0 && movementDirection.y != 0) {
-                movementDirection.x = 0;
-            }
-
             if (movementDirection != Vector2Int.zero) {
                 // Check if player can move
-                if (rangeCheck && tiles[desiredPosition.x, desiredPosition.y] == ObjectType.Empty) {
+                if (rangeCheck && tiles[desiredPosition.x, desiredPosition.y] == ObjectType.Empty && !movedThisFrame) {
                     // PLAYER MOVEMENT
                     player.Move(movementDirection.ToWorld().ToVec2());
                     tiles[playerX, playerY] = ObjectType.Empty;
