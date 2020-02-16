@@ -34,8 +34,8 @@
         <e p="Properties" t="Include">
           <e p="AssemblyInfo.cs" t="Include" />
         </e>
+        <e p="Settings.cs" t="Include" />
         <e p="TileGrid.cs" t="Include" />
-        <e p="Tiles.cs" t="Include" />
         <e p="Utils" t="Include">
           <e p="Debug.cs" t="Include" />
           <e p="ExtensionMethods.cs" t="Include" />
@@ -46,6 +46,10 @@
           <e p="XmlLoader.cs" t="Include" />
         </e>
         <e p="World.cs" t="Include" />
+        <e p="WorldGen" t="Include">
+          <e p="Walker.cs" t="Include" />
+          <e p="WeightedRandomizer.cs" t="Include" />
+        </e>
       </e>
       <e p="Game.csproj" t="IncludeRecursive" />
       <e p="GXPEngine" t="Include">
