@@ -70,55 +70,30 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib" />
+    <Folder Include="data" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="data\background.png" />
-    <Content Include="data\background_test.jpg" />
-    <Content Include="data\coal.png" />
-    <Content Include="data\dirt.png" />
-    <Content Include="data\drillIndicator.png" />
-    <Content Include="data\drillIndicator2.png" />
-    <Content Include="data\emerald.png" />
-    <Content Include="data\empty.png" />
-    <Content Include="data\fuelbar_background.png" />
-    <Content Include="data\fuelbar_border.png" />
-    <Content Include="data\fuelbar_finished.psd" />
-    <Content Include="data\fuelbar_fuel.png" />
-    <Content Include="data\fuel_station.png" />
-    <Content Include="data\gold.png" />
-    <Content Include="data\motherload_drill.png" />
-    <Content Include="data\spaceage.ttf" />
-    <Content Include="data\stone.jpg" />
-    <Content Include="data\sapphire.png" />
-    <Content Include="data\stone.png" />
-    <Content Include="lib\COPYING.txt" />
-    <Content Include="lib\Fmod.License.txt" />
-    <Content Include="lib\fmodex.dll" />
-    <Content Include="lib\glfw.dll" />
-    <Content Include="lib\libfmodex-4.34.05.so" />
-    <Content Include="lib\libfmodex.dylib" />
-    <Content Include="lib\libglfw.dylib" />
-    <Content Include="lib\libglfw.so" />
+    <Content Include="data\**" />
+    <Content Include="lib\**" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-         Other similar extension points exist, see Microsoft.Common.targets.     -->
   <PropertyGroup>
-    <DestinationDirectory>$(OutputPath)\data</DestinationDirectory>
-    <SourceDirectory>data</SourceDirectory>
+    <DataDestinationDirectory>$(OutputPath)\data</DataDestinationDirectory>
+    <DataSourceDirectory>data</DataSourceDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <LibDestinationDirectory>$(OutputPath)\lib</LibDestinationDirectory>
     <LibSourceDirectory>lib</LibSourceDirectory>
   </PropertyGroup>
+  <!--  Move data and lib folders to output on build -->
   <Target Name="BeforeBuild">
-    <CreateItem Include="$(SourceDirectory)\**\*.*">
+    <CreateItem Include="$(DataSourceDirectory)\**\*.*">
       <Output TaskParameter="Include" ItemName="DataFiles" />
     </CreateItem>
     <CreateItem Include="$(LibSourceDirectory)\**\*.*">
       <Output TaskParameter="Include" ItemName="LibFiles" />
     </CreateItem>
-    <Copy SourceFiles="@(DataFiles)" DestinationFiles="@(DataFiles->'$(DestinationDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(DataFiles)" DestinationFiles="@(DataFiles->'$(DataDestinationDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(LibFiles)" DestinationFiles="@(LibFiles->'$(LibDestinationDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
   <Target Name="AfterBuild">
