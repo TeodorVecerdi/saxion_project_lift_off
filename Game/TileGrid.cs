@@ -6,22 +6,16 @@ using GXPEngine.Core;
 
 namespace Game {
     public class TileGrid : GameObject {
+        public int TilesVertical => Settings.World.Depth;
         public readonly int TilesHorizontal;
-        public readonly int TilesVertical;
-        private const int topOffset = 6;
-        private const int renderDistance = 10;
-        private int fuelRefillsLeft = 10;
+        private int fuelRefillsLeft = Settings.InitialFuelRefills;
         private int score;
 
-        private const float idleFuelDepletion = -333f;
-        private const float drillFuelDepletion = -1000f;
-        private const float gravityFrequency = 0.33333f;
-        private const float playerMovementThreshold = 0.33333f;
-        private float gravityTimeLeft = gravityFrequency;
+        private float gravityTimeLeft = Settings.GravityFrequency;
         private float timeSinceLastMovement;
-        private float cameraVelocity;
         private float drillTimeLeft;
         private float drillTimeOriginal;
+        private float cameraVelocity;
 
         private bool startedDrilling;
         private bool canStartDrilling;
@@ -38,11 +32,10 @@ namespace Game {
         
         public ObjectType[,] Tiles => tiles;
 
-        public TileGrid(int tilesVertical) {
+        public TileGrid() {
             TilesHorizontal = (int) (Globals.WIDTH / Globals.TILE_SIZE);
-            TilesVertical = tilesVertical;
-            tiles = new ObjectType[TilesHorizontal, topOffset + tilesVertical];
-            tilesBackground = new ObjectType[TilesHorizontal, topOffset + tilesVertical];
+            tiles = new ObjectType[TilesHorizontal, Settings.World.TopOffset + Settings.World.Depth];
+            tilesBackground = new ObjectType[TilesHorizontal, Settings.World.TopOffset + Settings.World.Depth];
 
             // GenerateWorld(out var playerSpawnLocation);
             GenerateWorldBracketed(out var playerSpawnLocation);
@@ -55,7 +48,7 @@ namespace Game {
 
             for (int x = 0; x < TilesHorizontal; x++) {
                 for (int y = 0; y < TilesVertical; y++) {
-                    int gridY = y + topOffset;
+                    int gridY = y + Settings.World.TopOffset;
                     var bitmap = Settings.Tiles.TypeToTile[tiles[x, gridY]].Texture.bitmap;
                     GraphicsUnit unit = GraphicsUnit.Pixel;
                     g.DrawImage(bitmap, new System.Drawing.Rectangle(x * 92, y * 92, (int) Globals.TILE_SIZE, (int) Globals.TILE_SIZE), bitmap.GetBounds(ref unit), GraphicsUnit.Pixel);
@@ -98,7 +91,7 @@ namespace Game {
         private void DrawHud() {
             HUD.graphics.Clear(Color.Empty);
             HUD.graphics.DrawString("SCORE: " + score, FontLoader.Instance[64f], Brushes.FloralWhite, Globals.WIDTH / 2f, 24, FontLoader.CenterAlignment);
-            HUD.graphics.DrawString($"DEPTH: {Settings.World.BlockSize * (player.y / Globals.TILE_SIZE - topOffset + 1)}m", FontLoader.Instance[32f], Brushes.AntiqueWhite, Globals.WIDTH / 2f, 64, FontLoader.CenterAlignment);
+            HUD.graphics.DrawString($"DEPTH: {Settings.World.BlockSize * (player.y / Globals.TILE_SIZE - Settings.World.TopOffset + 1)}m", FontLoader.Instance[32f], Brushes.AntiqueWhite, Globals.WIDTH / 2f, 64, FontLoader.CenterAlignment);
             HUD.graphics.DrawString("FUEL", FontLoader.Instance[64f], Brushes.FloralWhite, Globals.WIDTH - 30, Globals.HEIGHT / 2f, FontLoader.CenterVerticalAlignment);
             HUD.graphics.DrawString("FPS: " + game.currentFps, SystemFonts.StatusFont, Brushes.DarkRed, 0, 8, FontLoader.LeftAlignment);
         }
@@ -106,7 +99,7 @@ namespace Game {
         private void GenerateWorldBracketedWithWalkers2(out int playerSpawnLocation) {
             for (int x = 0; x < TilesHorizontal; x++) {
                 for (int y = 0; y < Settings.World.Depth; y++) {
-                    int gridY = y + topOffset;
+                    int gridY = y + Settings.World.TopOffset;
                     tilesBackground[x, gridY] = ObjectType.Background;
                     float spawnTypeChance = Rand.Value;
                     if (spawnTypeChance <= Settings.World.StoneChance) {
@@ -129,7 +122,7 @@ namespace Game {
                         }
 
                         var tileToSpawn = weightedRandomizer.GetValue();
-                        Walker.Start2(x, y, tileToSpawn, this, topOffset);
+                        Walker.Start2(x, y, tileToSpawn, this, Settings.World.TopOffset);
                     } else {
                         tiles[x, gridY] = ObjectType.Dirt;
                     }
@@ -137,17 +130,17 @@ namespace Game {
             }
 
             for (int x = 0; x < 4; x++) {
-                tiles[x, topOffset] = ObjectType.Stone;
+                tiles[x, Settings.World.TopOffset] = ObjectType.Stone;
             }
 
             playerSpawnLocation = Rand.Range(6, TilesHorizontal - 1);
-            tiles[playerSpawnLocation, topOffset - 1] = ObjectType.Player;
+            tiles[playerSpawnLocation, Settings.World.TopOffset - 1] = ObjectType.Player;
         }
 
         private void GenerateWorldBracketedWithWalkers(out int playerSpawnLocation) {
             for (int x = 0; x < TilesHorizontal; x++) {
                 for (int y = 0; y < Settings.World.Depth; y++) {
-                    int gridY = y + topOffset;
+                    int gridY = y + Settings.World.TopOffset;
                     tilesBackground[x, gridY] = ObjectType.Background;
                     float spawnTypeChance = Rand.Value;
                     if (spawnTypeChance <= Settings.World.StoneChance) {
@@ -167,7 +160,7 @@ namespace Game {
                         }
 
                         if (tileToSpawn != ObjectType.Dirt)
-                            Walker.Start(x, y, tileToSpawn, this, topOffset);
+                            Walker.Start(x, y, tileToSpawn, this, Settings.World.TopOffset);
                         else
                             tiles[x, gridY] = ObjectType.Dirt;
                     } else {
@@ -177,17 +170,17 @@ namespace Game {
             }
 
             for (int x = 0; x < 4; x++) {
-                tiles[x, topOffset] = ObjectType.Stone;
+                tiles[x, Settings.World.TopOffset] = ObjectType.Stone;
             }
 
             playerSpawnLocation = Rand.Range(6, TilesHorizontal - 1);
-            tiles[playerSpawnLocation, topOffset - 1] = ObjectType.Player;
+            tiles[playerSpawnLocation, Settings.World.TopOffset - 1] = ObjectType.Player;
         }
 
         private void GenerateWorldBracketed(out int playerSpawnLocation) {
             for (int x = 0; x < TilesHorizontal; x++) {
                 for (int y = 0; y < Settings.World.Depth; y++) {
-                    int gridY = y + topOffset;
+                    int gridY = y + Settings.World.TopOffset;
                     tilesBackground[x, gridY] = ObjectType.Background;
                     float spawnTypeChance = Rand.Value;
                     if (spawnTypeChance <= Settings.World.StoneChance) {
@@ -218,16 +211,16 @@ namespace Game {
             }
 
             for (int x = 0; x < 4; x++) {
-                tiles[x, topOffset] = ObjectType.Stone;
+                tiles[x, Settings.World.TopOffset] = ObjectType.Stone;
             }
 
             playerSpawnLocation = Rand.Range(6, TilesHorizontal - 1);
-            tiles[playerSpawnLocation, topOffset - 1] = ObjectType.Player;
+            tiles[playerSpawnLocation, Settings.World.TopOffset - 1] = ObjectType.Player;
         }
 
         private void GenerateWorld(out int playerSpawnLocation) {
             for (int i = 0; i < TilesHorizontal; i++) {
-                for (int j = topOffset; j < TilesVertical; j++) {
+                for (int j = Settings.World.TopOffset; j < TilesVertical; j++) {
                     tilesBackground[i, j] = ObjectType.Background;
                     int precentage = Rand.Range(0, 100);
 
@@ -246,18 +239,18 @@ namespace Game {
             }
 
             for (int x = 0; x < 4; x++) {
-                tiles[x, topOffset] = ObjectType.Stone;
+                tiles[x, Settings.World.TopOffset] = ObjectType.Stone;
             }
 
             playerSpawnLocation = Rand.Range(6, TilesHorizontal - 1);
-            tiles[playerSpawnLocation, topOffset - 1] = ObjectType.Player;
+            tiles[playerSpawnLocation, Settings.World.TopOffset - 1] = ObjectType.Player;
         }
 
         private void InitializeSceneObjects(int playerSpawnLocation) {
             drillProgressIndicator = new Sprite("data/drillIndicator2.png") {alpha = 0};
 
             player = new Transformable();
-            player.SetXY(playerSpawnLocation * Globals.TILE_SIZE, (topOffset - 1) * Globals.TILE_SIZE);
+            player.SetXY(playerSpawnLocation * Globals.TILE_SIZE, (Settings.World.TopOffset - 1) * Globals.TILE_SIZE);
 
             camera = new Camera(0, 0, Globals.WIDTH, Globals.HEIGHT) {x = (int) (Globals.WIDTH / 2f)}; // weird camera behaviour fix
 
@@ -343,11 +336,11 @@ namespace Game {
             }
 
             timeSinceLastMovement = 0f;
-            gravityTimeLeft = gravityFrequency;
+            gravityTimeLeft = Settings.GravityFrequency;
         }
 
         private void UpdateGravity(ref int playerX, ref int playerY, ref bool rangeCheck, ref Vector2Int movementDirection, ref Vector2Int desiredPosition) {
-            if (!(timeSinceLastMovement > playerMovementThreshold) || !(gravityTimeLeft <= 0))
+            if (!(timeSinceLastMovement > Settings.PlayerMovementThreshold) || !(gravityTimeLeft <= 0))
                 return;
             if (playerY + 1 < TilesVertical && tiles[playerX, playerY + 1] == ObjectType.Empty) {
                 player.Move(0, Globals.TILE_SIZE);
@@ -360,16 +353,16 @@ namespace Game {
                 rangeCheck = desiredPosition.x >= 0 && desiredPosition.x < TilesHorizontal && desiredPosition.y >= 0 && desiredPosition.y < TilesVertical;
             }
 
-            gravityTimeLeft = gravityFrequency;
+            gravityTimeLeft = Settings.GravityFrequency;
         }
 
         private void UpdateFuel(ref int playerX, ref int playerY) {
-            if (playerX == 3 && playerY == topOffset - 1 && Input.GetButton("Refuel") && fuelRefillsLeft > 0) {
+            if (playerX == 3 && playerY == Settings.World.TopOffset - 1 && Input.GetButton("Refuel") && fuelRefillsLeft > 0) {
                 fuelBar.Refuel();
                 fuelRefillsLeft--;
             }
 
-            fuelBar.ChangeFuel(idleFuelDepletion * Time.deltaTime);
+            fuelBar.ChangeFuel(Settings.IdleFuelDepletion * Time.deltaTime);
             if (fuelBar.FuelAmount <= 0) {
                 gameOver.visible = true;
             }
@@ -377,14 +370,14 @@ namespace Game {
 
         private void UpdateTimers() {
             timeSinceLastMovement += Time.deltaTime;
-            if (timeSinceLastMovement > playerMovementThreshold) {
+            if (timeSinceLastMovement > Settings.PlayerMovementThreshold) {
                 gravityTimeLeft -= Time.deltaTime;
             }
 
             if (startedDrilling) {
                 drillTimeLeft -= Time.deltaTime;
                 drillProgressIndicator.alpha = Math.Map(drillTimeLeft, drillTimeOriginal, 0f, 0f, 1f);
-                fuelBar.ChangeFuel(drillFuelDepletion * Time.deltaTime);
+                fuelBar.ChangeFuel(Settings.DrillFuelDepletion * Time.deltaTime);
             }
         }
 
@@ -392,8 +385,8 @@ namespace Game {
             glContext.SetColor(0xff, 0xff, 0xff, 0xff);
 
             var playerY = (int) (player.y / Globals.TILE_SIZE);
-            var startY = Mathf.Max(playerY - renderDistance, 0);
-            var endY = Mathf.Min(playerY + renderDistance, TilesVertical - 1);
+            var startY = Mathf.Max(playerY - Settings.RenderDistance, 0);
+            var endY = Mathf.Min(playerY + Settings.RenderDistance, TilesVertical - 1);
             for (var i = 0; i < TilesHorizontal; i++) {
                 for (var j = startY; j <= endY; j++) {
                     float[] verts = {i * Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE, i * Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE};

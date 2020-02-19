@@ -44,6 +44,7 @@
         </e>
         <e p="Settings.cs" t="Include" />
         <e p="TileGrid.cs" t="Include" />
+        <e p="TODO.md" t="Include" />
         <e p="Utils" t="Include">
           <e p="Debug.cs" t="Include" />
           <e p="ExtensionMethods.cs" t="Include" />

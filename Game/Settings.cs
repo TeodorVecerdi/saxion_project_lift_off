@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using GXPEngine.Core;
 
@@ -10,13 +9,11 @@ namespace Game {
         public float TimeToDrill;
         public float FuelAmount;
     }
-
     public class OreSpawnChance {
         public int FromY;
         public int ToY;
         public float Chance;
     }
-
     public class WalkerSettings {
         public int MaxAge;
         public float DiameterVariation;
@@ -35,6 +32,12 @@ namespace Game {
     }
 
     public static class Settings {
+        public const int RenderDistance = 10;
+        public const int InitialFuelRefills = 10;
+        public const float IdleFuelDepletion = -333f;
+        public const float DrillFuelDepletion = -1000f;
+        public const float GravityFrequency = 0.3333333F;
+        public const float PlayerMovementThreshold = 0.3333333F;
         public static class World {
             public const int TopOffset = 6;
             public const int Depth = 400;

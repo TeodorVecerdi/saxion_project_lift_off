@@ -13,7 +13,7 @@ namespace Game {
             topBackground.SetScaleXY(0.711458333f);
             fuelStation = new Sprite("data/fuel_station.png", true, false);
             fuelStation.Move(0, 2 * Globals.TILE_SIZE);
-            grid = new TileGrid(Settings.World.Depth);
+            grid = new TileGrid();
             
             AddChild(topBackground);
             AddChild(fuelStation);

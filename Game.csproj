@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="data\**" />
+    <Content Include="Game\TODO.md" />
     <Content Include="lib\**" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
