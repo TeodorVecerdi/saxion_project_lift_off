@@ -1,4 +1,3 @@
-using System;
 using System.Drawing;
 using System.Linq;
 using Game.WorldGen;
@@ -7,11 +6,11 @@ using GXPEngine.Core;
 
 namespace Game {
     public class TileGrid : GameObject {
-        private const int topOffset = 6;
-        private const int renderDistance = 10;
         public readonly int TilesHorizontal;
         public readonly int TilesVertical;
-        private int fuelRefills;
+        private const int topOffset = 6;
+        private const int renderDistance = 10;
+        private int fuelRefillsLeft = 10;
         private int score;
 
         private const float idleFuelDepletion = -333f;
@@ -34,8 +33,10 @@ namespace Game {
         private FuelBar fuelBar;
         private Canvas HUD;
         private Sprite gameOver;
-        private Vector2Int lastDrillDirection = Vector2Int.zero;
         private Sprite drillProgressIndicator;
+        private Vector2Int lastDrillDirection = Vector2Int.zero;
+        
+        public ObjectType[,] Tiles => tiles;
 
         public TileGrid(int tilesVertical) {
             TilesHorizontal = (int) (Globals.WIDTH / Globals.TILE_SIZE);
@@ -45,11 +46,6 @@ namespace Game {
 
             // GenerateWorld(out var playerSpawnLocation);
             GenerateWorldBracketed(out var playerSpawnLocation);
-            // GenerateWorldBracketedWithWalkers(out var playerSpawnLocation);
-            // GenerateWorldBracketedWithWalkers2(out var playerSpawnLocation);
-            // Bitmap worldMap = PaintWorldMap();
-            // worldMap.Save("world4.png");
-            // Environment.Exit(-1);
             InitializeSceneObjects(playerSpawnLocation);
         }
 
@@ -288,8 +284,8 @@ namespace Game {
             if (!canStartDrilling && movementDirection != Vector2Int.zero) {
                 canStartDrilling = true;
             }
-
-            var wantsToDrill = Input.GetKey(Key.SPACE) && drillDirection != Vector2Int.zero;
+            
+            var wantsToDrill = Input.GetButton("Drill") && drillDirection != Vector2Int.zero;
             var isDrillingUp = drillDirection.y == -1;
             var hasGroundUnder = playerY + 1 == TilesVertical || tiles[playerX, playerY + 1] != ObjectType.Empty;
             if (canStartDrilling && wantsToDrill && !isDrillingUp && hasGroundUnder && rangeCheck && Settings.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].Drillable) {
@@ -368,9 +364,9 @@ namespace Game {
         }
 
         private void UpdateFuel(ref int playerX, ref int playerY) {
-            if (playerX == 3 && playerY == topOffset - 1 && Input.GetKeyDown(Key.X) && fuelRefills <= 9) {
+            if (playerX == 3 && playerY == topOffset - 1 && Input.GetButton("Refuel") && fuelRefillsLeft > 0) {
                 fuelBar.Refuel();
-                fuelRefills += 1;
+                fuelRefillsLeft--;
             }
 
             fuelBar.ChangeFuel(idleFuelDepletion * Time.deltaTime);
@@ -395,11 +391,11 @@ namespace Game {
         protected override void RenderSelf(GLContext glContext) {
             glContext.SetColor(0xff, 0xff, 0xff, 0xff);
 
-            int playerY = (int) (player.y / Globals.TILE_SIZE);
-            int startY = Mathf.Max(playerY - renderDistance, 0);
-            int endY = Mathf.Min(playerY + renderDistance, TilesVertical - 1);
-            for (int i = 0; i < TilesHorizontal; i++) {
-                for (int j = startY; j <= endY; j++) {
+            var playerY = (int) (player.y / Globals.TILE_SIZE);
+            var startY = Mathf.Max(playerY - renderDistance, 0);
+            var endY = Mathf.Min(playerY + renderDistance, TilesVertical - 1);
+            for (var i = 0; i < TilesHorizontal; i++) {
+                for (var j = startY; j <= endY; j++) {
                     float[] verts = {i * Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE, i * Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE};
                     Settings.Tiles.TypeToTile[tilesBackground[i, j]].Texture.Bind();
                     glContext.DrawQuad(verts, Globals.QUAD_UV);
@@ -408,7 +404,5 @@ namespace Game {
                 }
             }
         }
-
-        public ObjectType[,] Tiles => tiles;
     }
 }

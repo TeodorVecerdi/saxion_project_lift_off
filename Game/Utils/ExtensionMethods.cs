@@ -14,6 +14,29 @@ namespace Game {
         public static ValueTuple<int, int> Unpack(this Vector2Int a) => (a.x, a.y);
         public static ValueTuple<float, float> Unpack(this Vector2 a) => (a.x, a.y);
         public static Vector2 Add(this Vector2 a, float x, float y) => new Vector2(a.x + x, a.y + y);
+        public static Vector2 Move(this Vector2 a, float x, float y) {
+            a.x += x;
+            a.y += y;
+            return a;
+        }
+
+        public static Vector2 Move(this Vector2 a, Vector2 b) {
+            a.x += b.x;
+            a.y += b.y;
+            return a;
+        }
+
         public static Vector2Int Add(this Vector2Int a, int x, int y) => new Vector2Int(a.x + x, a.y + y);
+        public static Vector2Int Move(this Vector2Int a, int x, int y) {
+            a.x += x;
+            a.y += y;
+            return a;
+        }
+
+        public static Vector2Int Move(this Vector2Int a, Vector2Int b) {
+            a.x += b.x;
+            a.y += b.y;
+            return a;
+        }
     }
 }

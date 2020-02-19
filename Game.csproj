@@ -70,7 +70,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib" />
-    <Folder Include="data" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="data\**" />

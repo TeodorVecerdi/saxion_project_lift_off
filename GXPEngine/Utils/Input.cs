@@ -9,7 +9,8 @@ namespace GXPEngine {
 	///     The Input class contains functions for reading keys and mouse
 	/// </summary>
 	public class Input {
-		private static Dictionary<string, ValueTuple<List<int>, List<int>>> Axes = new Dictionary<string, ValueTuple<List<int>, List<int>>>();
+		private static Dictionary<string, (List<int>, List<int>)> Axes = new Dictionary<string, (List<int>, List<int>)>();
+		private static Dictionary<string, (int, bool)> Buttons = new Dictionary<string, (int, bool)>();
 		/// <summary>
 		///     Gets the current mouse x position in pixels.
 		/// </summary>
@@ -113,7 +114,32 @@ namespace GXPEngine {
 			if (Axes[axisName].Item2.Any(GetKeyDown)) value += 1f;
 			return value;
 		}
+
+		public static void AddButton(string button, int key, bool isKey) {
+			Buttons.Add(button, (key, isKey));
+		}
+
+		public static bool GetButton(string button) {
+			if (!Buttons.ContainsKey(button)) {
+				throw new ArgumentException($"Button {button} is not defined.");
+			}
+			var (key, isKey) = Buttons[button];
+			return isKey ? GetKey(key) : GetMouseButton(key);
+		}
+		public static bool GetButtonDown(string button) {
+			if (!Buttons.ContainsKey(button)) {
+				throw new ArgumentException($"Button {button} is not defined.");
+			}
+			var (key, isKey) = Buttons[button];
+			return isKey ? GetKeyDown(key) : GetMouseButtonDown(key);
+		}
 		
-		
+		public static bool GetButtonUp(string button) {
+			if (!Buttons.ContainsKey(button)) {
+				throw new ArgumentException($"Button {button} is not defined.");
+			}
+			var (key, isKey) = Buttons[button];
+			return isKey ? GetKeyUp(key) : GetMouseButtonUp(key);
+		}
     }
 }
