@@ -38,6 +38,8 @@ namespace Game {
         public const float DrillFuelDepletion = -1000f;
         public const float GravityFrequency = 0.3333333F;
         public const float PlayerMovementThreshold = 0.3333333F;
+        public const float FuelBarIndicatorThresholdMinor = 0.3333333F;
+        public const float FuelBarIndicatorThresholdMajor = 0.1F;
         public static class World {
             public const int TopOffset = 6;
             public const int Depth = 400;

@@ -6,7 +6,7 @@ namespace Game.WorldGen {
         private static float alterDiameterChance = 0.85f;
         // private static float alterDirectionChance = 0.95f;
 
-        public static void Start(int x, int y, ObjectType type, TileGrid grid, int topOffset) {
+        public static void Start(int x, int y, ObjectType type, GameLoop grid, int topOffset) {
             var position = new Vector2Int(x, y);
             var diameter = Rand.Range(1, Settings.World.OreWalkerSettings[type].DiameterVariation);
             var maxAge = Settings.World.OreWalkerSettings[type].MaxAge;
@@ -26,7 +26,7 @@ namespace Game.WorldGen {
             }
         }
         
-        public static void Start2(int x, int y, ObjectType type, TileGrid grid, int topOffset) {
+        public static void Start2(int x, int y, ObjectType type, GameLoop grid, int topOffset) {
             var advanceChance = 0.65f;
             var position = new Vector2Int(x, y);
             var diameter = Rand.Range(1, Settings.World.OreWalkerSettings[type].DiameterVariation);
@@ -47,7 +47,7 @@ namespace Game.WorldGen {
             }
         }
 
-        private static void Paint(Vector2Int position, float diameter, TileGrid grid, ObjectType type, int topOffset) {
+        private static void Paint(Vector2Int position, float diameter, GameLoop grid, ObjectType type, int topOffset) {
             var realDiameter = Mathf.RoundToInt(diameter);
             for (var x = position.x - realDiameter / 2; x < position.x + realDiameter / 2; x++) {
                 for (var y = position.y - realDiameter / 2; y < position.y + realDiameter / 2; y++) {

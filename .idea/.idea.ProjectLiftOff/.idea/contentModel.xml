@@ -29,21 +29,25 @@
           <e p="fuel_low_indicator.psd" t="Include" />
           <e p="fuel_low_indicator2.psd" t="Include" />
           <e p="fuelbar_finished.psd" t="Include" />
+          <e p="visibility.psd" t="Include" />
         </e>
         <e p="sapphire.png" t="Include" />
         <e p="spaceage.ttf" t="Include" />
         <e p="stone.jpg" t="Include" />
         <e p="stone.png" t="Include" />
+        <e p="visibility.png" t="Include" />
       </e>
       <e p="Game" t="Include">
+        <e p="DrillProgressIndicator.cs" t="Include" />
         <e p="FuelBar.cs" t="Include" />
+        <e p="FuelStation.cs" t="Include" />
+        <e p="GameLoop.cs" t="Include" />
         <e p="Globals.cs" t="Include" />
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">
           <e p="AssemblyInfo.cs" t="Include" />
         </e>
         <e p="Settings.cs" t="Include" />
-        <e p="TileGrid.cs" t="Include" />
         <e p="TODO.md" t="Include" />
         <e p="Utils" t="Include">
           <e p="Debug.cs" t="Include" />
@@ -54,6 +58,7 @@
           <e p="RandomNumberGenerator.cs" t="Include" />
           <e p="XmlLoader.cs" t="Include" />
         </e>
+        <e p="VisibilitySystem.cs" t="Include" />
         <e p="World.cs" t="Include" />
         <e p="WorldGen" t="Include">
           <e p="Walker.cs" t="Include" />

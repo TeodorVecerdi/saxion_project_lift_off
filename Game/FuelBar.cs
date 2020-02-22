@@ -5,8 +5,6 @@ namespace Game {
     public class FuelBar : GameObject {
         private Texture2D border, fuel, background, fuelLowIndicator, fuelLowIndicator2bg, fuelLowIndicator2fg;
 
-        private const float indicatorThresholdPercentage = 0.33f;
-        private const float indicatorThresholdPercentage2 = 0.10f;
         private const float showIndicatorTime = 1f;
         private float showIndicatorTimeLeft = showIndicatorTime;
         private bool shouldShowIndicator1;
@@ -35,8 +33,8 @@ namespace Game {
         }
 
         private void Update() {
-            shouldShowIndicator1 = fuelAmount <= indicatorThresholdPercentage * fuelCapacity;
-            shouldShowIndicator2 = fuelAmount <= indicatorThresholdPercentage2 * fuelCapacity;
+            shouldShowIndicator1 = fuelAmount <= Settings.FuelBarIndicatorThresholdMinor * fuelCapacity;
+            shouldShowIndicator2 = fuelAmount <= Settings.FuelBarIndicatorThresholdMajor * fuelCapacity;
             if (shouldShowIndicator1) {
                 if (showIndicatorTimeLeft <= 0) {
                     showingIndicator = !showingIndicator;
