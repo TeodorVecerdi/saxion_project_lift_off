@@ -50,28 +50,32 @@ namespace Game {
             public static Dictionary<ObjectType, List<OreSpawnChance>> OreDepthSpawning = new Dictionary<ObjectType, List<OreSpawnChance>> {
                 {
                     ObjectType.Coal, new List<OreSpawnChance> {
-                        new OreSpawnChance {FromY = 0, ToY = 75, Chance = 0.2f},
-                        new OreSpawnChance {FromY = 76, ToY = 300, Chance = 0.1f},
-                        new OreSpawnChance {FromY = 301, ToY = Depth, Chance = 0.15f},
+                        new OreSpawnChance {FromY = 5, ToY = 75, Chance = 0.2f},
+                        new OreSpawnChance {FromY = 76, ToY = 150, Chance = 0.125f},
+                        new OreSpawnChance {FromY = 151, ToY = 300, Chance = 0.075f},
+                        new OreSpawnChance {FromY = 301, ToY = Depth, Chance = 0.125f}
                     }
                 }, {
                     ObjectType.Gold, new List<OreSpawnChance> {
-                        new OreSpawnChance {FromY = 0, ToY = 100, Chance = 0.05f},
-                        new OreSpawnChance {FromY = 101, ToY = 200, Chance = 0.1f},
-                        new OreSpawnChance {FromY = 201, ToY = Depth, Chance = 0.05f},
+                        new OreSpawnChance {FromY = 35, ToY = 100, Chance = 0.04f},
+                        new OreSpawnChance {FromY = 101, ToY = 150, Chance = 0.1f},
+                        new OreSpawnChance {FromY = 151, ToY = 200, Chance = 0.15f},
+                        new OreSpawnChance {FromY = 201, ToY = Depth, Chance = 0.05f}
                     }
                 }, {
                     ObjectType.Emerald, new List<OreSpawnChance> {
-                        new OreSpawnChance {FromY = 0, ToY = 75, Chance = 0.007f},
+                        new OreSpawnChance {FromY = 40, ToY = 75, Chance = 0.007f},
                         new OreSpawnChance {FromY = 76, ToY = 200, Chance = 0.05f},
                         new OreSpawnChance {FromY = 201, ToY = 300, Chance = 0.1f},
-                        new OreSpawnChance {FromY = 301, ToY = Depth, Chance = 0.08f},
+                        new OreSpawnChance {FromY = 301, ToY = Depth, Chance = 0.125f}
                     }
                 }, {
                     ObjectType.Sapphire, new List<OreSpawnChance> {
-                        new OreSpawnChance {FromY = 0, ToY = 150, Chance = 0.007f},
-                        new OreSpawnChance {FromY = 151, ToY = 300, Chance = 0.05f},
-                        new OreSpawnChance {FromY = 301, ToY = Depth, Chance = 0.1f},
+                        new OreSpawnChance {FromY = 50, ToY = 100, Chance = 0.0001f},
+                        new OreSpawnChance {FromY = 101, ToY = 150, Chance = 0.01f},
+                        new OreSpawnChance {FromY = 151, ToY = 225, Chance = 0.05f},
+                        new OreSpawnChance {FromY = 226, ToY = 300, Chance = 0.075f},
+                        new OreSpawnChance {FromY = 301, ToY = Depth, Chance = 0.09f}
                     }
                 }
             };
