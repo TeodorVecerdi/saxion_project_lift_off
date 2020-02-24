@@ -8,7 +8,8 @@ namespace Game {
     public class GameLoop : GameObject {
         public int TilesVertical => Settings.World.Depth;
         public readonly int TilesHorizontal;
-        private int score;
+        public int Score;
+        public GameOver GameOver;
 
         private float gravityTimeLeft = Settings.GravityFrequency;
         private float timeSinceLastMovement;
@@ -18,10 +19,10 @@ namespace Game {
 
         private bool startedDrilling;
         private bool canStartDrilling;
+        
 
         private ObjectType[,] tiles;
         private ObjectType[,] tilesBackground;
-        private Sprite gameOver;
         private Canvas HUD;
         private Camera camera;
         private Transformable player;
@@ -30,19 +31,24 @@ namespace Game {
         private VisibilitySystem visibility;
         private DrillProgressIndicator drillProgressIndicator;
         private Vector2Int lastDrillDirection = Vector2Int.zero;
+        private World world;
 
         public ObjectType[,] Tiles => tiles;
 
-        public GameLoop() {
+        public GameLoop(World world) {
+           this.world = world;
             TilesHorizontal = (int) (Globals.WIDTH / Globals.TILE_SIZE);
             tiles = new ObjectType[TilesHorizontal, Settings.World.TopOffset + Settings.World.Depth];
             tilesBackground = new ObjectType[TilesHorizontal, Settings.World.TopOffset + Settings.World.Depth];
             GenerateWorldBracketed(out var playerSpawnLocation);
             InitializeSceneObjects(playerSpawnLocation);
+            
         }
 
         private void Update() {
+            if (GameOver.gameOver) return;
             DrawHud();
+            
             var (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
             var movementDirection = new Vector2Int((int) Input.GetAxisDown("Horizontal"), (int) Input.GetAxisDown("Vertical"));
             var drillDirection = new Vector2Int((int) Input.GetAxis("Horizontal"), (int) Input.GetAxis("Vertical"));
@@ -73,7 +79,7 @@ namespace Game {
 
         private void DrawHud() {
             HUD.graphics.Clear(Color.Empty);
-            HUD.graphics.DrawString("SCORE: " + score, FontLoader.Instance[64f], Brushes.FloralWhite, Globals.WIDTH / 2f, 24, FontLoader.CenterAlignment);
+            HUD.graphics.DrawString("SCORE: " + Score, FontLoader.Instance[64f], Brushes.FloralWhite, Globals.WIDTH / 2f, 24, FontLoader.CenterAlignment);
             HUD.graphics.DrawString($"DEPTH: {Settings.World.BlockSize * (player.y / Globals.TILE_SIZE - Settings.World.TopOffset + 1)}m", FontLoader.Instance[32f], Brushes.AntiqueWhite, Globals.WIDTH / 2f, 64, FontLoader.CenterAlignment);
             HUD.graphics.DrawString("FUEL", FontLoader.Instance[64f], Brushes.FloralWhite, Globals.WIDTH - 30, Globals.HEIGHT / 2f, FontLoader.CenterVerticalAlignment);
             HUD.graphics.DrawString("FPS: " + game.currentFps, SystemFonts.StatusFont, Brushes.DarkRed, 0, 8, FontLoader.LeftAlignment);
@@ -85,6 +91,9 @@ namespace Game {
             fuelStation.Move(0, 2 * Globals.TILE_SIZE);
 
             player = new Transformable();
+            GameOver = new GameOver(this);
+            GameOver.Move(0, -Globals.HEIGHT / 2f);
+            GameOver.Move(-Globals.WIDTH / 2f, 0f); // weird camera behaviour fix
             player.SetXY(playerSpawnLocation * Globals.TILE_SIZE, (Settings.World.TopOffset - 1) * Globals.TILE_SIZE);
 
             camera = new Camera(0, 0, Globals.WIDTH, Globals.HEIGHT) {x = (int) (Globals.WIDTH / 2f)}; // weird camera behaviour fix
@@ -95,22 +104,22 @@ namespace Game {
             HUD.Move(0, -Globals.HEIGHT / 2f);
             HUD.Move(-Globals.WIDTH / 2f, 0f); // weird camera behaviour fix
 
-            gameOver = new Sprite("data/gameover.png", true, false);
-            gameOver.SetScaleXY(2.732f, 2.85f);
-            gameOver.visible = false;
-            gameOver.Move(0, -Globals.HEIGHT / 2f);
-            gameOver.Move(-Globals.WIDTH / 2f, 0f); // weird camera behaviour fix
+           
+           
             
             visibility = new VisibilitySystem(player);
 
             camera.AddChild(fuelBar);
-            camera.LateAddChild(gameOver);
-            camera.LateAddChild(HUD);
             
+            //camera.LateAddChild(game.game);
+            camera.LateAddChild(HUD);
+            camera.LateAddChild(GameOver);
+
             AddChild(fuelStation);
             AddChild(visibility);
             AddChild(drillProgressIndicator);
             AddChild(camera);
+            
         }
 
         private void UpdateDrilling(ref int playerX, ref int playerY, ref bool rangeCheck, ref bool movedThisFrame, ref Vector2Int movementDirection, ref Vector2Int desiredPosition, ref Vector2Int drillDirection, ref Vector2Int desiredDrillDirection) {
@@ -139,7 +148,7 @@ namespace Game {
 
             // BREAK TILE IF TIME IS DONE
             if (startedDrilling && drillTimeLeft <= 0) {
-                score += Settings.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].ScoreAmount;
+                Score += Settings.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].ScoreAmount;
                 fuelBar.FuelAmount += Settings.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].FuelAmount;
                 player.Move(drillDirection.ToWorld().ToVec2());
                 tiles[playerX, playerY] = ObjectType.Empty;
@@ -204,7 +213,7 @@ namespace Game {
 
             fuelBar.ChangeFuel(Settings.IdleFuelDepletion * Time.deltaTime);
             if (fuelBar.FuelAmount <= 0) {
-                gameOver.visible = true;
+                GameOver.gameOver = true;
             }
         }
 
@@ -238,7 +247,7 @@ namespace Game {
 
         protected override void RenderSelf(GLContext glContext) {
             glContext.SetColor(0xff, 0xff, 0xff, 0xff);
-            fuelStation.Draw(glContext);
+           fuelStation.Draw(glContext);
             DrawTileGrid(glContext);
             drillProgressIndicator.Draw(glContext);
             visibility.Draw(glContext);
@@ -281,7 +290,7 @@ namespace Game {
                                     break;
                                 }
                             */
-                            } catch (System.InvalidOperationException e) {
+                            } catch (System.InvalidOperationException) {
                                 Debug.LogError($"Could not find matching element for ore type: {oreType} at y-depth: {y}");
                             }
                         }
@@ -319,7 +328,7 @@ namespace Game {
                                     tileToSpawn = oreType;
                                     break;
                                 }
-                            } catch (System.InvalidOperationException e) {
+                            } catch (System.InvalidOperationException) {
                                 Debug.LogError($"Could not find matching element for ore type: {oreType} at y-depth: {y}");
                             }
                         }
