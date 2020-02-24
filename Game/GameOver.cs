@@ -15,7 +15,7 @@ namespace Game {
 
         void Update() {
             graphics.Clear(Color.Blue);
-            graphics.DrawString("Score:" + score, FontLoader.Instance[128f], Brushes.White, 0, Globals.HEIGHT / 2f);
+            graphics.DrawString("Score\n" + score, FontLoader.Instance[128f], Brushes.White, Globals.WIDTH/2f, Globals.HEIGHT / 2f, FontLoader.CenterAlignment);
         }
     }
 }

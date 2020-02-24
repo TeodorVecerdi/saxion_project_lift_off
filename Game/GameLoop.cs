@@ -6,7 +6,7 @@ using GXPEngine.Core;
 
 namespace Game {
     public class GameLoop : GameObject {
-        public int TilesVertical => Settings.World.Depth;
+        public int TilesVertical => Settings.World.Depth + Settings.World.TopOffset;
         public readonly int TilesHorizontal;
         public int Score;
 
