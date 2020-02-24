@@ -42,7 +42,7 @@ namespace Game {
         public const float FuelBarIndicatorThresholdMajor = 0.1F;
         public static class World {
             public const int TopOffset = 6;
-            public const int Depth = 20;
+            public const int Depth = 400;
             public static float BlockSize = 10f; // 10 meters
             public static float OreChance = 0.1f;
             public static float StoneChance = 0.1f;
@@ -89,14 +89,14 @@ namespace Game {
 
         public static class Tiles {
             public static TileDefinition Empty = new TileDefinition {Texture = Texture2D.GetInstance("data/empty.png")};
-            public static TileDefinition Dirt = new TileDefinition {Drillable = true, TimeToDrill = 0.1f, Texture = Texture2D.GetInstance("data/dirt.png")};
-            public static TileDefinition Stone = new TileDefinition {Texture = Texture2D.GetInstance("data/stone.png")};
+            public static TileDefinition Dirt = new TileDefinition {Drillable = true, TimeToDrill = 0.1f, Texture = Texture2D.GetInstance("data/newDirt2.png")};
+            public static TileDefinition Stone = new TileDefinition {Texture = Texture2D.GetInstance("data/newStone.png")};
             public static TileDefinition Player = new TileDefinition {Texture = Texture2D.GetInstance("data/motherload_drill.png")};
-            public static TileDefinition Background = new TileDefinition {Texture = Texture2D.GetInstance("data/background.png")};
-            public static TileDefinition Coal = new TileDefinition {FuelAmount = 400f, Drillable = true, ScoreAmount = 25, TimeToDrill = 0.25f, Texture = Texture2D.GetInstance("data/coal.png")};
-            public static TileDefinition Gold = new TileDefinition {Drillable = true, ScoreAmount = 50, TimeToDrill = 0.5f, Texture = Texture2D.GetInstance("data/gold.png")};
-            public static TileDefinition Emerald = new TileDefinition {Drillable = true, ScoreAmount = 75, TimeToDrill = 0.75f, Texture = Texture2D.GetInstance("data/emerald.png")};
-            public static TileDefinition Sapphire = new TileDefinition {Drillable = true, ScoreAmount = 100, TimeToDrill = 1f, Texture = Texture2D.GetInstance("data/sapphire.png")};
+            public static TileDefinition Background = new TileDefinition {Texture = Texture2D.GetInstance("data/newBackground.png")};
+            public static TileDefinition Coal = new TileDefinition {FuelAmount = 400f, Drillable = true, ScoreAmount = 25, TimeToDrill = 0.25f, Texture = Texture2D.GetInstance("data/mineral4.png")};
+            public static TileDefinition Gold = new TileDefinition {Drillable = true, ScoreAmount = 50, TimeToDrill = 0.5f, Texture = Texture2D.GetInstance("data/mineral1.png")};
+            public static TileDefinition Emerald = new TileDefinition {Drillable = true, ScoreAmount = 75, TimeToDrill = 0.75f, Texture = Texture2D.GetInstance("data/mineral3.png")};
+            public static TileDefinition Sapphire = new TileDefinition {Drillable = true, ScoreAmount = 100, TimeToDrill = 1f, Texture = Texture2D.GetInstance("data/mineral2.png")};
 
             public static Dictionary<ObjectType, TileDefinition> TypeToTile = new Dictionary<ObjectType, TileDefinition> {
                 {ObjectType.Empty, Empty},

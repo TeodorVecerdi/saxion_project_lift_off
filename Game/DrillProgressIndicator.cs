@@ -11,7 +11,7 @@ namespace Game {
         }
 
         public DrillProgressIndicator() {
-            drillProgressIndicatorTexture = Texture2D.GetInstance("data/drillIndicator2.png", true);
+            drillProgressIndicatorTexture = Texture2D.GetInstance("data/newBackground.png", true);
         }
 
         public void Draw(GLContext glContext) {

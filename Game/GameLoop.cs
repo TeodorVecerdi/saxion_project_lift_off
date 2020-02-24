@@ -6,7 +6,7 @@ using GXPEngine.Core;
 
 namespace Game {
     public class GameLoop : GameObject {
-        public int TilesVertical => Settings.World.Depth;
+        public int TilesVertical => Settings.World.Depth + Settings.World.TopOffset;
         public readonly int TilesHorizontal;
         public int Score;
 
@@ -71,9 +71,7 @@ namespace Game {
             UpdateGravity(ref playerX, ref playerY, ref rangeCheck, ref movementDirection, ref desiredPosition);
             UpdateFuel(ref playerX, ref playerY);
             UpdateTimers();
-
-            // Update Camera
-            camera.y = Mathf.SmoothDamp(camera.y, player.y, ref cameraVelocity, 0.3f);
+            UpdateCamera();
         }
 
         private void DrawHud() {
@@ -101,7 +99,7 @@ namespace Game {
             HUD.Move(-Globals.WIDTH / 2f, 0f); // weird camera behaviour fix
 
             visibility = new VisibilitySystem(player);
-            topBackground = Texture2D.GetInstance("data/background_test.jpg", true);
+            topBackground = Texture2D.GetInstance("data/background_above_ground_2ver3.png", true);
             
             /*topBackground = new Sprite("data/background_test.jpg", true, false);
             topBackground.Move(0, -2*Globals.TILE_SIZE);
@@ -225,6 +223,11 @@ namespace Game {
             }
         }
 
+        private void UpdateCamera() {
+            camera.y = Mathf.SmoothDamp(camera.y, player.y, ref cameraVelocity, 0.3f);
+            camera.y = Mathf.Clamp(camera.y, Globals.HEIGHT/2f - Globals.TILE_SIZE*2, (Settings.World.Depth + Settings.World.TopOffset) * Globals.TILE_SIZE - Globals.HEIGHT/2f);
+        }
+
         public void DrawTileGrid(GLContext glContext) {
             var playerY = (int) (player.y / Globals.TILE_SIZE);
             var startY = Mathf.Max(playerY - Settings.RenderDistance, 0);
@@ -243,7 +246,7 @@ namespace Game {
         protected override void RenderSelf(GLContext glContext) {
             glContext.SetColor(0xff, 0xff, 0xff, 0xff);
             topBackground.Bind();
-            glContext.DrawQuad(topBackground.TextureVertices(0.711458333f, offset: new Vector2(0, -2*Globals.TILE_SIZE)), Globals.QUAD_UV);
+            glContext.DrawQuad(topBackground.TextureVertices(1, offset: new Vector2(0, -2*Globals.TILE_SIZE)), Globals.QUAD_UV);
             fuelStation.Draw(glContext);
             DrawTileGrid(glContext);
             drillProgressIndicator.Draw(glContext);
