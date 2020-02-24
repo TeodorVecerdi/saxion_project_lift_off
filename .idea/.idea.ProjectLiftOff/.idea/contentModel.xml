@@ -33,21 +33,33 @@
         </e>
         <e p="sapphire.png" t="Include" />
         <e p="spaceage.ttf" t="Include" />
+        <e p="start_menu" t="Include">
+          <e p="creditsButton.png" t="Include" />
+          <e p="creditsButtonSelected.png" t="Include" />
+          <e p="playButton.png" t="Include" />
+          <e p="playButtonSelected.png" t="Include" />
+          <e p="quitButton.png" t="Include" />
+          <e p="quitButtonSelected.png" t="Include" />
+          <e p="startMenuBackground.png" t="Include" />
+        </e>
         <e p="stone.jpg" t="Include" />
         <e p="stone.png" t="Include" />
         <e p="visibility.png" t="Include" />
       </e>
       <e p="Game" t="Include">
+        <e p="Button.cs" t="Include" />
         <e p="DrillProgressIndicator.cs" t="Include" />
         <e p="FuelBar.cs" t="Include" />
         <e p="FuelStation.cs" t="Include" />
         <e p="GameLoop.cs" t="Include" />
+        <e p="GameManager.cs" t="Include" />
         <e p="Globals.cs" t="Include" />
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">
           <e p="AssemblyInfo.cs" t="Include" />
         </e>
         <e p="Settings.cs" t="Include" />
+        <e p="StartMenu.cs" t="Include" />
         <e p="TODO.md" t="Include" />
         <e p="Utils" t="Include">
           <e p="Debug.cs" t="Include" />
@@ -59,7 +71,6 @@
           <e p="XmlLoader.cs" t="Include" />
         </e>
         <e p="VisibilitySystem.cs" t="Include" />
-        <e p="World.cs" t="Include" />
         <e p="WorldGen" t="Include">
           <e p="Walker.cs" t="Include" />
           <e p="WeightedRandomizer.cs" t="Include" />

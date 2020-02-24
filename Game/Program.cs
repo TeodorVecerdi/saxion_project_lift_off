@@ -18,7 +18,7 @@ namespace Game {
             Input.AddAxis("Horizontal", new List<int> {Key.A, Key.LEFT}, new List<int> {Key.D, Key.RIGHT});
             Input.AddAxis("Vertical", new List<int> {Key.W, Key.UP}, new List<int> {Key.S, Key.DOWN});
             
-            var world = new World();
+            var world = new GameManager();
             AddChild(world);
         }
 

@@ -16,7 +16,7 @@ namespace Game {
             else if(Input.GetKey(Key.TWO)) SetScaleXY(1.5f);
             else if(Input.GetKey(Key.THREE)) SetScaleXY(1.75f);
             else if(Input.GetKey(Key.FOUR)) SetScaleXY(2f);
-            else SetScaleXY(1f);
+            else SetScaleXY(5f);
         }
 
         public void Draw(GLContext glContext) {

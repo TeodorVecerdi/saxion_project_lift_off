@@ -42,7 +42,7 @@ namespace Game {
         public const float FuelBarIndicatorThresholdMajor = 0.1F;
         public static class World {
             public const int TopOffset = 6;
-            public const int Depth = 400;
+            public const int Depth = 20;
             public static float BlockSize = 10f; // 10 meters
             public static float OreChance = 0.1f;
             public static float StoneChance = 0.1f;

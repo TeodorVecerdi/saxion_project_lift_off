@@ -75,8 +75,7 @@ namespace Game {
                 fuelLowIndicator2fg.Bind();
                 glContext.DrawQuad(fuelLowVerts, Globals.QUAD_UV);
             } else {
-                if (!showingIndicator)
-                    return;
+                if (!shouldShowIndicator1 || !showingIndicator) return;
                 float[] fuelLowVerts = {
                     1366f - 78f - 260f - 5f, 768f - 91f - 5f - 384f,
                     1366f - 78f - 5f, 768f - 91f - 5f - 384f,

@@ -21,7 +21,7 @@ namespace Game {
 
         private ObjectType[,] tiles;
         private ObjectType[,] tilesBackground;
-        private Sprite gameOver;
+        private Texture2D topBackground;
         private Canvas HUD;
         private Camera camera;
         private Transformable player;
@@ -95,18 +95,15 @@ namespace Game {
             HUD.Move(0, -Globals.HEIGHT / 2f);
             HUD.Move(-Globals.WIDTH / 2f, 0f); // weird camera behaviour fix
 
-            gameOver = new Sprite("data/gameover.png", true, false);
-            gameOver.SetScaleXY(2.732f, 2.85f);
-            gameOver.visible = false;
-            gameOver.Move(0, -Globals.HEIGHT / 2f);
-            gameOver.Move(-Globals.WIDTH / 2f, 0f); // weird camera behaviour fix
-            
             visibility = new VisibilitySystem(player);
+            topBackground = Texture2D.GetInstance("data/background_test.jpg", true);
+            
+            /*topBackground = new Sprite("data/background_test.jpg", true, false);
+            topBackground.Move(0, -2*Globals.TILE_SIZE);
+            topBackground.SetScaleXY(0.711458333f);*/
 
             camera.AddChild(fuelBar);
-            camera.LateAddChild(gameOver);
             camera.LateAddChild(HUD);
-            
             AddChild(fuelStation);
             AddChild(visibility);
             AddChild(drillProgressIndicator);
@@ -203,9 +200,6 @@ namespace Game {
             }
 
             fuelBar.ChangeFuel(Settings.IdleFuelDepletion * Time.deltaTime);
-            if (fuelBar.FuelAmount <= 0) {
-                gameOver.visible = true;
-            }
         }
 
         private void UpdateTimers() {
@@ -238,6 +232,8 @@ namespace Game {
 
         protected override void RenderSelf(GLContext glContext) {
             glContext.SetColor(0xff, 0xff, 0xff, 0xff);
+            topBackground.Bind();
+            glContext.DrawQuad(topBackground.TextureVertices(0.711458333f, offset: new Vector2(0, -2*Globals.TILE_SIZE)), Globals.QUAD_UV);
             fuelStation.Draw(glContext);
             DrawTileGrid(glContext);
             drillProgressIndicator.Draw(glContext);
