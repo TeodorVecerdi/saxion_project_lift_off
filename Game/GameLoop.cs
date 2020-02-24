@@ -366,14 +366,8 @@ namespace Game {
                                 var oreBracket = Settings.World.OreDepthSpawning[oreType].First(value => y.BetweenInclusive(value.FromY, value.ToY));
                                 if(oreBracket != null)
                                     weightedRandomizer.AddChance(oreType, oreBracket.Chance);
-                                /*
-                                if (Rand.Value <= oreBracket.Chance) {
-                                    tileToSpawn = oreType;
-                                    break;
-                                }
-                            */
                             } catch (System.InvalidOperationException) {
-                                Debug.LogError($"Could not find matching element for ore type: {oreType} at y-depth: {y}");
+                                // Debug.LogError($"Could not find matching element for ore type: {oreType} at y-depth: {y}");
                             }
                         }
 
