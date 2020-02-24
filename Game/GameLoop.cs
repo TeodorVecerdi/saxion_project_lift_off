@@ -9,7 +9,6 @@ namespace Game {
         public int TilesVertical => Settings.World.Depth;
         public readonly int TilesHorizontal;
         public int Score;
-        public GameOver GameOver;
 
         private float gravityTimeLeft = Settings.GravityFrequency;
         private float timeSinceLastMovement;
@@ -32,12 +31,12 @@ namespace Game {
         private VisibilitySystem visibility;
         private DrillProgressIndicator drillProgressIndicator;
         private Vector2Int lastDrillDirection = Vector2Int.zero;
-        private World world;
+        private GameManager gameManager;
 
         public ObjectType[,] Tiles => tiles;
 
-        public GameLoop(World world) {
-           this.world = world;
+        public GameLoop(GameManager gameManager) {
+           this.gameManager = gameManager;
             TilesHorizontal = (int) (Globals.WIDTH / Globals.TILE_SIZE);
             tiles = new ObjectType[TilesHorizontal, Settings.World.TopOffset + Settings.World.Depth];
             tilesBackground = new ObjectType[TilesHorizontal, Settings.World.TopOffset + Settings.World.Depth];
@@ -47,7 +46,6 @@ namespace Game {
         }
 
         private void Update() {
-            if (GameOver.gameOver) return;
             DrawHud();
             
             var (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
@@ -92,9 +90,6 @@ namespace Game {
             fuelStation.Move(0, 2 * Globals.TILE_SIZE);
 
             player = new Transformable();
-            GameOver = new GameOver(this);
-            GameOver.Move(0, -Globals.HEIGHT / 2f);
-            GameOver.Move(-Globals.WIDTH / 2f, 0f); // weird camera behaviour fix
             player.SetXY(playerSpawnLocation * Globals.TILE_SIZE, (Settings.World.TopOffset - 1) * Globals.TILE_SIZE);
 
             camera = new Camera(0, 0, Globals.WIDTH, Globals.HEIGHT) {x = (int) (Globals.WIDTH / 2f)}; // weird camera behaviour fix
@@ -105,12 +100,6 @@ namespace Game {
             HUD.Move(0, -Globals.HEIGHT / 2f);
             HUD.Move(-Globals.WIDTH / 2f, 0f); // weird camera behaviour fix
 
-            gameOver = new Sprite("data/gameover.png", true, false);
-            gameOver.SetScaleXY(2.732f, 2.85f);
-            gameOver.visible = false;
-            gameOver.Move(0, -Globals.HEIGHT / 2f);
-            gameOver.Move(-Globals.WIDTH / 2f, 0f); // weird camera behaviour fix
-            
             visibility = new VisibilitySystem(player);
             topBackground = Texture2D.GetInstance("data/background_test.jpg", true);
             
@@ -119,9 +108,7 @@ namespace Game {
             topBackground.SetScaleXY(0.711458333f);*/
 
             camera.AddChild(fuelBar);
-            camera.LateAddChild(gameOver);
             camera.LateAddChild(HUD);
-            camera.LateAddChild(GameOver);
 
             AddChild(fuelStation);
             AddChild(visibility);
@@ -221,7 +208,7 @@ namespace Game {
 
             fuelBar.ChangeFuel(Settings.IdleFuelDepletion * Time.deltaTime);
             if (fuelBar.FuelAmount <= 0) {
-                GameOver.gameOver = true;
+                gameManager.ShouldStopPlaying = true;
             }
         }
 

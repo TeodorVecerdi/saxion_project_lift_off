@@ -3,10 +3,11 @@ using GXPEngine.Core;
 
 namespace Game {
     public class GameManager : GameObject {
-        public bool ShouldStartPlaying = false;
-        public bool ShouldStopPlaying = false;
+        public bool ShouldStartPlaying;
+        public bool ShouldStopPlaying;
         private GameLoop grid;
         private StartMenu menu;
+        private GameOver gameOver;
 
         public GameManager() {
             menu = new StartMenu(this);
@@ -17,8 +18,15 @@ namespace Game {
             if (ShouldStartPlaying) {
                 ShouldStartPlaying = false;
                 menu.Destroy();
-                grid = new GameLoop();
+                grid = new GameLoop(this);
                 LateAddChild(grid);
+            }
+
+            if (ShouldStopPlaying) {
+                ShouldStopPlaying = false;
+                gameOver = new GameOver(grid.Score);
+                grid.Destroy();
+                LateAddChild(gameOver);
             }
         }
     }
