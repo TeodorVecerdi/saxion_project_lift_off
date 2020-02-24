@@ -11,7 +11,7 @@ namespace Game {
         private bool shouldShowIndicator2;
         private bool showingIndicator;
 
-        private float fuelAmount = 100000f;
+        private float fuelAmount = 10f;
         private float fuelCapacity = 100000f;
 
         public FuelBar() {

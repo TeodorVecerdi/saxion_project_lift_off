@@ -46,6 +46,7 @@
     <Compile Include="Game\DrillProgressIndicator.cs" />
     <Compile Include="Game\FuelBar.cs" />
     <Compile Include="Game\FuelStation.cs" />
+    <Compile Include="Game\GameOver.cs" />
     <Compile Include="Game\Globals.cs" />
     <Compile Include="Game\GameLoop.cs" />
     <Compile Include="Game\Settings.cs" />
@@ -73,9 +74,7 @@
       <Name>GXPEngine</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="lib" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="data\**" />
     <Content Include="Game\TODO.md" />
