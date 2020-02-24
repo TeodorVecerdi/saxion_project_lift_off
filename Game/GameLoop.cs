@@ -361,7 +361,8 @@ namespace Game {
                         foreach (var oreType in Settings.World.Ores) {
                             try {
                                 var oreBracket = Settings.World.OreDepthSpawning[oreType].First(value => y.BetweenInclusive(value.FromY, value.ToY));
-                                weightedRandomizer.AddChance(oreType, oreBracket.Chance);
+                                if(oreBracket != null)
+                                    weightedRandomizer.AddChance(oreType, oreBracket.Chance);
                                 /*
                                 if (Rand.Value <= oreBracket.Chance) {
                                     tileToSpawn = oreType;

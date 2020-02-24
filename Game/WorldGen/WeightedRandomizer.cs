@@ -24,7 +24,8 @@ namespace Game.WorldGen {
             Normalize();
             Adjust();
             var chance = Rand.Value;
-            var foundChance = adjustedChances.First(adjustedChance => chance < adjustedChance.Chance);
+            var foundChance = adjustedChances.FirstOrDefault(adjustedChance => chance < adjustedChance.Chance);
+            if (foundChance == null) return ObjectType.Dirt;
             return foundChance.Type;
         }
 
