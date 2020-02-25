@@ -35,6 +35,8 @@ namespace Game {
         private Vector2Int lastDrillDirection = Vector2Int.zero;
         private GameManager gameManager;
 
+        private Sound ambientSound;
+
         public ObjectType[,] Tiles => tiles;
 
         public GameLoop(GameManager gameManager) {
@@ -42,9 +44,12 @@ namespace Game {
             TilesHorizontal = (int) (Globals.WIDTH / Globals.TILE_SIZE);
             tiles = new ObjectType[TilesHorizontal, Settings.World.TopOffset + Settings.World.Depth];
             tilesBackground = new ObjectType[TilesHorizontal, Settings.World.TopOffset + Settings.World.Depth];
+            
+            ambientSound = new Sound("data/sounds/ambient_v1.wav", true);
+            var channel = ambientSound.Play();
+
             GenerateWorldBracketed(out var playerSpawnLocation);
             InitializeSceneObjects(playerSpawnLocation);
-            
         }
 
         private void Update() {
