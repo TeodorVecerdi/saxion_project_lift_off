@@ -12,11 +12,12 @@ namespace Game {
 
         private void Update() {
             SetXY(playerReference.x, playerReference.y);
-            if(Input.GetKey(Key.ONE)) SetScaleXY(1.25f);
+            if(Input.GetKey(Key.ONE)) SetScaleXY(1f);
             else if(Input.GetKey(Key.TWO)) SetScaleXY(1.5f);
-            else if(Input.GetKey(Key.THREE)) SetScaleXY(1.75f);
-            else if(Input.GetKey(Key.FOUR)) SetScaleXY(2f);
-            else SetScaleXY(5f);
+            else if(Input.GetKey(Key.THREE)) SetScaleXY(2f);
+            else if(Input.GetKey(Key.FOUR)) SetScaleXY(2.5f);
+            else if (Input.GetKey(Key.FIVE)) SetScaleXY(10f);
+            //else SetScaleXY(2f);
         }
 
         public void Draw(GLContext glContext) {
