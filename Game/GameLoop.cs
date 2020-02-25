@@ -14,6 +14,7 @@ namespace Game {
         private float timeSinceLastMovement;
         private float drillTimeLeft;
         private float drillTimeOriginal;
+        private float drillSpeed = 1f;
         private float cameraVelocity;
 
         private bool startedDrilling;
@@ -125,7 +126,7 @@ namespace Game {
             var hasGroundUnder = playerY + 1 == TilesVertical || tiles[playerX, playerY + 1] != ObjectType.Empty;
             if (canStartDrilling && wantsToDrill && !isDrillingUp && hasGroundUnder && rangeCheck && Settings.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].Drillable) {
                 if (lastDrillDirection != drillDirection || !startedDrilling) {
-                    drillTimeOriginal = Settings.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].TimeToDrill;
+                    drillTimeOriginal = drillSpeed * Settings.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].TimeToDrill;
                     drillTimeLeft = drillTimeOriginal;
                 }
 
@@ -352,13 +353,21 @@ namespace Game {
         }
 
         private void GenerateWorldBracketed(out int playerSpawnLocation) {
-            for (int x = 0; x < TilesHorizontal; x++) {
-                for (int y = 0; y < Settings.World.Depth; y++) {
+            for (var x = 0; x < TilesHorizontal; x++) {
+                for (var y = 0; y < Settings.World.Depth; y++) {
                     int gridY = y + Settings.World.TopOffset;
+                    int hardness;
+                    if (y > Settings.World.HardDirtStartDepth) {
+                        hardness = 2;
+                    } else if (y > Settings.World. MediumDirtStartDepth) {
+                        hardness = 1;
+                    } else  {
+                        hardness = 0;
+                    }
                     tilesBackground[x, gridY] = ObjectType.Background;
                     float spawnTypeChance = Rand.Value;
                     if (spawnTypeChance <= Settings.World.StoneChance) {
-                        tiles[x, gridY] = ObjectType.Stone;
+                        tiles[x, gridY] = Settings.Tiles.TileToHardness[ObjectType.Stone][hardness];
                     } else if (spawnTypeChance <= Settings.World.StoneChance + Settings.World.OreChance) {
                         var weightedRandomizer = new WeightedRandomizer();
                         foreach (var oreType in Settings.World.Ores) {
@@ -370,16 +379,15 @@ namespace Game {
                                 // Debug.LogError($"Could not find matching element for ore type: {oreType} at y-depth: {y}");
                             }
                         }
-
                         var tileToSpawn = weightedRandomizer.GetValue();
-                        tiles[x, gridY] = tileToSpawn;
+                        tiles[x, gridY] = Settings.Tiles.TileToHardness[tileToSpawn][hardness];
                     } else {
-                        tiles[x, gridY] = ObjectType.Dirt;
+                        tiles[x, gridY] = Settings.Tiles.TileToHardness[ObjectType.Dirt][hardness];
                     }
                 }
             }
-
-            for (int x = 0; x < 4; x++) {
+            
+            for (var x = 0; x < 4; x++) {
                 tiles[x, Settings.World.TopOffset] = ObjectType.Stone;
             }
 
