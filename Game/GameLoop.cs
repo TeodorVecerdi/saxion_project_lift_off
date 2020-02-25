@@ -18,6 +18,7 @@ namespace Game {
 
         private bool startedDrilling;
         private bool canStartDrilling;
+        private bool DrillPressed;
         
 
         private ObjectType[,] tiles;
@@ -119,8 +120,14 @@ namespace Game {
             if (!canStartDrilling && movementDirection != Vector2Int.zero) {
                 canStartDrilling = true;
             }
-
-            var wantsToDrill = Input.GetButton("Drill") && drillDirection != Vector2Int.zero;
+            if (Input.GetButtonDown("Drill"))
+            {
+                if(DrillPressed==false)
+                    DrillPressed = true;
+                else 
+                    DrillPressed = false;
+            }
+            var wantsToDrill = DrillPressed && drillDirection != Vector2Int.zero;
             var isDrillingUp = drillDirection.y == -1;
             var hasGroundUnder = playerY + 1 == TilesVertical || tiles[playerX, playerY + 1] != ObjectType.Empty;
             if (canStartDrilling && wantsToDrill && !isDrillingUp && hasGroundUnder && rangeCheck && Settings.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].Drillable) {
