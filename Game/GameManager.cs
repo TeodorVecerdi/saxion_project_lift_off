@@ -3,21 +3,30 @@ using GXPEngine.Core;
 
 namespace Game {
     public class GameManager : GameObject {
+        public bool ShouldShowTutorial;
         public bool ShouldStartPlaying;
         public bool ShouldStopPlaying;
         private GameLoop grid;
-        private StartMenu menu;
+        private StartMenu startMenu;
+        private TutorialMenu tutorialMenu;
         private GameOver gameOver;
 
         public GameManager() {
-            menu = new StartMenu(this);
-            AddChild(menu);
+            startMenu = new StartMenu(this);
+            AddChild(startMenu);
         }
 
         private void Update() {
+            if (ShouldShowTutorial) {
+                ShouldShowTutorial = false;
+                startMenu.Destroy();
+                tutorialMenu = new TutorialMenu(this);
+                LateAddChild(tutorialMenu);
+            }
+            
             if (ShouldStartPlaying) {
                 ShouldStartPlaying = false;
-                menu.Destroy();
+                tutorialMenu.Destroy();
                 grid = new GameLoop(this);
                 LateAddChild(grid);
             }

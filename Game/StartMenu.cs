@@ -14,7 +14,7 @@ namespace Game {
             buttons = new List<Button> {
                 new Button(new Vector2(Globals.WIDTH / 2f, 100), "data/start_menu/playButton.png", "data/start_menu/playButtonSelected.png", () => {
                     Debug.Log("Play Button Clicked");
-                    gameManager.ShouldStartPlaying = true;
+                    gameManager.ShouldShowTutorial = true;
                 }),
                 new Button(new Vector2(Globals.WIDTH / 2f, 300), "data/start_menu/quitButton.png", "data/start_menu/quitButtonSelected.png", () => {
                     Debug.Log("Quit Button Clicked");

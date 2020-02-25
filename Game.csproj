@@ -51,6 +51,7 @@
     <Compile Include="Game\GameLoop.cs" />
     <Compile Include="Game\Settings.cs" />
     <Compile Include="Game\StartMenu.cs" />
+    <Compile Include="Game\TutorialMenu.cs" />
     <Compile Include="Game\Utils\Debug.cs" />
     <Compile Include="Game\Utils\ExtensionMethods.cs" />
     <Compile Include="Game\Utils\FontLoader.cs" />
