@@ -74,7 +74,6 @@
       <Name>GXPEngine</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="data\**" />
     <Content Include="Game\TODO.md" />
