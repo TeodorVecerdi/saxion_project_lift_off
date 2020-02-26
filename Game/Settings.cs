@@ -47,12 +47,14 @@ namespace Game {
     public static class Settings {
         public const int RenderDistance = 10;
         public const int InitialFuelRefills = 10;
-        public const float IdleFuelDepletion = -333f;
-        public const float DrillFuelDepletion = -1000f;
+        public const float IdleFuelConsumption = -200f;
+        public const float DrillOnFuelConsumption = -333f;
+        public const float DrillingFuelConsumption = -1000f;
         public const float GravityFrequency = 0.085F;
         public const float PlayerMovementThreshold = 0.25F;
         public const float FuelBarIndicatorThresholdMinor = 0.3333333F;
         public const float FuelBarIndicatorThresholdMajor = 0.1F;
+        
         public const float DrillSpeedUpgradeMultiplier = 0.75f;
         public const float ViewDistanceUpgradeMultiplier = 1.125f;
         public const float FuelCapacityUpgradeMultiplier = 1.25f;
