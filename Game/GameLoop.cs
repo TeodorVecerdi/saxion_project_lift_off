@@ -7,8 +7,8 @@ using GXPEngine.Core;
 
 namespace Game {
     public class GameLoop : GameObject {
-        public int TilesVertical => Settings.World.Depth + Settings.World.TopOffset;
         public readonly int TilesHorizontal;
+        public int TilesVertical => Settings.World.Depth + Settings.World.TopOffset;
         public int Score;
 
         private float gravityTimeLeft = Settings.GravityFrequency;
@@ -34,8 +34,6 @@ namespace Game {
         private DrillProgressIndicator drillProgressIndicator;
         private Vector2Int lastDrillDirection = Vector2Int.zero;
         private GameManager gameManager;
-
-        private Sound ambientSound;
 
         public ObjectType[,] Tiles => tiles;
 
@@ -82,7 +80,9 @@ namespace Game {
             HUD.graphics.Clear(Color.Empty);
             HUD.graphics.DrawString("SCORE: " + Score, FontLoader.Instance[64f], Brushes.FloralWhite, Globals.WIDTH / 2f, 24, FontLoader.CenterAlignment);
             HUD.graphics.DrawString($"DEPTH: {Settings.World.BlockSize * (player.y / Globals.TILE_SIZE - Settings.World.TopOffset + 1)}m", FontLoader.Instance[32f], Brushes.AntiqueWhite, Globals.WIDTH / 2f, 64, FontLoader.CenterAlignment);
-            HUD.graphics.DrawString("FUEL", FontLoader.Instance[64f], Brushes.FloralWhite, Globals.WIDTH - 30, Globals.HEIGHT / 2f, FontLoader.CenterVerticalAlignment);
+            HUD.graphics.DrawString("FUEL", FontLoader.Instance[48f], Brushes.FloralWhite, Globals.WIDTH - 20, Globals.HEIGHT / 2f, FontLoader.CenterVerticalAlignment);
+            // HUD.graphics.DrawString("test fuel 10000000", FontLoader.Instance[24f], Brushes.FloralWhite, Globals.WIDTH - 56, Globals.HEIGHT / 2f, FontLoader.CenterVerticalAlignment);
+            HUD.graphics.DrawString($"{(int)fuelBar.FuelAmount/1000}L / {(int)fuelBar.FuelCapacity/1000}L", FontLoader.Instance[24f], Brushes.FloralWhite, Globals.WIDTH - 56, Globals.HEIGHT / 2f, FontLoader.CenterVerticalAlignment);
             HUD.graphics.DrawString("FPS: " + game.currentFps, SystemFonts.StatusFont, Brushes.DarkRed, 0, 8, FontLoader.LeftAlignment);
         }
 

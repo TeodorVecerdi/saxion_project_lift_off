@@ -114,7 +114,7 @@ namespace Game {
         public static class Tiles {
             public static TileDefinition Empty = new TileDefinition {Texture = Texture2D.GetInstance("data/tiles/empty.png")};
             public static TileDefinition Background = new TileDefinition {Texture = Texture2D.GetInstance("data/tiles/background.png")};
-            public static TileDefinition Player = new TileDefinition {Texture = Texture2D.GetInstance("data/motherload_drill.png")};
+            public static TileDefinition Player = new TileDefinition {};
             public static TileDefinition Dirt = new TileDefinition {Drillable = true, TimeToDrill = 0.1f, Texture = Texture2D.GetInstance("data/tiles/dirt.png")};
             public static TileDefinition MediumDirt = new TileDefinition {Drillable = true, TimeToDrill = 0.15f, Texture = Texture2D.GetInstance("data/tiles/mediumDirt.png")};
             public static TileDefinition HardDirt = new TileDefinition {Drillable = true, TimeToDrill = 0.25f, Texture = Texture2D.GetInstance("data/tiles/hardDirt.png")};
