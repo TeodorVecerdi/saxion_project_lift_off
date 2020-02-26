@@ -22,7 +22,6 @@ namespace Game {
         private bool startedDrilling;
         private bool canStartDrilling;
         private bool isDrillOn;
-        private bool isGameDone;
         
 
         private ObjectType[,] tiles;
@@ -47,21 +46,13 @@ namespace Game {
             TilesHorizontal = (int) (Globals.WIDTH / Globals.TILE_SIZE);
             tiles = new ObjectType[TilesHorizontal, Settings.World.TopOffset + Settings.World.Depth];
             tilesBackground = new ObjectType[TilesHorizontal, Settings.World.TopOffset + Settings.World.Depth];
-            
-            ambientSound = new Sound("data/sounds/ambient_v1.wav", true);
-            var channel = ambientSound.Play();
-
+            SoundManager.Instance.Play("ambient");
             GenerateWorldBracketed(out var playerSpawnLocation);
             InitializeSceneObjects(playerSpawnLocation);
         }
 
         private void Update() {
-            if (isGameDone) {
-                // Debug.Log("Game is done");
-                return;
-            }
             DrawHud();
-            // Debug.Log("Game is running");
             
             var (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
             var movementDirection = new Vector2Int((int) Input.GetAxisDown("Horizontal"), (int) Input.GetAxisDown("Vertical"));
@@ -131,30 +122,39 @@ namespace Game {
         }
 
         private void UpdateDrilling(ref int playerX, ref int playerY, ref bool rangeCheck, ref bool movedThisFrame, ref Vector2Int movementDirection, ref Vector2Int desiredPosition, ref Vector2Int drillDirection, ref Vector2Int desiredDrillDirection) {
-            if (!canStartDrilling && movementDirection != Vector2Int.zero) {
-                canStartDrilling = true;
-            }
             if (Input.GetButtonDown("Drill")) {
                 isDrillOn = !isDrillOn;
             }
-            var wantsToDrill = isDrillOn && drillDirection != Vector2Int.zero;
+            if(!isDrillOn) return;
+            
+            if (!canStartDrilling && movementDirection != Vector2Int.zero) {
+                canStartDrilling = true;
+            }
+            
+            var wantsToDrill = drillDirection != Vector2Int.zero;
             var isDrillingUp = drillDirection.y == -1;
             var hasGroundUnder = playerY + 1 == TilesVertical || tiles[playerX, playerY + 1] != ObjectType.Empty;
+            if (canStartDrilling && tiles[desiredDrillDirection.x, desiredDrillDirection.y] == ObjectType.Stone) {
+                SoundManager.Instance.Play("stoneHit");
+                canStartDrilling = false;
+            }
             if (canStartDrilling && wantsToDrill && !isDrillingUp && hasGroundUnder && rangeCheck && Settings.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].Drillable) {
                 if (lastDrillDirection != drillDirection || !startedDrilling) {
+                    SoundManager.Instance.Play("drilling");
                     drillTimeOriginal = drillSpeed * Settings.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].TimeToDrill;
                     drillTimeLeft = drillTimeOriginal;
                 }
-
                 drillProgressIndicator.visible = true;
                 drillProgressIndicator.SetXY(desiredDrillDirection.x * Globals.TILE_SIZE, desiredDrillDirection.y * Globals.TILE_SIZE);
                 startedDrilling = true;
             } else {
+                if(startedDrilling)
+                    SoundManager.Instance.Stop("drilling");
                 drillProgressIndicator.Alpha = 0f;
                 drillProgressIndicator.visible = false;
                 startedDrilling = false;
                 canStartDrilling = false;
-            }
+            } 
 
             // BREAK TILE IF TIME IS DONE
             if (startedDrilling && drillTimeLeft <= 0) {
@@ -169,6 +169,7 @@ namespace Game {
                 drillProgressIndicator.visible = false;
                 startedDrilling = false;
                 canStartDrilling = false;
+                // SoundManager.Instance.Stop("drilling");
                 
                 // Do something if a pickup was mined
                 if (Settings.World.UpgradeTypes.Contains(minedTile)) {
@@ -245,7 +246,6 @@ namespace Game {
 
             fuelBar.ChangeFuel(Settings.IdleFuelDepletion * Time.deltaTime);
             if (fuelBar.FuelAmount <= 0) {
-                isGameDone = true;
                 gameManager.ShouldStopPlaying = true;
             }
         }

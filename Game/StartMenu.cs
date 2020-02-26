@@ -31,7 +31,7 @@ namespace Game {
             if (selectedButton < 0) selectedButton += buttons.Count;
             buttons.ForEach(button => button.IsSelected = false);
             buttons[selectedButton].IsSelected = true;
-            if (Input.GetKeyDown(Key.ENTER)) buttons[selectedButton].Click();
+            if (Input.GetButtonDown("Drill")) buttons[selectedButton].Click();
         }
 
         protected override void RenderSelf(GLContext glContext) {

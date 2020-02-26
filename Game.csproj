@@ -50,6 +50,7 @@
     <Compile Include="Game\Globals.cs" />
     <Compile Include="Game\GameLoop.cs" />
     <Compile Include="Game\Settings.cs" />
+    <Compile Include="Game\SoundManager.cs" />
     <Compile Include="Game\StartMenu.cs" />
     <Compile Include="Game\TutorialMenu.cs" />
     <Compile Include="Game\Utils\Debug.cs" />
