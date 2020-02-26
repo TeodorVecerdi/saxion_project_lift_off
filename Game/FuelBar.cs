@@ -37,8 +37,8 @@ namespace Game {
         }
 
         private void Update() {
-            shouldShowIndicator1 = fuelAmount <= Settings.FuelBarIndicatorThresholdMinor * fuelCapacity;
-            shouldShowIndicator2 = fuelAmount <= Settings.FuelBarIndicatorThresholdMajor * fuelCapacity;
+            shouldShowIndicator1 = fuelAmount <= Settings.Instance.FuelBarIndicatorThresholdMinor * fuelCapacity;
+            shouldShowIndicator2 = fuelAmount <= Settings.Instance.FuelBarIndicatorThresholdMajor * fuelCapacity;
             if (shouldShowIndicator1) {
                 SoundManager.Instance.Play("fuelLow", false);
                 if (showIndicatorTimeLeft <= 0) {
