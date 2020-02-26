@@ -1,5 +1,4 @@
 using GXPEngine;
-using GXPEngine.Core;
 
 namespace Game {
     public class GameManager : GameObject {

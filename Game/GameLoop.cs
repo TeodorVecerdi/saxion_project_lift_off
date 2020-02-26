@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Game.WorldGen;
@@ -19,7 +21,8 @@ namespace Game {
 
         private bool startedDrilling;
         private bool canStartDrilling;
-        private bool DrillPressed;
+        private bool isDrillOn;
+        private bool isGameDone;
         
 
         private ObjectType[,] tiles;
@@ -53,7 +56,12 @@ namespace Game {
         }
 
         private void Update() {
+            if (isGameDone) {
+                // Debug.Log("Game is done");
+                return;
+            }
             DrawHud();
+            // Debug.Log("Game is running");
             
             var (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
             var movementDirection = new Vector2Int((int) Input.GetAxisDown("Horizontal"), (int) Input.GetAxisDown("Vertical"));
@@ -126,14 +134,10 @@ namespace Game {
             if (!canStartDrilling && movementDirection != Vector2Int.zero) {
                 canStartDrilling = true;
             }
-            if (Input.GetButtonDown("Drill"))
-            {
-                if(DrillPressed==false)
-                    DrillPressed = true;
-                else 
-                    DrillPressed = false;
+            if (Input.GetButtonDown("Drill")) {
+                isDrillOn = !isDrillOn;
             }
-            var wantsToDrill = DrillPressed && drillDirection != Vector2Int.zero;
+            var wantsToDrill = isDrillOn && drillDirection != Vector2Int.zero;
             var isDrillingUp = drillDirection.y == -1;
             var hasGroundUnder = playerY + 1 == TilesVertical || tiles[playerX, playerY + 1] != ObjectType.Empty;
             if (canStartDrilling && wantsToDrill && !isDrillingUp && hasGroundUnder && rangeCheck && Settings.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].Drillable) {
@@ -158,12 +162,34 @@ namespace Game {
                 fuelBar.FuelAmount += Settings.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].FuelAmount;
                 player.Move(drillDirection.ToWorld().ToVec2());
                 tiles[playerX, playerY] = ObjectType.Empty;
+                var minedTile = tiles[desiredDrillDirection.x, desiredDrillDirection.y];
                 tiles[desiredDrillDirection.x, desiredDrillDirection.y] = ObjectType.Player;
                 movedThisFrame = true;
                 drillProgressIndicator.Alpha = 0f;
                 drillProgressIndicator.visible = false;
                 startedDrilling = false;
                 canStartDrilling = false;
+                
+                // Do something if a pickup was mined
+                if (Settings.World.UpgradeTypes.Contains(minedTile)) {
+                    // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+                    switch (minedTile) {
+                        case ObjectType.DrillingSpeedUpgrade: {
+                            drillSpeed *= Settings.DrillSpeedUpgradeMultiplier;
+                            break;
+                        }
+                        case ObjectType.ViewDistanceUpgrade: {
+                            visibility.scale *= Settings.ViewDistanceUpgradeMultiplier;
+                            break;
+                        }
+                        case ObjectType.FuelCapacityUpgrade: {
+                            fuelBar.FuelCapacity *= Settings.FuelCapacityUpgradeMultiplier;
+                            break;
+                        }
+                        default: 
+                            throw new ArgumentOutOfRangeException(nameof(minedTile), $"Mined tile {minedTile} is not an upgrade type");
+                    }
+                }
 
                 // Recalculate position
                 (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
@@ -219,6 +245,7 @@ namespace Game {
 
             fuelBar.ChangeFuel(Settings.IdleFuelDepletion * Time.deltaTime);
             if (fuelBar.FuelAmount <= 0) {
+                isGameDone = true;
                 gameManager.ShouldStopPlaying = true;
             }
         }
@@ -282,88 +309,7 @@ namespace Game {
 
             return output;
         }
-
-        private void GenerateWorldBracketedWithWalkers2(out int playerSpawnLocation) {
-            for (int x = 0; x < TilesHorizontal; x++) {
-                for (int y = 0; y < Settings.World.Depth; y++) {
-                    int gridY = y + Settings.World.TopOffset;
-                    tilesBackground[x, gridY] = ObjectType.Background;
-                    float spawnTypeChance = Rand.Value;
-                    if (spawnTypeChance <= Settings.World.StoneChance) {
-                        tiles[x, gridY] = ObjectType.Stone;
-                    } else if (spawnTypeChance <= Settings.World.StoneChance + Settings.World.OreChance) {
-                        var weightedRandomizer = new WeightedRandomizer();
-                        foreach (var oreType in Settings.World.Ores) {
-                            try {
-                                var oreBracket = Settings.World.OreDepthSpawning[oreType].First(value => y.BetweenInclusive(value.FromY, value.ToY));
-                                weightedRandomizer.AddChance(oreType, oreBracket.Chance);
-                                /*
-                                if (Rand.Value <= oreBracket.Chance) {
-                                    tileToSpawn = oreType;
-                                    break;
-                                }
-                            */
-                            } catch (System.InvalidOperationException) {
-                                Debug.LogError($"Could not find matching element for ore type: {oreType} at y-depth: {y}");
-                            }
-                        }
-
-                        var tileToSpawn = weightedRandomizer.GetValue();
-                        Walker.Start2(x, y, tileToSpawn, this, Settings.World.TopOffset);
-                    } else {
-                        tiles[x, gridY] = ObjectType.Dirt;
-                    }
-                }
-            }
-
-            for (int x = 0; x < 4; x++) {
-                tiles[x, Settings.World.TopOffset] = ObjectType.Stone;
-            }
-
-            playerSpawnLocation = Rand.Range(6, TilesHorizontal - 1);
-            tiles[playerSpawnLocation, Settings.World.TopOffset - 1] = ObjectType.Player;
-        }
-
-        private void GenerateWorldBracketedWithWalkers(out int playerSpawnLocation) {
-            for (int x = 0; x < TilesHorizontal; x++) {
-                for (int y = 0; y < Settings.World.Depth; y++) {
-                    int gridY = y + Settings.World.TopOffset;
-                    tilesBackground[x, gridY] = ObjectType.Background;
-                    float spawnTypeChance = Rand.Value;
-                    if (spawnTypeChance <= Settings.World.StoneChance) {
-                        tiles[x, gridY] = ObjectType.Stone;
-                    } else if (spawnTypeChance <= Settings.World.StoneChance + Settings.World.OreChance) {
-                        var tileToSpawn = ObjectType.Dirt;
-                        foreach (var oreType in Settings.World.Ores) {
-                            try {
-                                var oreBracket = Settings.World.OreDepthSpawning[oreType].First(value => y.BetweenInclusive(value.FromY, value.ToY));
-                                if (Rand.Value <= oreBracket.Chance) {
-                                    tileToSpawn = oreType;
-                                    break;
-                                }
-                            } catch (System.InvalidOperationException) {
-                                Debug.LogError($"Could not find matching element for ore type: {oreType} at y-depth: {y}");
-                            }
-                        }
-
-                        if (tileToSpawn != ObjectType.Dirt)
-                            Walker.Start(x, y, tileToSpawn, this, Settings.World.TopOffset);
-                        else
-                            tiles[x, gridY] = ObjectType.Dirt;
-                    } else {
-                        tiles[x, gridY] = ObjectType.Dirt;
-                    }
-                }
-            }
-
-            for (int x = 0; x < 4; x++) {
-                tiles[x, Settings.World.TopOffset] = ObjectType.Stone;
-            }
-
-            playerSpawnLocation = Rand.Range(6, TilesHorizontal - 1);
-            tiles[playerSpawnLocation, Settings.World.TopOffset - 1] = ObjectType.Player;
-        }
-
+        
         private void GenerateWorldBracketed(out int playerSpawnLocation) {
             for (var x = 0; x < TilesHorizontal; x++) {
                 for (var y = 0; y < Settings.World.Depth; y++) {
@@ -382,7 +328,7 @@ namespace Game {
                         tiles[x, gridY] = Settings.Tiles.TileToHardness[ObjectType.Stone][hardness];
                     } else if (spawnTypeChance <= Settings.World.StoneChance + Settings.World.OreChance) {
                         var weightedRandomizer = new WeightedRandomizer();
-                        foreach (var oreType in Settings.World.Ores) {
+                        foreach (var oreType in Settings.World.OreDepthSpawning.Keys) {
                             try {
                                 var oreBracket = Settings.World.OreDepthSpawning[oreType].First(value => y.BetweenInclusive(value.FromY, value.ToY));
                                 if(oreBracket != null)
@@ -398,7 +344,18 @@ namespace Game {
                     }
                 }
             }
-            
+            // Spawn pickups / upgrades
+            var upgradeSpawnLocations = new List<(int, int, ObjectType)>();
+            for (var i = 0; i < Settings.World.UpgradeCount; i++) {
+                var (upgradeX, upgradeY) = (Rand.Range(0, TilesHorizontal), Rand.Range(Settings.World.TopOffset+1, TilesVertical));
+                var upgradeType = Settings.World.UpgradeTypes[Rand.Range(0, Settings.World.UpgradeTypes.Count)];
+                upgradeSpawnLocations.Add((upgradeX, upgradeY, upgradeType));
+            }
+            upgradeSpawnLocations.ForEach(spawnLocation => {
+                var (upgradeX, upgradeY, upgradeType) = spawnLocation;
+                tiles[upgradeX, upgradeY] = upgradeType;
+            });
+            // Make FuelStation ground stone 
             for (var x = 0; x < 4; x++) {
                 tiles[x, Settings.World.TopOffset] = ObjectType.Stone;
             }

@@ -24,12 +24,16 @@ namespace Game {
         }
 
         public void ChangeFuel(float amount) => fuelAmount += amount;
-        public void SetFuelCapacity(float amount) => fuelCapacity = amount;
         public void Refuel() => fuelAmount = fuelCapacity;
 
         public float FuelAmount {
             get => fuelAmount;
             set => fuelAmount = value;
+        }
+
+        public float FuelCapacity {
+            get => fuelCapacity;
+            set => fuelCapacity = value;
         }
 
         private void Update() {

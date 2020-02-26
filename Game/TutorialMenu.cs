@@ -16,8 +16,8 @@ namespace Game {
         private void Update() {
             if (Input.GetAxisDown("Horizontal") != 0 || Input.GetAxisDown("Vertical") != 0 || Input.GetButtonDown("Drill") || Input.GetButtonDown("Refuel")) {
                 tutorialIndex++;
+                if (tutorialIndex >= tutorialTextures.Length) manager.ShouldStartPlaying = true;
             }
-            if (tutorialIndex >= tutorialTextures.Length) manager.ShouldStartPlaying = true;
         }
 
         protected override void RenderSelf(GLContext glContext) {

@@ -16,11 +16,6 @@ namespace Game {
         public float Chance;
     }
 
-    public class WalkerSettings {
-        public int MaxAge;
-        public float DiameterVariation;
-    }
-
     public enum ObjectType {
         Empty,
         Background,
@@ -42,7 +37,11 @@ namespace Game {
         HardEmerald,
         Sapphire,
         MediumSapphire,
-        HardSapphire
+        HardSapphire,
+        
+        DrillingSpeedUpgrade,
+        ViewDistanceUpgrade,
+        FuelCapacityUpgrade,
     }
 
     public static class Settings {
@@ -54,16 +53,20 @@ namespace Game {
         public const float PlayerMovementThreshold = 0.25F;
         public const float FuelBarIndicatorThresholdMinor = 0.3333333F;
         public const float FuelBarIndicatorThresholdMajor = 0.1F;
+        public const float DrillSpeedUpgradeMultiplier = 0.75f;
+        public const float ViewDistanceUpgradeMultiplier = 1.125f;
+        public const float FuelCapacityUpgradeMultiplier = 1.25f;
 
         public static class World {
             public const int TopOffset = 6;
             public const int MediumDirtStartDepth = 200;
             public const int HardDirtStartDepth = 300;
             public const int Depth = 400;
-            public static float BlockSize = 10f; // 10 meters
-            public static float OreChance = 0.1f;
-            public static float StoneChance = 0.1f;
-            public static List<ObjectType> Ores = new List<ObjectType> {ObjectType.Stone, ObjectType.Coal, ObjectType.Gold, ObjectType.Emerald, ObjectType.Sapphire};
+            public const int UpgradeCount = 50;
+            public const float BlockSize = 10f; // 10 meters
+            public const float OreChance = 0.1f;
+            public const float StoneChance = 0.1f;
+            public static List<ObjectType> UpgradeTypes = new List<ObjectType> {ObjectType.DrillingSpeedUpgrade, ObjectType.ViewDistanceUpgrade, ObjectType.FuelCapacityUpgrade};
             public static Dictionary<ObjectType, List<OreSpawnChance>> OreDepthSpawning = new Dictionary<ObjectType, List<OreSpawnChance>> {
                 {
                     ObjectType.Stone, new List<OreSpawnChance> {
@@ -104,12 +107,6 @@ namespace Game {
                     }
                 }
             };
-            public static Dictionary<ObjectType, WalkerSettings> OreWalkerSettings = new Dictionary<ObjectType, WalkerSettings> {
-                {ObjectType.Coal, new WalkerSettings {MaxAge = 10, DiameterVariation = 4}},
-                {ObjectType.Gold, new WalkerSettings {MaxAge = 8, DiameterVariation = 4}},
-                {ObjectType.Emerald, new WalkerSettings {MaxAge = 6, DiameterVariation = 4}},
-                {ObjectType.Sapphire, new WalkerSettings {MaxAge = 5, DiameterVariation = 3}},
-            };
         }
 
         public static class Tiles {
@@ -134,6 +131,10 @@ namespace Game {
             public static TileDefinition Sapphire = new TileDefinition {Drillable = true, ScoreAmount = 300, TimeToDrill = 1f, Texture = Texture2D.GetInstance("data/tiles/sapphire.png")};
             public static TileDefinition MediumSapphire = new TileDefinition {Drillable = true, ScoreAmount = 300, TimeToDrill = 1f, Texture = Texture2D.GetInstance("data/tiles/mediumSapphire.png")};
             public static TileDefinition HardSapphire = new TileDefinition {Drillable = true, ScoreAmount = 300, TimeToDrill = 1f, Texture = Texture2D.GetInstance("data/tiles/hardSapphire.png")};
+            
+            public static TileDefinition DrillingSpeedUpgrade = new TileDefinition {Drillable = true, ScoreAmount = 500, TimeToDrill = 1f, Texture = Texture2D.GetInstance("data/tiles/speedUpgrade.png")};
+            public static TileDefinition ViewDistanceUpgrade = new TileDefinition {Drillable = true, ScoreAmount = 500, TimeToDrill = 1f, Texture = Texture2D.GetInstance("data/tiles/visibilityUpgrade.png")};
+            public static TileDefinition FuelCapacityUpgrade = new TileDefinition {Drillable = true, ScoreAmount = 500, TimeToDrill = 1f, Texture = Texture2D.GetInstance("data/tiles/fuelUpgrade.png")};
 
             public static Dictionary<ObjectType, TileDefinition> TypeToTile = new Dictionary<ObjectType, TileDefinition> {
                 {ObjectType.Empty, Empty},
@@ -157,6 +158,9 @@ namespace Game {
                 {ObjectType.Sapphire, Sapphire},
                 {ObjectType.MediumSapphire, MediumSapphire},
                 {ObjectType.HardSapphire, HardSapphire},
+                {ObjectType.DrillingSpeedUpgrade, DrillingSpeedUpgrade},
+                {ObjectType.ViewDistanceUpgrade, ViewDistanceUpgrade},
+                {ObjectType.FuelCapacityUpgrade, FuelCapacityUpgrade},
             };
 
             public static Dictionary<ObjectType, List<ObjectType>> TileToHardness = new Dictionary<ObjectType, List<ObjectType>> {
