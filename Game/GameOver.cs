@@ -20,8 +20,7 @@ namespace Game {
         void Update() {
 
             //Gives total score
-            graphics.DrawString("Score\n" + score + "\nFuel left\n" + (Settings.Instance.FirstFuelStationFuel / 10 + Settings.Instance.SecondFuelStationFuel / 10) +
-                "\nTotalScore:\n" + (score + Settings.Instance.FirstFuelStationFuel / 10 + Settings.Instance.SecondFuelStationFuel / 10), 
+            graphics.DrawString("Score\n" + score + "\nFuel left\n" + (int)(fuel1 / 1000 + fuel2 / 1000) +"L"+ "\nTotalScore:\n" + (int)(score + (fuel1 / 100) + (fuel2 / 100)), 
                 FontLoader.Instance[64f], Brushes.White, Globals.WIDTH/2f, Globals.HEIGHT / 2f, FontLoader.CenterAlignment);
         }
     }

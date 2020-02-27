@@ -12,7 +12,7 @@ namespace Game {
         private bool showingIndicator = true;
 
         private float fuelAmount = 6000f;
-        private float fuelCapacity = 60000f;
+        private float fuelCapacity = 6000f;
 
         public FuelBar() {
             border = Texture2D.GetInstance("data/fuelbar/border.png");

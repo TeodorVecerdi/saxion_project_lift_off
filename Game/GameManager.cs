@@ -1,7 +1,6 @@
 using GXPEngine;
 
-namespace Game
-{
+namespace Game {
     public class GameManager : GameObject
     {
         public bool ShouldShowTutorial;
@@ -41,26 +40,18 @@ namespace Game
                 LateAddChild(grid);
             }
 
-            if (ShouldStopPlaying)
+            if (ShouldStopPlaying && !stoppedPlaying)
             {
+                stoppedPlaying = true;
                 ShouldStopPlaying = false;
                 gameOver = new GameOver(grid.Score, grid.fuelStation.FuelAmount, grid.fuelStation2.FuelAmount);
                 grid.Destroy();
+                SoundManager.Instance.Stop("fuelLow");
+                SoundManager.Instance.Stop("ambient");
+                SoundManager.Instance.Stop("drilling");
+                AddChild(gameOver);
 
-                if (ShouldStopPlaying && !stoppedPlaying)
-                {
-
-                    SoundManager.Instance.Stop("fuelLow");
-                    SoundManager.Instance.Stop("ambient");
-                    SoundManager.Instance.Stop("drilling");
-                    stoppedPlaying = true;
-                    ShouldStopPlaying = false;
-                    gameOver = new GameOver(grid.Score, grid.fuelStation.FuelAmount, grid.fuelStation2.FuelAmount);
-                    grid.Destroy();
-                    AddChild(gameOver);
-                }
             }
         }
-
     }
 }
