@@ -32,7 +32,7 @@ namespace Game {
 
             if (ShouldStopPlaying) {
                 ShouldStopPlaying = false;
-                gameOver = new GameOver(grid.Score);
+                gameOver = new GameOver(grid.Score, grid.fuelStation.FuelAmount, grid.fuelStation2.FuelAmount);
                 grid.Destroy();
                 SoundManager.Instance.Stop("fuelLow");
                 SoundManager.Instance.Stop("ambient");

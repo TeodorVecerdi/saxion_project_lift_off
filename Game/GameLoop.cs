@@ -30,8 +30,8 @@ namespace Game {
         private Camera camera;
         private Player player;
         private FuelBar fuelBar;
-        private FuelStation fuelStation;
-        private FuelStation fuelStation2;
+        public FuelStation fuelStation;
+        public FuelStation fuelStation2;
         private VisibilitySystem visibility;
         private DrillProgressIndicator drillProgressIndicator;
         private Vector2Int lastDrillDirection = Vector2Int.zero;
@@ -129,6 +129,7 @@ namespace Game {
             if (Input.GetButtonDown("Drill")) {
                 isDrillOn = !isDrillOn;
                 player.AnimationState = isDrillOn ? AnimationState.DrillOn : AnimationState.Idle;
+                SoundManager.Instance.Play("ModeSwitch");
             }
 
             if (!isDrillOn || !rangeCheck) return;
@@ -371,6 +372,10 @@ namespace Game {
                     tiles[x, Settings.Instance.World.TopOffset + FuelStationRoomDepth] = ObjectType.Empty;
                 }
                 FuelStationRoomDepth += 1;
+            }
+            for (var x = 5; x < 8; x++)
+            {
+                tiles[x, Settings.Instance.World.TopOffset +FuelStationRoomDepth] = ObjectType.MediumStone;
             }
 
             playerSpawnLocation = new Vector2Int(Rand.Range(6, TilesHorizontal - 1), Settings.Instance.World.TopOffset - 1);
