@@ -304,6 +304,20 @@
       "TimeToDrill": 1.0,
       "FuelAmount": 0.0
     },
+    "MediumDrillingSpeedUpgrade": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/mediumSpeedUpgrade.png",
+      "ScoreAmount": 200,
+      "TimeToDrill": 1.5,
+      "FuelAmount": 0.0
+    },
+    "HardDrillingSpeedUpgrade": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/hardSpeedUpgrade.png",
+      "ScoreAmount": 200,
+      "TimeToDrill": 2,
+      "FuelAmount": 0.0
+    },
     "ViewDistanceUpgrade": {
       "Drillable": true,
       "TexturePath": "data/tiles/visibilityUpgrade.png",
@@ -311,11 +325,39 @@
       "TimeToDrill": 1.0,
       "FuelAmount": 0.0
     },
+    "MediumViewDistanceUpgrade": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/mediumVisibilityUpgrade.png",
+      "ScoreAmount": 200,
+      "TimeToDrill": 1.5,
+      "FuelAmount": 0.0
+    },
+    "HardViewDistanceUpgrade": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/hardVisibilityUpgrade.png",
+      "ScoreAmount": 200,
+      "TimeToDrill": 2,
+      "FuelAmount": 0.0
+    },
     "FuelCapacityUpgrade": {
       "Drillable": true,
       "TexturePath": "data/tiles/fuelUpgrade.png",
       "ScoreAmount": 200,
       "TimeToDrill": 1.0,
+      "FuelAmount": 0.0
+    },
+    "MediumFuelCapacityUpgrade": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/mediumFuelUpgrade.png",
+      "ScoreAmount": 200,
+      "TimeToDrill": 1.5,
+      "FuelAmount": 0.0
+    },
+    "HardFuelCapacityUpgrade": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/hardFuelUpgrade.png",
+      "ScoreAmount": 200,
+      "TimeToDrill": 2.0,
       "FuelAmount": 0.0
     },
     "Treasure": {

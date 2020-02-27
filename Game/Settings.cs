@@ -49,6 +49,12 @@ namespace Game {
         DrillingSpeedUpgrade,
         ViewDistanceUpgrade,
         FuelCapacityUpgrade,
+        MediumDrillingSpeedUpgrade,
+        HardDrillingSpeedUpgrade,
+        MediumViewDistanceUpgrade,
+        HardViewDistanceUpgrade,
+        MediumFuelCapacityUpgrade,
+        HardFuelCapacityUpgrade,
         Treasure
     }
 
@@ -104,8 +110,14 @@ namespace Game {
                 {ObjectType.MediumSapphire, Tiles.MediumSapphire},
                 {ObjectType.HardSapphire, Tiles.HardSapphire},
                 {ObjectType.DrillingSpeedUpgrade, Tiles.DrillingSpeedUpgrade},
+                {ObjectType.MediumDrillingSpeedUpgrade, Tiles.MediumDrillingSpeedUpgrade},
+                {ObjectType.HardDrillingSpeedUpgrade, Tiles.HardDrillingSpeedUpgrade},
                 {ObjectType.ViewDistanceUpgrade, Tiles.ViewDistanceUpgrade},
+                {ObjectType.MediumViewDistanceUpgrade, Tiles.MediumViewDistanceUpgrade},
+                {ObjectType.HardViewDistanceUpgrade, Tiles.HardViewDistanceUpgrade},
                 {ObjectType.FuelCapacityUpgrade, Tiles.FuelCapacityUpgrade},
+                {ObjectType.MediumFuelCapacityUpgrade, Tiles.MediumFuelCapacityUpgrade},
+                {ObjectType.HardFuelCapacityUpgrade, Tiles.HardFuelCapacityUpgrade},
                 {ObjectType.Treasure, Tiles.Treasure},
             };
             Tiles.TypeToTile.Values.ToList().ForEach(definition => definition.Texture = Texture2D.GetInstance(definition.TexturePath, true));
@@ -116,6 +128,9 @@ namespace Game {
                 {ObjectType.Gold, new List<ObjectType> {ObjectType.Gold, ObjectType.MediumGold, ObjectType.HardGold}},
                 {ObjectType.Emerald, new List<ObjectType> {ObjectType.Emerald, ObjectType.MediumEmerald, ObjectType.HardEmerald}},
                 {ObjectType.Sapphire, new List<ObjectType> {ObjectType.Sapphire, ObjectType.MediumSapphire, ObjectType.HardSapphire}},
+                {ObjectType.DrillingSpeedUpgrade, new List<ObjectType> {ObjectType.DrillingSpeedUpgrade, ObjectType.MediumDrillingSpeedUpgrade, ObjectType.HardDrillingSpeedUpgrade}},
+                {ObjectType.ViewDistanceUpgrade, new List<ObjectType> {ObjectType.ViewDistanceUpgrade, ObjectType.MediumViewDistanceUpgrade, ObjectType.HardViewDistanceUpgrade}},
+                {ObjectType.FuelCapacityUpgrade, new List<ObjectType> {ObjectType.FuelCapacityUpgrade, ObjectType.MediumFuelCapacityUpgrade, ObjectType.HardFuelCapacityUpgrade}},
             };
         }
     }
@@ -156,8 +171,14 @@ namespace Game {
         public TileDefinition MediumSapphire;
         public TileDefinition HardSapphire;
         public TileDefinition DrillingSpeedUpgrade;
+        public TileDefinition MediumDrillingSpeedUpgrade;
+        public TileDefinition HardDrillingSpeedUpgrade;
         public TileDefinition ViewDistanceUpgrade;
+        public TileDefinition MediumViewDistanceUpgrade;
+        public TileDefinition HardViewDistanceUpgrade;
         public TileDefinition FuelCapacityUpgrade;
+        public TileDefinition MediumFuelCapacityUpgrade;
+        public TileDefinition HardFuelCapacityUpgrade;
         public TileDefinition Treasure;
 
         public Dictionary<ObjectType, TileDefinition> TypeToTile;

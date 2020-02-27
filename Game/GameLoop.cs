@@ -399,7 +399,9 @@ namespace Game {
             for (var i = 0; i < Settings.Instance.World.UpgradeCount; i++) {
                 var (upgradeX, upgradeY) = (Rand.Range(0, TilesHorizontal), Rand.Range(Settings.Instance.World.TopOffset + 1, TilesVertical));
                 var upgradeType = Settings.Instance.World.UpgradeTypes[Rand.Range(0, Settings.Instance.World.UpgradeTypes.Count)];
-                upgradeSpawnLocations.Add((upgradeX, upgradeY, upgradeType));
+                var hardness = upgradeY > Settings.Instance.World.HardDirtStartDepth ? 2 : upgradeY > Settings.Instance.World.MediumDirtStartDepth ? 1 : 0;
+                var hardnessType = Settings.Instance.Tiles.HardnessToTile[upgradeType][hardness];
+                upgradeSpawnLocations.Add((upgradeX, upgradeY, hardnessType));
             }
 
             upgradeSpawnLocations.ForEach(spawnLocation => {
@@ -427,6 +429,7 @@ namespace Game {
             var (treasureX, treasureY) = (Rand.Range(0, TilesHorizontal), Rand.Range(TilesVertical - 10, TilesVertical - 1));
             tiles[treasureX, treasureY] = ObjectType.Treasure;
             playerSpawnLocation = new Vector2Int(Rand.Range(6, TilesHorizontal - 1), Settings.Instance.World.TopOffset - 1);
+            playerSpawnLocation.y = TilesVertical - 11;
             tiles[playerSpawnLocation.x, playerSpawnLocation.y] = ObjectType.Player;
         }
     }
