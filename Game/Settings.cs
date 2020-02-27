@@ -64,8 +64,8 @@ namespace Game {
             }
         }
         public int RenderDistance;
-        public int InitialFuelRefills;
-        public int InitialFuelRefills2;
+        public float FirstFuelStationFuel;
+        public float SecondFuelStationFuel;
         public float IdleFuelConsumption;
         public float DrillOnFuelConsumption;
         public float DrillingFuelConsumption;

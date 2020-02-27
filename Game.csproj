@@ -50,6 +50,7 @@
     <Compile Include="Game\DrillProgressIndicator.cs" />
     <Compile Include="Game\FuelBar.cs" />
     <Compile Include="Game\FuelStation.cs" />
+    <Compile Include="Game\FuelStationFuelBar.cs" />
     <Compile Include="Game\GameOver.cs" />
     <Compile Include="Game\Globals.cs" />
     <Compile Include="Game\GameLoop.cs" />

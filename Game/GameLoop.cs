@@ -83,20 +83,21 @@ namespace Game {
             HUD.graphics.DrawString("SCORE: " + Score, FontLoader.Instance[64f], Brushes.FloralWhite, Globals.WIDTH / 2f, 24, FontLoader.CenterAlignment);
             HUD.graphics.DrawString($"DEPTH: {Settings.Instance.World.BlockSize * (player.y / Globals.TILE_SIZE - Settings.Instance.World.TopOffset + 1)}m", FontLoader.Instance[32f], Brushes.AntiqueWhite, Globals.WIDTH / 2f, 64, FontLoader.CenterAlignment);
             HUD.graphics.DrawString("FUEL", FontLoader.Instance[48f], Brushes.FloralWhite, Globals.WIDTH - 20, Globals.HEIGHT / 2f, FontLoader.CenterVerticalAlignment);
+
             // HUD.graphics.DrawString("test fuel 10000000", FontLoader.Instance[24f], Brushes.FloralWhite, Globals.WIDTH - 56, Globals.HEIGHT / 2f, FontLoader.CenterVerticalAlignment);
-            HUD.graphics.DrawString($"{(int)fuelBar.FuelAmount/1000}L / {(int)fuelBar.FuelCapacity/1000}L", FontLoader.Instance[24f], Brushes.FloralWhite, Globals.WIDTH - 56, Globals.HEIGHT / 2f, FontLoader.CenterVerticalAlignment);
+            HUD.graphics.DrawString($"{(int) fuelBar.FuelAmount / 1000}L / {(int) fuelBar.FuelCapacity / 1000}L", FontLoader.Instance[24f], Brushes.FloralWhite, Globals.WIDTH - 56, Globals.HEIGHT / 2f, FontLoader.CenterVerticalAlignment);
             HUD.graphics.DrawString("FPS: " + game.currentFps, SystemFonts.StatusFont, Brushes.DarkRed, 0, 8, FontLoader.LeftAlignment);
         }
 
-        private void InitializeSceneObjects(int playerSpawnLocation) {
+        private void InitializeSceneObjects(Vector2Int playerSpawnLocation) {
             drillProgressIndicator = new DrillProgressIndicator {Alpha = 0};
-            fuelStation = new FuelStation("data/fuel_station.png", 3, Settings.Instance.World.TopOffset - 1, Settings.Instance.InitialFuelRefills);
+            fuelStation = new FuelStation("data/fuel_station.png", 3, Settings.Instance.World.TopOffset - 1, Settings.Instance.FirstFuelStationFuel);
             fuelStation.Move(0, 2 * Globals.TILE_SIZE);
-            fuelStation2 = new FuelStation("data/fuel_station.png", 8, 255, Settings.Instance.InitialFuelRefills2);
-            fuelStation2.Move(5 *Globals.TILE_SIZE, 252 * Globals.TILE_SIZE);
+            fuelStation2 = new FuelStation("data/fuel_station.png", 8, 255, Settings.Instance.SecondFuelStationFuel);
+            fuelStation2.Move(5 * Globals.TILE_SIZE, 252 * Globals.TILE_SIZE);
 
             player = new Player();
-            player.SetXY(playerSpawnLocation * Globals.TILE_SIZE, (Settings.Instance.World.TopOffset - 1) * Globals.TILE_SIZE);
+            player.SetXY(playerSpawnLocation.x * Globals.TILE_SIZE, playerSpawnLocation.y * Globals.TILE_SIZE);
 
             camera = new Camera(0, 0, Globals.WIDTH, Globals.HEIGHT) {x = (int) (Globals.WIDTH / 2f)}; // weird camera behaviour fix
 
@@ -174,7 +175,7 @@ namespace Game {
                 var minedTile = tiles[desiredDrillDirection.x, desiredDrillDirection.y];
                 tiles[desiredDrillDirection.x, desiredDrillDirection.y] = ObjectType.Player;
                 movedThisFrame = true;
-                
+
                 player.AnimationState = AnimationState.DrillOn;
                 drillProgressIndicator.Alpha = 0f;
                 drillProgressIndicator.visible = false;
@@ -215,10 +216,10 @@ namespace Game {
 
         private void UpdateMovement(ref int playerX, ref int playerY, ref bool rangeCheck, ref bool movedThisFrame, ref Vector2Int movementDirection, ref Vector2Int desiredPosition) {
             if (movementDirection == Vector2Int.zero) return;
-            
+
             if (movementDirection.x == -1) player.Flip = false;
             else if (movementDirection.x == 1) player.Flip = true;
-            
+
             // If player can move
             if (rangeCheck && tiles[desiredPosition.x, desiredPosition.y] == ObjectType.Empty && !movedThisFrame) {
                 // Do the actual movement
@@ -254,15 +255,12 @@ namespace Game {
         }
 
         private void UpdateFuel(ref int playerX, ref int playerY) {
-            if (fuelStation.IsPlayerOnRefillPoint(playerX, playerY) && Input.GetButtonDown("Refuel") && fuelStation.CanPlayerRefill()) {
-                fuelBar.Refuel();
-                fuelStation.ReduceRefillsLeft();
+            if (fuelStation.IsPlayerOnRefillPoint(playerX, playerY) && Input.GetButtonDown("Refuel")) {
+                fuelStation.Refuel(fuelBar);
             }
 
-            if (fuelStation2.IsPlayerOnRefillPoint(playerX, playerY) && Input.GetButtonDown("Refuel") && fuelStation2.CanPlayerRefill())
-            {
-                fuelBar.Refuel();
-                fuelStation2.ReduceRefillsLeft();
+            if (fuelStation2.IsPlayerOnRefillPoint(playerX, playerY) && Input.GetButtonDown("Refuel")) {
+                fuelStation2.Refuel(fuelBar);
             }
 
             fuelBar.ChangeFuel(Settings.Instance.IdleFuelConsumption * Time.deltaTime);
@@ -300,7 +298,7 @@ namespace Game {
                     float[] verts = {i * Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE, i * Globals.TILE_SIZE + Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE, i * Globals.TILE_SIZE, j * Globals.TILE_SIZE + Globals.TILE_SIZE};
                     Settings.Instance.Tiles.TypeToTile[tilesBackground[i, j]].Texture.Bind();
                     glContext.DrawQuad(verts, Globals.QUAD_UV);
-                    if(tiles[i, j] == ObjectType.Player) continue;
+                    if (tiles[i, j] == ObjectType.Player) continue;
                     Settings.Instance.Tiles.TypeToTile[tiles[i, j]].Texture.Bind();
                     glContext.DrawQuad(verts, Globals.QUAD_UV);
                 }
@@ -310,7 +308,7 @@ namespace Game {
         protected override void RenderSelf(GLContext glContext) {
             glContext.SetColor(0xff, 0xff, 0xff, 0xff);
             topBackground.Bind();
-            glContext.DrawQuad(topBackground.TextureVertices(1, offset: new Vector2(0, -2*Globals.TILE_SIZE)), Globals.QUAD_UV);
+            glContext.DrawQuad(topBackground.TextureVertices(1, offset: new Vector2(0, -2 * Globals.TILE_SIZE)), Globals.QUAD_UV);
             DrawTileGrid(glContext);
             fuelStation.Draw(glContext);
             fuelStation2.Draw(glContext);
@@ -318,7 +316,8 @@ namespace Game {
             player.Draw(glContext);
             visibility.Draw(glContext);
         }
-        private void GenerateWorld(out int playerSpawnLocation) {
+
+        private void GenerateWorld(out Vector2Int playerSpawnLocation) {
             for (var x = 0; x < TilesHorizontal; x++) {
                 for (var y = 0; y < Settings.Instance.World.Depth; y++) {
                     var gridY = y + Settings.Instance.World.TopOffset;
@@ -367,16 +366,15 @@ namespace Game {
             }
 
             //Make room underground for Fuelstation2
-            for(var y = 6; y <= 9; y++) { 
-                
-                for (var x =5; x<=8; x++) { 
-                tiles[x, Settings.Instance.World.TopOffset+FuelStationRoomDepth] = ObjectType.Empty;
-                 }
+            for (var y = 6; y <= 9; y++) {
+                for (var x = 5; x <= 8; x++) {
+                    tiles[x, Settings.Instance.World.TopOffset + FuelStationRoomDepth] = ObjectType.Empty;
+                }
                 FuelStationRoomDepth += 1;
             }
 
-            playerSpawnLocation = Rand.Range(6, TilesHorizontal - 1);
-            tiles[playerSpawnLocation, Settings.Instance.World.TopOffset - 1] = ObjectType.Player;
-        } 
+            playerSpawnLocation = new Vector2Int(Rand.Range(6, TilesHorizontal - 1), Settings.Instance.World.TopOffset - 1);
+            tiles[playerSpawnLocation.x, playerSpawnLocation.y] = ObjectType.Player;
+        }
     }
 }
