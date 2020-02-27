@@ -11,6 +11,7 @@ namespace Game {
         private int selectedButton = 0;
 
         public StartMenu() {
+            
             buttons = new List<Button> {
                 new Button(new Vector2(Globals.WIDTH / 2f, 100), "data/start_menu/playButton.png", "data/start_menu/playButtonSelected.png", () => {
                     Debug.Log("Play Button Clicked");

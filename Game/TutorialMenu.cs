@@ -14,7 +14,6 @@ namespace Game {
         private void Update() {
             if (Input.GetButtonDown("Drill")) {
                 GameManager.Instance.ShouldStartPlaying = true;
-                SoundManager.Instance.Play("GameMusic");
             }
             if (Input.GetAxisDown("Horizontal") != 0 || Input.GetAxisDown("Vertical") != 0 || Input.GetButtonDown("Refuel")) {
                 tutorialIndex++;

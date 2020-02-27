@@ -22,6 +22,7 @@ namespace Game {
         private int score;
 
         public GameManager() {
+            SoundManager.Instance.Play("MenuMusic");
             startMenu = new StartMenu();
             AddChild(startMenu);
         }
@@ -46,6 +47,8 @@ namespace Game {
                 grid = new GameLoop();
                 LateAddChild(grid);
                 ShowedMenu = false;
+                SoundManager.Instance.Stop("MenuMusic");
+                SoundManager.Instance.Play("GameMusic");
             }
 
             if (ShouldStopPlaying && !StoppedPlaying) {
@@ -79,6 +82,7 @@ namespace Game {
                 leaderboard?.Destroy();
                 startMenu = new StartMenu();
                 AddChild(startMenu);
+                SoundManager.Instance.Play("MenuMusic");
             }
 
             if (ShouldShowLeaderboard && !ShowedLeaderboard) {
