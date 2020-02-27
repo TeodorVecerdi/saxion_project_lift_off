@@ -13,6 +13,7 @@ namespace Game {
             this.refillPointY = refillPointY;
             refillsLeft = maxRefills;
         }
+        
         public bool IsPlayerOnRefillPoint(int playerX, int playerY) => playerX == refillPointX && playerY == refillPointY;
         public bool CanPlayerRefill() => refillsLeft > 0;
         public void ReduceRefillsLeft() => refillsLeft--;

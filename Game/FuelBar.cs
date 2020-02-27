@@ -9,22 +9,21 @@ namespace Game {
         private float showIndicatorTimeLeft = showIndicatorTime;
         private bool shouldShowIndicator1;
         private bool shouldShowIndicator2;
-        private bool showingIndicator;
+        private bool showingIndicator = true;
 
         private float fuelAmount = 60000f;
         private float fuelCapacity = 60000f;
 
         public FuelBar() {
-            border = Texture2D.GetInstance("data/fuelbar_border.png");
-            fuel = Texture2D.GetInstance("data/fuelbar_fuel.png");
-            background = Texture2D.GetInstance("data/fuelbar_background.png");
-            fuelLowIndicator = Texture2D.GetInstance("data/fuel_low_indicator.png");
-            fuelLowIndicator2bg = Texture2D.GetInstance("data/fuel_low_indicator2_bg.png");
-            fuelLowIndicator2fg = Texture2D.GetInstance("data/fuel_low_indicator2_fg.png");
+            border = Texture2D.GetInstance("data/fuelbar/border.png");
+            fuel = Texture2D.GetInstance("data/fuelbar/fuel.png");
+            background = Texture2D.GetInstance("data/fuelbar/background.png");
+            fuelLowIndicator = Texture2D.GetInstance("data/fuelbar/fuel_low_indicator.png");
+            fuelLowIndicator2bg = Texture2D.GetInstance("data/fuelbar/fuel_low_indicator2_bg.png");
+            fuelLowIndicator2fg = Texture2D.GetInstance("data/fuelbar/fuel_low_indicator2_fg.png");
         }
 
         public void ChangeFuel(float amount) => fuelAmount += amount;
-        public void SetFuelCapacity(float amount) => fuelCapacity = amount;
         public void Refuel() => fuelAmount = fuelCapacity;
 
         public float FuelAmount {
@@ -32,16 +31,24 @@ namespace Game {
             set => fuelAmount = value;
         }
 
+        public float FuelCapacity {
+            get => fuelCapacity;
+            set => fuelCapacity = value;
+        }
+
         private void Update() {
-            shouldShowIndicator1 = fuelAmount <= Settings.FuelBarIndicatorThresholdMinor * fuelCapacity;
-            shouldShowIndicator2 = fuelAmount <= Settings.FuelBarIndicatorThresholdMajor * fuelCapacity;
+            shouldShowIndicator1 = fuelAmount <= Settings.Instance.FuelBarIndicatorThresholdMinor * fuelCapacity;
+            shouldShowIndicator2 = fuelAmount <= Settings.Instance.FuelBarIndicatorThresholdMajor * fuelCapacity;
             if (shouldShowIndicator1) {
+                SoundManager.Instance.Play("fuelLow", false);
                 if (showIndicatorTimeLeft <= 0) {
                     showingIndicator = !showingIndicator;
                     showIndicatorTimeLeft = showIndicatorTime;
                 }
 
                 showIndicatorTimeLeft -= Time.deltaTime;
+            } else {
+                SoundManager.Instance.Stop("fuelLow");
             }
         }
 

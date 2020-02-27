@@ -14,7 +14,7 @@ namespace Game {
             buttons = new List<Button> {
                 new Button(new Vector2(Globals.WIDTH / 2f, 100), "data/start_menu/playButton.png", "data/start_menu/playButtonSelected.png", () => {
                     Debug.Log("Play Button Clicked");
-                    gameManager.ShouldStartPlaying = true;
+                    gameManager.ShouldShowTutorial = true;
                 }),
                 new Button(new Vector2(Globals.WIDTH / 2f, 300), "data/start_menu/quitButton.png", "data/start_menu/quitButtonSelected.png", () => {
                     Debug.Log("Quit Button Clicked");
@@ -31,7 +31,7 @@ namespace Game {
             if (selectedButton < 0) selectedButton += buttons.Count;
             buttons.ForEach(button => button.IsSelected = false);
             buttons[selectedButton].IsSelected = true;
-            if (Input.GetKeyDown(Key.ENTER)) buttons[selectedButton].Click();
+            if (Input.GetButtonDown("Drill")) buttons[selectedButton].Click();
         }
 
         protected override void RenderSelf(GLContext glContext) {

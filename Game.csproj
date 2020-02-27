@@ -35,6 +35,10 @@
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>packages\Newtonsoft.Json.11.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -49,24 +53,22 @@
     <Compile Include="Game\GameOver.cs" />
     <Compile Include="Game\Globals.cs" />
     <Compile Include="Game\GameLoop.cs" />
+    <Compile Include="Game\Player.cs" />
     <Compile Include="Game\Settings.cs" />
+    <Compile Include="Game\SoundManager.cs" />
     <Compile Include="Game\StartMenu.cs" />
+    <Compile Include="Game\TutorialMenu.cs" />
     <Compile Include="Game\Utils\Debug.cs" />
     <Compile Include="Game\Utils\ExtensionMethods.cs" />
     <Compile Include="Game\Utils\FontLoader.cs" />
     <Compile Include="Game\Utils\Math.cs" />
     <Compile Include="Game\Utils\Rand.cs" />
     <Compile Include="Game\Utils\RandomNumberGenerator.cs" />
-    <Compile Include="Game\Utils\XmlLoader.cs" />
     <Compile Include="Game\Program.cs" />
     <Compile Include="Game\Properties\AssemblyInfo.cs" />
     <Compile Include="Game\VisibilitySystem.cs" />
     <Compile Include="Game\GameManager.cs" />
-    <Compile Include="Game\WorldGen\Walker.cs" />
     <Compile Include="Game\WorldGen\WeightedRandomizer.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="GXPEngine.csproj">
@@ -78,6 +80,9 @@
     <Content Include="data\**" />
     <Content Include="Game\TODO.md" />
     <Content Include="lib\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Game.WorldGen {
+namespace Game {
     internal class WeightedChance {
         public ObjectType Type;
         public float Chance;

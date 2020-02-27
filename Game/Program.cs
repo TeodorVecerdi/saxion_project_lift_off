@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using GXPEngine;
-using GXPEngine.OpenGL;
 
 namespace Game {
     public class Program : GXPEngine.Game {
