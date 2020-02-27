@@ -34,6 +34,9 @@ namespace Game {
                 ShouldStopPlaying = false;
                 gameOver = new GameOver(grid.Score);
                 grid.Destroy();
+                SoundManager.Instance.Stop("fuelLow");
+                SoundManager.Instance.Stop("ambient");
+                SoundManager.Instance.Stop("drilling");
                 LateAddChild(gameOver);
             }
         }

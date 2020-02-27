@@ -15,7 +15,7 @@ namespace Game {
         private float timeSinceLastMovement;
         private float drillTimeLeft;
         private float drillTimeOriginal;
-        private float drillSpeed = 1f;
+        private float drillSpeed = 1.35f;
         private float cameraVelocity;
         private int FuelStationRoomDepth = 246;
 
