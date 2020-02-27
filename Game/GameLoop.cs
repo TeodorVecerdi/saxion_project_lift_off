@@ -334,6 +334,7 @@ namespace Game {
             Score += (int)(fuelStation.FuelAmount / 100);
             Score += (int)(fuelStation2.FuelAmount / 100);
             GameManager.Instance.ShouldStopPlaying = true;
+            SoundManager.Instance.Stop("GameMusic");
             SoundManager.Instance.Play("gameover");
         }
 

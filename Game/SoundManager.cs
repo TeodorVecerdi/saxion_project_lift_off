@@ -22,6 +22,7 @@ namespace Game {
             sounds.Add("fuelLow", new Sound("data/sounds/LowFuel.wav", true));
             sounds.Add("fuelVeryLow", new Sound("data/sounds/VeryLowFuel.wav", true));
             sounds.Add("ambient", new Sound("data/sounds/PlayerGeneral_Ambience_V1.wav", true));
+            sounds.Add("GameMusic", new Sound("data/sounds/GameMusic.wav", true));
         }
 
         public void Play(string soundName, bool restartIfAlreadyPlaying = true) {
