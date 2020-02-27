@@ -210,7 +210,10 @@ namespace Game {
 
         private void UpdateMovement(ref int playerX, ref int playerY, ref bool rangeCheck, ref bool movedThisFrame, ref Vector2Int movementDirection, ref Vector2Int desiredPosition) {
             if (movementDirection == Vector2Int.zero) return;
-
+            
+            if (movementDirection.x == -1) player.Flip = false;
+            else if (movementDirection.x == 1) player.Flip = true;
+            
             // If player can move
             if (rangeCheck && tiles[desiredPosition.x, desiredPosition.y] == ObjectType.Empty && !movedThisFrame) {
                 // Do the actual movement
