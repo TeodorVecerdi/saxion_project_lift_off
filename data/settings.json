@@ -1,6 +1,7 @@
 {
   "RenderDistance": 10,
-  "InitialFuelRefills": 10,
+  "FirstFuelStationFuel": 500000.0,
+  "SecondFuelStationFuel": 400000.0,
   "IdleFuelConsumption": -200.0,
   "DrillOnFuelConsumption": -333.0,
   "DrillingFuelConsumption": -1000.0,

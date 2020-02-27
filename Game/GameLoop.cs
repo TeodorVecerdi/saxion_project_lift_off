@@ -88,7 +88,7 @@ namespace Game {
 
         private void InitializeSceneObjects(int playerSpawnLocation) {
             drillProgressIndicator = new DrillProgressIndicator {Alpha = 0};
-            fuelStation = new FuelStation("data/fuel_station.png", 3, Settings.Instance.World.TopOffset - 1, Settings.Instance.InitialFuelRefills);
+            fuelStation = new FuelStation("data/fuel_station.png", 3, Settings.Instance.World.TopOffset - 1, Settings.Instance.FirstFuelStationFuel);
             fuelStation.Move(0, 2 * Globals.TILE_SIZE);
 
             player = new Player();
@@ -249,9 +249,8 @@ namespace Game {
         }
 
         private void UpdateFuel(ref int playerX, ref int playerY) {
-            if (fuelStation.IsPlayerOnRefillPoint(playerX, playerY) && Input.GetButtonDown("Refuel") && fuelStation.CanPlayerRefill()) {
-                fuelBar.Refuel();
-                fuelStation.ReduceRefillsLeft();
+            if (fuelStation.IsPlayerOnRefillPoint(playerX, playerY) && Input.GetButtonDown("Refuel")) {
+                fuelStation.Refuel(fuelBar);
             }
 
             fuelBar.ChangeFuel(Settings.Instance.IdleFuelConsumption * Time.deltaTime);
