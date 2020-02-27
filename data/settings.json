@@ -1,0 +1,321 @@
+{
+  "RenderDistance": 10,
+  "InitialFuelRefills": 10,
+  "IdleFuelConsumption": -200.0,
+  "DrillOnFuelConsumption": -333.0,
+  "DrillingFuelConsumption": -1000.0,
+  "GravityFrequency": 0.085,
+  "PlayerMovementThreshold": 0.25,
+  "FuelBarIndicatorThresholdMinor": 0.3333333,
+  "FuelBarIndicatorThresholdMajor": 0.1,
+  "DrillSpeedUpgradeMultiplier": 0.75,
+  "ViewDistanceUpgradeMultiplier": 1.125,
+  "FuelCapacityUpgradeMultiplier": 1.25,
+  "World": {
+    "TopOffset": 6,
+    "MediumDirtStartDepth": 200,
+    "HardDirtStartDepth": 300,
+    "Depth": 400,
+    "UpgradeCount": 50,
+    "BlockSize": 10.0,
+    "OreChance": 0.1,
+    "StoneChance": 0.1,
+    "UpgradeTypes": [
+      21,
+      22,
+      23
+    ],
+    "OreDepthSpawning": {
+      "Stone": [
+        {
+          "FromY": 0,
+          "ToY": 100,
+          "Chance": 0.0
+        },
+        {
+          "FromY": 101,
+          "ToY": 200,
+          "Chance": 0.2
+        },
+        {
+          "FromY": 201,
+          "ToY": 300,
+          "Chance": 0.3
+        },
+        {
+          "FromY": 301,
+          "ToY": 400,
+          "Chance": 0.5
+        }
+      ],
+      "Coal": [
+        {
+          "FromY": 5,
+          "ToY": 75,
+          "Chance": 0.1
+        },
+        {
+          "FromY": 76,
+          "ToY": 150,
+          "Chance": 0.06
+        },
+        {
+          "FromY": 151,
+          "ToY": 300,
+          "Chance": 0.075
+        },
+        {
+          "FromY": 301,
+          "ToY": 400,
+          "Chance": 0.125
+        }
+      ],
+      "Gold": [
+        {
+          "FromY": 35,
+          "ToY": 100,
+          "Chance": 0.04
+        },
+        {
+          "FromY": 101,
+          "ToY": 150,
+          "Chance": 0.1
+        },
+        {
+          "FromY": 151,
+          "ToY": 200,
+          "Chance": 0.15
+        },
+        {
+          "FromY": 201,
+          "ToY": 400,
+          "Chance": 0.05
+        }
+      ],
+      "Emerald": [
+        {
+          "FromY": 40,
+          "ToY": 75,
+          "Chance": 0.007
+        },
+        {
+          "FromY": 76,
+          "ToY": 150,
+          "Chance": 0.05
+        },
+        {
+          "FromY": 151,
+          "ToY": 250,
+          "Chance": 0.075
+        },
+        {
+          "FromY": 251,
+          "ToY": 320,
+          "Chance": 0.085
+        },
+        {
+          "FromY": 321,
+          "ToY": 400,
+          "Chance": 0.1
+        }
+      ],
+      "Sapphire": [
+        {
+          "FromY": 50,
+          "ToY": 100,
+          "Chance": 0.0001
+        },
+        {
+          "FromY": 101,
+          "ToY": 150,
+          "Chance": 0.01
+        },
+        {
+          "FromY": 151,
+          "ToY": 225,
+          "Chance": 0.04
+        },
+        {
+          "FromY": 226,
+          "ToY": 300,
+          "Chance": 0.065
+        },
+        {
+          "FromY": 301,
+          "ToY": 400,
+          "Chance": 0.08
+        }
+      ]
+    }
+  },
+  "Tiles": {
+    "Empty": {
+      "Drillable": false,
+      "TexturePath": "data/tiles/empty.png",
+      "ScoreAmount": 0,
+      "TimeToDrill": 0.0,
+      "FuelAmount": 0.0
+    },
+    "Background": {
+      "Drillable": false,
+      "TexturePath": "data/tiles/background.png",
+      "ScoreAmount": 0,
+      "TimeToDrill": 0.0,
+      "FuelAmount": 0.0
+    },
+    "Player": {
+      "Drillable": false,
+      "TexturePath": "data/player.png",
+      "ScoreAmount": 0,
+      "TimeToDrill": 0.0,
+      "FuelAmount": 0.0
+    },
+    "Dirt": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/dirt.png",
+      "ScoreAmount": 0,
+      "TimeToDrill": 0.1,
+      "FuelAmount": 0.0
+    },
+    "MediumDirt": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/mediumDirt.png",
+      "ScoreAmount": 0,
+      "TimeToDrill": 0.15,
+      "FuelAmount": 0.0
+    },
+    "HardDirt": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/hardDirt.png",
+      "ScoreAmount": 0,
+      "TimeToDrill": 0.25,
+      "FuelAmount": 0.0
+    },
+    "Stone": {
+      "Drillable": false,
+      "TexturePath": "data/tiles/stone.png",
+      "ScoreAmount": 0,
+      "TimeToDrill": 0.0,
+      "FuelAmount": 0.0
+    },
+    "MediumStone": {
+      "Drillable": false,
+      "TexturePath": "data/tiles/mediumStone.png",
+      "ScoreAmount": 0,
+      "TimeToDrill": 0.0,
+      "FuelAmount": 0.0
+    },
+    "HardStone": {
+      "Drillable": false,
+      "TexturePath": "data/tiles/hardStone.png",
+      "ScoreAmount": 0,
+      "TimeToDrill": 0.0,
+      "FuelAmount": 0.0
+    },
+    "Coal": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/coal.png",
+      "ScoreAmount": 25,
+      "TimeToDrill": 0.25,
+      "FuelAmount": 300.0
+    },
+    "MediumCoal": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/mediumCoal.png",
+      "ScoreAmount": 25,
+      "TimeToDrill": 0.25,
+      "FuelAmount": 300.0
+    },
+    "HardCoal": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/hardCoal.png",
+      "ScoreAmount": 25,
+      "TimeToDrill": 0.25,
+      "FuelAmount": 300.0
+    },
+    "Gold": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/gold.png",
+      "ScoreAmount": 50,
+      "TimeToDrill": 0.5,
+      "FuelAmount": 0.0
+    },
+    "MediumGold": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/mediumGold.png",
+      "ScoreAmount": 50,
+      "TimeToDrill": 0.5,
+      "FuelAmount": 0.0
+    },
+    "HardGold": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/hardGold.png",
+      "ScoreAmount": 50,
+      "TimeToDrill": 0.5,
+      "FuelAmount": 0.0
+    },
+    "Emerald": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/emerald.png",
+      "ScoreAmount": 150,
+      "TimeToDrill": 0.75,
+      "FuelAmount": 0.0
+    },
+    "MediumEmerald": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/mediumEmerald.png",
+      "ScoreAmount": 150,
+      "TimeToDrill": 0.75,
+      "FuelAmount": 0.0
+    },
+    "HardEmerald": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/hardEmerald.png",
+      "ScoreAmount": 150,
+      "TimeToDrill": 0.75,
+      "FuelAmount": 0.0
+    },
+    "Sapphire": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/sapphire.png",
+      "ScoreAmount": 300,
+      "TimeToDrill": 1.0,
+      "FuelAmount": 0.0
+    },
+    "MediumSapphire": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/mediumSapphire.png",
+      "ScoreAmount": 300,
+      "TimeToDrill": 1.0,
+      "FuelAmount": 0.0
+    },
+    "HardSapphire": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/hardSapphire.png",
+      "ScoreAmount": 300,
+      "TimeToDrill": 1.0,
+      "FuelAmount": 0.0
+    },
+    "DrillingSpeedUpgrade": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/speedUpgrade.png",
+      "ScoreAmount": 500,
+      "TimeToDrill": 1.0,
+      "FuelAmount": 0.0
+    },
+    "ViewDistanceUpgrade": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/visibilityUpgrade.png",
+      "ScoreAmount": 500,
+      "TimeToDrill": 1.0,
+      "FuelAmount": 0.0
+    },
+    "FuelCapacityUpgrade": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/fuelUpgrade.png",
+      "ScoreAmount": 500,
+      "TimeToDrill": 1.0,
+      "FuelAmount": 0.0
+    }
+  }
+}

@@ -57,7 +57,7 @@ namespace Game {
         public static Settings Instance {
             get {
                 if (instance == null) {
-                    var json = File.ReadAllText("settings.json");
+                    var json = File.ReadAllText("data/settings.json");
                     instance = JsonConvert.DeserializeObject<Settings>(json);
                     instance.Initialize();
                 }
