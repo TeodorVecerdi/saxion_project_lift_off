@@ -18,7 +18,7 @@
     "MediumDirtStartDepth": 200,
     "HardDirtStartDepth": 300,
     "Depth": 400,
-    "UpgradeCount": 5000,
+    "UpgradeCount": 40,
     "BlockSize": 10.0,
     "OreChance": 0.1,
     "StoneChance": 0.1,
