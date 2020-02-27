@@ -37,6 +37,7 @@ namespace Game {
         }
        
         private void Update() {
+            if (GameManager.Instance.StoppedPlaying) return;
             shouldShowIndicator1 = fuelAmount <= Settings.Instance.FuelBarIndicatorThresholdMinor * fuelCapacity;
             shouldShowIndicator2 = fuelAmount <= Settings.Instance.FuelBarIndicatorThresholdMajor * fuelCapacity;
             if (shouldShowIndicator1) {

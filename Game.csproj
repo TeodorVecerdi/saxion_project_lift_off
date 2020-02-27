@@ -52,8 +52,10 @@
     <Compile Include="Game\FuelStation.cs" />
     <Compile Include="Game\FuelStationFuelBar.cs" />
     <Compile Include="Game\GameOver.cs" />
+    <Compile Include="Game\GameOverWin.cs" />
     <Compile Include="Game\Globals.cs" />
     <Compile Include="Game\GameLoop.cs" />
+    <Compile Include="Game\Leaderboard.cs" />
     <Compile Include="Game\Player.cs" />
     <Compile Include="Game\Settings.cs" />
     <Compile Include="Game\SoundManager.cs" />

@@ -5,18 +5,19 @@ namespace Game {
     public class TutorialMenu : GameObject {
         private int tutorialIndex;
         private Texture2D[] tutorialTextures = new Texture2D[6];
-        private GameManager manager;
-        public TutorialMenu(GameManager manager) {
-            this.manager = manager;
+        public TutorialMenu() {
             for (int i = 0; i < tutorialTextures.Length; i++) {
                 tutorialTextures[i] = Texture2D.GetInstance($"data/tutorial/tutorial{i+1}.png");
             }
         }
 
         private void Update() {
-            if (Input.GetAxisDown("Horizontal") != 0 || Input.GetAxisDown("Vertical") != 0 || Input.GetButtonDown("Drill") || Input.GetButtonDown("Refuel")) {
+            if (Input.GetButtonDown("Drill")) {
+                GameManager.Instance.ShouldStartPlaying = true;
+            }
+            if (Input.GetAxisDown("Horizontal") != 0 || Input.GetAxisDown("Vertical") != 0 || Input.GetButtonDown("Refuel")) {
                 tutorialIndex++;
-                if (tutorialIndex >= tutorialTextures.Length) manager.ShouldStartPlaying = true;
+                if (tutorialIndex >= tutorialTextures.Length) GameManager.Instance.ShouldStartPlaying = true;
             }
         }
 

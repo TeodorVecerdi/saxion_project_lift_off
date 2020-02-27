@@ -10,11 +10,11 @@ namespace Game {
         private Texture2D startMenuBackgroundTexture;
         private int selectedButton = 0;
 
-        public StartMenu(GameManager gameManager) {
+        public StartMenu() {
             buttons = new List<Button> {
                 new Button(new Vector2(Globals.WIDTH / 2f, 100), "data/start_menu/playButton.png", "data/start_menu/playButtonSelected.png", () => {
                     Debug.Log("Play Button Clicked");
-                    gameManager.ShouldShowTutorial = true;
+                    GameManager.Instance.ShouldShowTutorial = true;
                 }),
                 new Button(new Vector2(Globals.WIDTH / 2f, 300), "data/start_menu/quitButton.png", "data/start_menu/quitButtonSelected.png", () => {
                     Debug.Log("Quit Button Clicked");
@@ -35,6 +35,7 @@ namespace Game {
         }
 
         protected override void RenderSelf(GLContext glContext) {
+            glContext.SetColor(0xff,0xff,0xff,0xff);
             startMenuBackgroundTexture.Bind();
             glContext.DrawQuad(startMenuBackgroundTexture.TextureVertices(), Globals.QUAD_UV);
             buttons.ForEach(button => button.Draw(glContext));

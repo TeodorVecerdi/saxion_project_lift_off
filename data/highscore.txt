@@ -1,5 +1,0 @@
-Henk:123
-Teodor:44
-Kirsi:142
-Duy:5512
-Sofie:12525

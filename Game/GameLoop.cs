@@ -19,10 +19,11 @@ namespace Game {
         private float cameraVelocity;
         private int FuelStationRoomDepth = 246;
 
+        public bool GotTreasure = true;
+        private bool hasTreasure;
         private bool startedDrilling;
         private bool canStartDrilling;
         private bool isDrillOn;
-        private bool hasTreasure;
 
         private ObjectType[,] tiles;
         private ObjectType[,] tilesBackground;
@@ -31,17 +32,15 @@ namespace Game {
         private Camera camera;
         private Player player;
         private FuelBar fuelBar;
-        public FuelStation fuelStation;
-        public FuelStation fuelStation2;
+        private FuelStation fuelStation;
+        private FuelStation fuelStation2;
         private VisibilitySystem visibility;
         private DrillProgressIndicator drillProgressIndicator;
         private Vector2Int lastDrillDirection = Vector2Int.zero;
-        private GameManager gameManager;
 
         public ObjectType[,] Tiles => tiles;
 
-        public GameLoop(GameManager gameManager) {
-            this.gameManager = gameManager;
+        public GameLoop() {
             TilesHorizontal = (int) (Globals.WIDTH / Globals.TILE_SIZE);
             tiles = new ObjectType[TilesHorizontal, Settings.Instance.World.TopOffset + Settings.Instance.World.Depth];
             tilesBackground = new ObjectType[TilesHorizontal, Settings.Instance.World.TopOffset + Settings.Instance.World.Depth];
@@ -51,8 +50,8 @@ namespace Game {
         }
 
         private void Update() {
+            if (GameManager.Instance.StoppedPlaying) return;
             DrawHud();
-
             var (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
             var movementDirection = new Vector2Int((int) Input.GetAxisDown("Horizontal"), (int) Input.GetAxisDown("Vertical"));
             var drillDirection = new Vector2Int((int) Input.GetAxis("Horizontal"), (int) Input.GetAxis("Vertical"));
@@ -235,8 +234,8 @@ namespace Game {
                 desiredPosition = movementDirection.Add(playerX, playerY);
                 rangeCheck = desiredPosition.x >= 0 && desiredPosition.x < TilesHorizontal && desiredPosition.y >= 0 && desiredPosition.y < TilesVertical;
                 if (playerY <= Settings.Instance.World.TopOffset && hasTreasure) {
-                    Debug.LogWarning("YOU WON GOOD JOB BYE");
-                    gameManager.ShouldStopPlaying = true;
+                    GotTreasure = true;
+                    FinishGame();
                     return;
                 }
             }
@@ -276,7 +275,7 @@ namespace Game {
             if (startedDrilling) fuelBar.ChangeFuel(Settings.Instance.DrillingFuelConsumption * Time.deltaTime);
 
             if (fuelBar.FuelAmount <= 0) {
-                gameManager.ShouldStopPlaying = true;
+                FinishGame();
             }
         }
 
@@ -295,6 +294,12 @@ namespace Game {
         private void UpdateCamera() {
             camera.y = Mathf.SmoothDamp(camera.y, player.y, ref cameraVelocity, 0.3f);
             camera.y = Mathf.Clamp(camera.y, Globals.HEIGHT / 2f - Globals.TILE_SIZE * 2, (Settings.Instance.World.Depth + Settings.Instance.World.TopOffset) * Globals.TILE_SIZE - Globals.HEIGHT / 2f);
+        }
+
+        private void FinishGame() {
+            Score += (int)(fuelStation.FuelAmount / 100);
+            Score += (int)(fuelStation2.FuelAmount / 100);
+            GameManager.Instance.ShouldStopPlaying = true;
         }
 
         public void DrawTileGrid(GLContext glContext) {

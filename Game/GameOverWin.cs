@@ -7,26 +7,25 @@ using System.Text;
 using GXPEngine.Core;
 
 namespace Game {
-    public class GameOver : GameObject {
+    public class GameOverWin : GameObject {
         private int score;
         private Texture2D backgroundTexture;
         private Canvas canvas;
 
-        public GameOver(int score) {
+        public GameOverWin(int score) {
             canvas = new Canvas(Globals.WIDTH, Globals.HEIGHT);
             this.score = score;
-            backgroundTexture = Texture2D.GetInstance("data/loseGameOver.png");
+            backgroundTexture = Texture2D.GetInstance("data/winGameOver.png");
             AddChild(canvas);
         }
 
         private void Update() {
             canvas.graphics.Clear(Color.Transparent);
-            canvas.graphics.DrawString("Game Over", FontLoader.Instance[128f], Brushes.White, Globals.WIDTH / 2f, 64f, FontLoader.CenterAlignment);
-            canvas.graphics.DrawString($"Score", FontLoader.Instance[64f], Brushes.White, Globals.WIDTH/2f,128f+32f, FontLoader.CenterAlignment);
-            canvas.graphics.DrawString($"{score}", FontLoader.Instance[64f], Brushes.White, Globals.WIDTH/2f,128f+64f+32f, FontLoader.CenterAlignment);
+            canvas.graphics.DrawString($"Score", FontLoader.Instance[64f], Brushes.White, Globals.WIDTH/2f,320f, FontLoader.CenterAlignment);
+            canvas.graphics.DrawString($"{score}", FontLoader.Instance[64f], Brushes.White, Globals.WIDTH/2f,320f+48f, FontLoader.CenterAlignment);
             canvas.graphics.DrawString($"press any button", FontLoader.Instance[48f], Brushes.White, Globals.WIDTH/2f,Globals.HEIGHT - 48f, FontLoader.CenterAlignment);
             if (Input.GetAxisDown("Horizontal") != 0 || Input.GetAxisDown("Vertical") != 0 || Input.GetButtonDown("Drill") || Input.GetButtonDown("Refuel")) {
-                GameManager.Instance.ShouldShowMenu = true;
+                GameManager.Instance.ShouldShowLeaderboard = true;
             }
         }
 
