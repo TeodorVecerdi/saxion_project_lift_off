@@ -348,7 +348,7 @@ namespace Game {
                 return;
             }
 
-            if (playerY <= Settings.Instance.World.TopOffset + 3) {
+            if (playerY <= Settings.Instance.World.TopOffset + 2) {
                 var alpha = Math.Map(playerY, Settings.Instance.World.TopOffset + 2, Settings.Instance.World.TopOffset - 1, 1f, 0f);
                 if (playerY < Settings.Instance.World.TopOffset) alpha = 0f;
                 visibility.Alpha = alpha;
