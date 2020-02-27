@@ -186,7 +186,7 @@ namespace Game {
                     // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                     switch (minedTile) {
                         case ObjectType.DrillingSpeedUpgrade: {
-                            drillSpeed *= Settings.Instance.DrillSpeedUpgradeMultiplier;
+                            drillSpeed += Settings.Instance.DrillSpeedUpgradeMultiplier;
                             break;
                         }
                         case ObjectType.ViewDistanceUpgrade: {
