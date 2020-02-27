@@ -13,15 +13,14 @@ namespace Game {
         public StartMenu() {
             
             buttons = new List<Button> {
-                new Button(new Vector2(Globals.WIDTH / 2f, 100), "data/start_menu/playButton.png", "data/start_menu/playButtonSelected.png", () => {
+                new Button(new Vector2(Globals.WIDTH / 2f, 300), "data/start_menu/playButton.png", "data/start_menu/playButtonSelected.png", () => {
                     Debug.Log("Play Button Clicked");
                     GameManager.Instance.ShouldShowTutorial = true;
                 }),
-                new Button(new Vector2(Globals.WIDTH / 2f, 300), "data/start_menu/quitButton.png", "data/start_menu/quitButtonSelected.png", () => {
+                new Button(new Vector2(Globals.WIDTH / 2f, 450), "data/start_menu/quitButton.png", "data/start_menu/quitButtonSelected.png", () => {
                     Debug.Log("Quit Button Clicked");
                     Environment.Exit(0);
-                }),
-                new Button(new Vector2(Globals.WIDTH / 2f, 500), "data/start_menu/creditsButton.png", "data/start_menu/creditsButtonSelected.png", () => Debug.Log("Credits Button Clicked"))
+                })
             };
             startMenuBackgroundTexture = Texture2D.GetInstance("data/start_menu/startMenuBackground.png");
         }

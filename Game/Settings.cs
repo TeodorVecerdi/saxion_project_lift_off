@@ -76,6 +76,7 @@ namespace Game {
         public float IdleFuelConsumption;
         public float DrillOnFuelConsumption;
         public float DrillingFuelConsumption;
+        public float TreasureFuelConsumption;
         public float GravityFrequency;
         public float PlayerMovementThreshold;
         public float FuelBarIndicatorThresholdMinor;
