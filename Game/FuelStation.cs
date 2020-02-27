@@ -36,7 +36,6 @@ namespace Game {
             if (availableFuel > requiredFuel) availableFuel = requiredFuel;
             fuelBar.FuelAmount += availableFuel;
             fuelAmount -= availableFuel;
-            Debug.Log(availableFuel);
         }
 
         public void Draw(GLContext glContext) {

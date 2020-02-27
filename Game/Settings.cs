@@ -48,7 +48,8 @@ namespace Game {
         HardSapphire,
         DrillingSpeedUpgrade,
         ViewDistanceUpgrade,
-        FuelCapacityUpgrade
+        FuelCapacityUpgrade,
+        Treasure
     }
 
     public class Settings {
@@ -105,6 +106,7 @@ namespace Game {
                 {ObjectType.DrillingSpeedUpgrade, Tiles.DrillingSpeedUpgrade},
                 {ObjectType.ViewDistanceUpgrade, Tiles.ViewDistanceUpgrade},
                 {ObjectType.FuelCapacityUpgrade, Tiles.FuelCapacityUpgrade},
+                {ObjectType.Treasure, Tiles.Treasure},
             };
             Tiles.TypeToTile.Values.ToList().ForEach(definition => definition.Texture = Texture2D.GetInstance(definition.TexturePath, true));
             Tiles.HardnessToTile = new Dictionary<ObjectType, List<ObjectType>> {
@@ -156,6 +158,7 @@ namespace Game {
         public TileDefinition DrillingSpeedUpgrade;
         public TileDefinition ViewDistanceUpgrade;
         public TileDefinition FuelCapacityUpgrade;
+        public TileDefinition Treasure;
 
         public Dictionary<ObjectType, TileDefinition> TypeToTile;
         public Dictionary<ObjectType, List<ObjectType>> HardnessToTile;

@@ -17,7 +17,7 @@
     "MediumDirtStartDepth": 200,
     "HardDirtStartDepth": 300,
     "Depth": 400,
-    "UpgradeCount": 30,
+    "UpgradeCount": 5000,
     "BlockSize": 10.0,
     "OreChance": 0.1,
     "StoneChance": 0.1,
@@ -316,6 +316,13 @@
       "TexturePath": "data/tiles/fuelUpgrade.png",
       "ScoreAmount": 200,
       "TimeToDrill": 1.0,
+      "FuelAmount": 0.0
+    },
+    "Treasure": {
+      "Drillable": true,
+      "TexturePath": "data/tiles/treasure.png",
+      "ScoreAmount": 0,
+      "TimeToDrill": 5.0,
       "FuelAmount": 0.0
     }
   }

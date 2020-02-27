@@ -26,7 +26,6 @@ namespace Game {
 
         private (float[], float[]) CalculateFuelVertices() {
             var offset = Math.Map(fuelStation.FuelAmount, 0f, fuelStation.FuelCapacity, 1f, 0f);
-            Debug.Log($"{fuelStation.FuelAmount}/{fuelStation.FuelCapacity}, offset:{offset}");
             var x = fuelStation.x;
             var y = fuelStation.y;
             var width = (float)fuel.width;
