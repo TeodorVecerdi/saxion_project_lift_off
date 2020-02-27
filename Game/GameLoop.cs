@@ -22,6 +22,7 @@ namespace Game {
         private bool startedDrilling;
         private bool canStartDrilling;
         private bool isDrillOn;
+        private bool hasTreasure;
 
         private ObjectType[,] tiles;
         private ObjectType[,] tilesBackground;
@@ -131,7 +132,8 @@ namespace Game {
                 player.AnimationState = isDrillOn ? AnimationState.DrillOn : AnimationState.Idle;
             }
 
-            if (!isDrillOn || !rangeCheck) return;
+            var drillDirectionRangeCheck = desiredDrillDirection.x >= 0 && desiredDrillDirection.x < TilesHorizontal && desiredDrillDirection.y >= 0 && desiredDrillDirection.y < TilesVertical;
+            if (!isDrillOn || !rangeCheck || !drillDirectionRangeCheck) return;
 
             if (!canStartDrilling && movementDirection != Vector2Int.zero) {
                 canStartDrilling = true;
@@ -182,8 +184,7 @@ namespace Game {
                 startedDrilling = false;
                 canStartDrilling = false;
 
-                // Do something if a pickup was mined
-                if (Settings.Instance.World.UpgradeTypes.Contains(minedTile)) {
+                    // Do something if a special tile was mined
                     // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                     switch (minedTile) {
                         case ObjectType.DrillingSpeedUpgrade: {
@@ -200,10 +201,11 @@ namespace Game {
                             fuelBar.FuelAmount += (fuelBar.FuelCapacity - oldFuelCapacity);
                             break;
                         }
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(minedTile), $"Mined tile {minedTile} is not an upgrade type");
+                        case ObjectType.Treasure: {
+                            hasTreasure = true;
+                            break;
+                        }
                     }
-                }
 
                 // Recalculate position
                 (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
@@ -226,11 +228,15 @@ namespace Game {
                 player.Move(movementDirection.ToWorld().ToVec2());
                 tiles[playerX, playerY] = ObjectType.Empty;
                 tiles[desiredPosition.x, desiredPosition.y] = ObjectType.Player;
-
                 // Recalculate position
                 (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
                 desiredPosition = movementDirection.Add(playerX, playerY);
                 rangeCheck = desiredPosition.x >= 0 && desiredPosition.x < TilesHorizontal && desiredPosition.y >= 0 && desiredPosition.y < TilesVertical;
+                if (playerY <= Settings.Instance.World.TopOffset && hasTreasure) {
+                    Debug.LogWarning("YOU WON GOOD JOB BYE");
+                    gameManager.ShouldStopPlaying = true;
+                    return;
+                }
             }
 
             timeSinceLastMovement = 0f;
@@ -373,6 +379,8 @@ namespace Game {
                 FuelStationRoomDepth += 1;
             }
 
+            var (treasureX, treasureY) = (Rand.Range(0, TilesHorizontal), Rand.Range(TilesVertical - 10, TilesVertical - 1));
+            tiles[treasureX, treasureY] = ObjectType.Treasure;
             playerSpawnLocation = new Vector2Int(Rand.Range(6, TilesHorizontal - 1), Settings.Instance.World.TopOffset - 1);
             tiles[playerSpawnLocation.x, playerSpawnLocation.y] = ObjectType.Player;
         }
