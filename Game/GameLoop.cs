@@ -91,7 +91,7 @@ namespace Game {
             drillProgressIndicator = new DrillProgressIndicator {Alpha = 0};
             fuelStation = new FuelStation("data/fuel_station.png", 3, Settings.Instance.World.TopOffset - 1, Settings.Instance.InitialFuelRefills);
             fuelStation.Move(0, 2 * Globals.TILE_SIZE);
-            fuelStation2 = new FuelStation("data/fuel_station.png", 7, Settings.World.TopOffset - 1, Settings.InitialFuelRefills2);
+            fuelStation2 = new FuelStation("data/fuel_station.png", 7, Settings.Instance.World.TopOffset - 1, Settings.Instance.InitialFuelRefills2);
             fuelStation2.Move(4 *Globals.TILE_SIZE, 3 * Globals.TILE_SIZE);
 
             player = new Player();
@@ -214,7 +214,10 @@ namespace Game {
 
         private void UpdateMovement(ref int playerX, ref int playerY, ref bool rangeCheck, ref bool movedThisFrame, ref Vector2Int movementDirection, ref Vector2Int desiredPosition) {
             if (movementDirection == Vector2Int.zero) return;
-
+            
+            if (movementDirection.x == -1) player.Flip = false;
+            else if (movementDirection.x == 1) player.Flip = true;
+            
             // If player can move
             if (rangeCheck && tiles[desiredPosition.x, desiredPosition.y] == ObjectType.Empty && !movedThisFrame) {
                 // Do the actual movement
@@ -255,20 +258,16 @@ namespace Game {
                 fuelStation.ReduceRefillsLeft();
             }
 
-<<<<<<< HEAD
             if (fuelStation2.IsPlayerOnRefillPoint(playerX, playerY) && Input.GetButtonDown("Refuel") && fuelStation2.CanPlayerRefill())
             {
                 fuelBar.Refuel();
                 fuelStation2.ReduceRefillsLeft();
             }
 
-            fuelBar.ChangeFuel(Settings.IdleFuelDepletion * Time.deltaTime);
-=======
             fuelBar.ChangeFuel(Settings.Instance.IdleFuelConsumption * Time.deltaTime);
             if (isDrillOn) fuelBar.ChangeFuel(Settings.Instance.DrillOnFuelConsumption * Time.deltaTime);
             if (startedDrilling) fuelBar.ChangeFuel(Settings.Instance.DrillingFuelConsumption * Time.deltaTime);
-            
->>>>>>> d5bcf81b87c7fac644690383b292184943990bdd
+
             if (fuelBar.FuelAmount <= 0) {
                 gameManager.ShouldStopPlaying = true;
             }
@@ -310,14 +309,9 @@ namespace Game {
         protected override void RenderSelf(GLContext glContext) {
             glContext.SetColor(0xff, 0xff, 0xff, 0xff);
             topBackground.Bind();
-<<<<<<< HEAD
             glContext.DrawQuad(topBackground.TextureVertices(1, offset: new Vector2(0, -2*Globals.TILE_SIZE)), Globals.QUAD_UV);
             fuelStation.Draw(glContext); 
             fuelStation2.Draw(glContext);
-=======
-            glContext.DrawQuad(topBackground.TextureVertices(1, offset: new Vector2(0, -2 * Globals.TILE_SIZE)), Globals.QUAD_UV);
-            fuelStation.Draw(glContext);
->>>>>>> d5bcf81b87c7fac644690383b292184943990bdd
             DrawTileGrid(glContext);
             drillProgressIndicator.Draw(glContext);
             player.Draw(glContext);

@@ -9,6 +9,7 @@ namespace Game {
     }
 
     public class Player : GameObject {
+        public bool Flip;
         private Texture2D playerTexture;
         private int animationFrame;
         private const float animationSpeed = 0.01666667F * 6F; // 10 FPS
@@ -41,12 +42,23 @@ namespace Game {
 
         public void Draw(GLContext glContext) {
             var animationStateValue = (int) animationState;
-            float[] uv = {
-                animationFrame * uvSize.x, animationStateValue * uvSize.y,
-                animationFrame * uvSize.x + uvSize.x, animationStateValue * uvSize.y,
-                animationFrame * uvSize.x + uvSize.x, animationStateValue * uvSize.y + uvSize.y,
-                animationFrame * uvSize.x, animationStateValue * uvSize.y + uvSize.y
-            };
+            float[] uv;
+            if (Flip) {
+                uv = new [] {
+                    animationFrame * uvSize.x + uvSize.x, animationStateValue * uvSize.y,
+                    animationFrame * uvSize.x, animationStateValue * uvSize.y,
+                    animationFrame * uvSize.x, animationStateValue * uvSize.y + uvSize.y,
+                    animationFrame * uvSize.x + uvSize.x, animationStateValue * uvSize.y + uvSize.y
+                };
+            } else {
+                uv = new [] {
+                    animationFrame * uvSize.x, animationStateValue * uvSize.y,
+                    animationFrame * uvSize.x + uvSize.x, animationStateValue * uvSize.y,
+                    animationFrame * uvSize.x + uvSize.x, animationStateValue * uvSize.y + uvSize.y,
+                    animationFrame * uvSize.x, animationStateValue * uvSize.y + uvSize.y
+                };
+            }
+           
             float[] verts = {x, y, x + Globals.TILE_SIZE, y, x + Globals.TILE_SIZE, y + Globals.TILE_SIZE, x, y + Globals.TILE_SIZE};
             playerTexture.Bind();
             glContext.DrawQuad(verts, uv);

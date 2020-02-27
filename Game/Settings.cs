@@ -46,24 +46,10 @@ namespace Game {
         Sapphire,
         MediumSapphire,
         HardSapphire,
-
-<<<<<<< HEAD
-    public static class Settings {
-        public const int RenderDistance = 10;
-        public const int InitialFuelRefills = 10;
-        public const int InitialFuelRefills2 = 5;
-        public const float IdleFuelDepletion = -333f;
-        public const float DrillFuelDepletion = -1000f;
-        public const float GravityFrequency = 0.085F;
-        public const float PlayerMovementThreshold = 0.25F;
-        public const float FuelBarIndicatorThresholdMinor = 0.3333333F;
-        public const float FuelBarIndicatorThresholdMajor = 0.1F;
-=======
         DrillingSpeedUpgrade,
         ViewDistanceUpgrade,
         FuelCapacityUpgrade
     }
->>>>>>> d5bcf81b87c7fac644690383b292184943990bdd
 
     public class Settings {
         private static Settings instance;
@@ -79,6 +65,7 @@ namespace Game {
         }
         public int RenderDistance;
         public int InitialFuelRefills;
+        public int InitialFuelRefills2;
         public float IdleFuelConsumption;
         public float DrillOnFuelConsumption;
         public float DrillingFuelConsumption;
