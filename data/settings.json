@@ -1,7 +1,7 @@
 {
   "RenderDistance": 10,
   "InitialFuelRefills": 10,
-  "InitialFuelRefills2": 10,
+  "InitialFuelRefills2": 5,
   "IdleFuelConsumption": -200.0,
   "DrillOnFuelConsumption": -333.0,
   "DrillingFuelConsumption": -1000.0,
