@@ -11,8 +11,8 @@ namespace Game {
         private bool shouldShowIndicator2;
         private bool showingIndicator = true;
 
-        private float fuelAmount = 6000f;
-        private float fuelCapacity = 6000f;
+        private float fuelAmount = 60000f;
+        private float fuelCapacity = 60000f;
 
         public FuelBar() {
             border = Texture2D.GetInstance("data/fuelbar/border.png");
@@ -50,6 +50,7 @@ namespace Game {
             } else {
                 SoundManager.Instance.Stop("fuelLow");
             }
+
         }
 
         protected override void RenderSelf(GLContext glContext) {

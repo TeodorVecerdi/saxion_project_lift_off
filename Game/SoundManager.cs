@@ -13,8 +13,13 @@ namespace Game {
             sounds.Add("drilling", new Sound("data/sounds/Drilling_1.wav"));
             sounds.Add("stoneHit", new Sound("data/sounds/StoneHit.wav"));
             sounds.Add("ModeSwitch", new Sound("data/sounds/ModeSwitch.wav"));
+            sounds.Add("gem1", new Sound("data/sounds/gem1.wav"));
+            sounds.Add("gem2", new Sound("data/sounds/gem2.wav"));
+            sounds.Add("gem3", new Sound("data/sounds/gem3.wav"));
+            sounds.Add("gem4", new Sound("data/sounds/gem4.wav"));
             sounds.Add("UpgradeMined", new Sound("data/sounds/UpgradeMined.wav"));
             sounds.Add("fuelLow", new Sound("data/sounds/LowFuel.wav", true));
+            sounds.Add("fuelVeryLow", new Sound("data/sounds/VeryLowFuel.wav", true));
             sounds.Add("ambient", new Sound("data/sounds/PlayerGeneral_Ambience_V1.wav", true));
         }
 

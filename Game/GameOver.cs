@@ -25,7 +25,7 @@ namespace Game {
 
         private void Update() {
             canvas.graphics.Clear(Color.Transparent);
-            graphics.DrawString("Score\n" + score + "\nFuel left\n" + (int)(fuel1 / 1000 + fuel2 / 1000) +"L"+ "\nTotalScore:\n" + (int)(score + (fuel1 / 100) + (fuel2 / 100)), 
+            canvas.graphics.DrawString("Score\n" + score + "\nFuel left\n" + (int)(fuel1 / 1000 + fuel2 / 1000) +"L"+ "\nTotalScore:\n" + (int)(score + (fuel1 / 100) + (fuel2 / 100)), 
                 FontLoader.Instance[64f], Brushes.White, Globals.WIDTH/2f, Globals.HEIGHT / 2f, FontLoader.CenterAlignment);
         }
 
