@@ -194,19 +194,53 @@ namespace Game {
                         }
                         case ObjectType.ViewDistanceUpgrade: {
                             visibility.scale *= Settings.Instance.ViewDistanceUpgradeMultiplier;
+                            SoundManager.Instance.Play("UpgradeMined");
                             break;
                         }
                         case ObjectType.FuelCapacityUpgrade: {
                             var oldFuelCapacity = fuelBar.FuelCapacity;
                             fuelBar.FuelCapacity *= Settings.Instance.FuelCapacityUpgradeMultiplier;
                             fuelBar.FuelAmount += (fuelBar.FuelCapacity - oldFuelCapacity);
+                            SoundManager.Instance.Play("UpgradeMined");
                             break;
                         }
                         case ObjectType.Treasure: {
                             hasTreasure = true;
                             break;
                         }
-                    }
+                    case ObjectType.Coal:
+                    case ObjectType.MediumCoal:
+                    case ObjectType.HardCoal:
+                        {
+                            SoundManager.Instance.Play("gem1");
+                            break;
+                        }
+
+                    case ObjectType.Gold:
+                    case ObjectType.MediumGold:
+                    case ObjectType.HardGold:
+                        {
+                            SoundManager.Instance.Play("gem2");
+                            break;
+                        }
+
+                    case ObjectType.Emerald:
+                    case ObjectType.MediumEmerald:
+                    case ObjectType.HardEmerald:
+                        {
+                            SoundManager.Instance.Play("gem3");
+                            break;
+                        }
+
+                    case ObjectType.Sapphire:
+                    case ObjectType.MediumSapphire:
+                    case ObjectType.HardSapphire:
+                        {
+                            SoundManager.Instance.Play("gem4");
+                            break;
+                        }
+
+                }
 
                 // Recalculate position
                 (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
