@@ -334,6 +334,7 @@ namespace Game {
             Score += (int)(fuelStation.FuelAmount / 100);
             Score += (int)(fuelStation2.FuelAmount / 100);
             GameManager.Instance.ShouldStopPlaying = true;
+            SoundManager.Instance.Play("gameover");
         }
 
         public void DrawTileGrid(GLContext glContext) {
@@ -429,7 +430,6 @@ namespace Game {
             var (treasureX, treasureY) = (Rand.Range(0, TilesHorizontal), Rand.Range(TilesVertical - 10, TilesVertical - 1));
             tiles[treasureX, treasureY] = ObjectType.Treasure;
             playerSpawnLocation = new Vector2Int(Rand.Range(6, TilesHorizontal - 1), Settings.Instance.World.TopOffset - 1);
-            playerSpawnLocation.y = TilesVertical - 11;
             tiles[playerSpawnLocation.x, playerSpawnLocation.y] = ObjectType.Player;
         }
     }

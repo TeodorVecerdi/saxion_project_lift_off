@@ -17,6 +17,7 @@ namespace Game {
             sounds.Add("gem2", new Sound("data/sounds/gem2.wav"));
             sounds.Add("gem3", new Sound("data/sounds/gem3.wav"));
             sounds.Add("gem4", new Sound("data/sounds/gem4.wav"));
+            sounds.Add("gameover", new Sound("data/sounds/gameover.mp3"));
             sounds.Add("UpgradeMined", new Sound("data/sounds/UpgradeMined.wav"));
             sounds.Add("fuelLow", new Sound("data/sounds/LowFuel.wav", true));
             sounds.Add("fuelVeryLow", new Sound("data/sounds/VeryLowFuel.wav", true));
