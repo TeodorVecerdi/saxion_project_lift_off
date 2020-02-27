@@ -19,13 +19,14 @@ namespace Game {
             set => fuelCapacity = value;
         }
 
-        public FuelStation(string texturePath, int refillPointX, int refillPointY, float fuelCapacity) {
+        public FuelStation(string texturePath, int refillPointX, int refillPointY, float fuelCapacity, Vector2 fuelBarOffset) {
             fuelStationTexture = Texture2D.GetInstance(texturePath, true);
             this.refillPointX = refillPointX;
             this.refillPointY = refillPointY;
             this.fuelCapacity = fuelCapacity;
             fuelAmount = fuelCapacity;
             fuelStationFuelBar = new FuelStationFuelBar(this);
+            fuelStationFuelBar.Move(fuelBarOffset);
             AddChild(fuelStationFuelBar);
         }
         

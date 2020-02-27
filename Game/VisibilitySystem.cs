@@ -5,6 +5,7 @@ namespace Game {
     public class VisibilitySystem : GameObject {
         private Texture2D visibilityTexture = Texture2D.GetInstance("data/visibility.png");
         private Transformable playerReference;
+        public float Alpha = 1f;
 
         public VisibilitySystem(Transformable player) {
             playerReference = player;
@@ -31,8 +32,10 @@ namespace Game {
                 x + width / 2f + offsetX, y + height / 2f + offsetY,
                 x - width / 2f + offsetX, y + height / 2f + offsetY
             };
+            glContext.SetColor(0xff,0xff,0xff,(byte)(Alpha*0xff));
             visibilityTexture.Bind();
             glContext.DrawQuad(verts, Globals.QUAD_UV);
+            glContext.SetColor(0xff,0xff,0xff,0xff);
         }
     }
 }

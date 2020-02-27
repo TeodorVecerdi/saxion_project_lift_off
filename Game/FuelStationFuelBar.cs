@@ -14,7 +14,7 @@ namespace Game {
         }
 
         public void Draw(GLContext glContext) {
-            var verts = background.TextureVertices(1f, fuelStation.position);
+            var verts = background.TextureVertices(1f, fuelStation.position + position);
             var (fuel_verts, fuel_uvs) = CalculateFuelVertices();
             background.Bind();
             glContext.DrawQuad(verts, Globals.QUAD_UV);
@@ -26,8 +26,8 @@ namespace Game {
 
         private (float[], float[]) CalculateFuelVertices() {
             var offset = Math.Map(fuelStation.FuelAmount, 0f, fuelStation.FuelCapacity, 1f, 0f);
-            var x = fuelStation.x;
-            var y = fuelStation.y;
+            var x = fuelStation.x + position.x;
+            var y = fuelStation.y + position.y;
             var width = (float)fuel.width;
             var height = (float) fuel.height;
             float[] vertices = {

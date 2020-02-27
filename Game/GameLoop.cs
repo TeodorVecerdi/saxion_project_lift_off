@@ -17,9 +17,9 @@ namespace Game {
         private float drillTimeOriginal;
         private float drillSpeed = 1.35f;
         private float cameraVelocity;
-        private int FuelStationRoomDepth = 246;
+        private int fuelStationRoomDepth = 246;
 
-        public bool GotTreasure = true;
+        public bool GotTreasure;
         private bool hasTreasure;
         private bool startedDrilling;
         private bool canStartDrilling;
@@ -76,6 +76,7 @@ namespace Game {
             UpdateFuel(ref playerX, ref playerY);
             UpdateTimers();
             UpdateCamera();
+            PostUpdateChecks(ref playerY);
         }
 
         private void DrawHud() {
@@ -91,9 +92,9 @@ namespace Game {
 
         private void InitializeSceneObjects(Vector2Int playerSpawnLocation) {
             drillProgressIndicator = new DrillProgressIndicator {Alpha = 0};
-            fuelStation = new FuelStation("data/fuel_station.png", 3, Settings.Instance.World.TopOffset - 1, Settings.Instance.FirstFuelStationFuel);
+            fuelStation = new FuelStation("data/fuel_station_above_ground.png", 3, Settings.Instance.World.TopOffset - 1, Settings.Instance.FirstFuelStationFuel, new Vector2(0,2*Globals.TILE_SIZE - 8));
+            fuelStation2 = new FuelStation("data/fuel_station_below_ground.png", 5, 255, Settings.Instance.SecondFuelStationFuel, new Vector2(3.9f*Globals.TILE_SIZE,2*Globals.TILE_SIZE - 8));
             fuelStation.Move(0, 2 * Globals.TILE_SIZE);
-            fuelStation2 = new FuelStation("data/fuel_station.png", 8, 255, Settings.Instance.SecondFuelStationFuel);
             fuelStation2.Move(5 * Globals.TILE_SIZE, 252 * Globals.TILE_SIZE);
 
             player = new Player();
@@ -134,126 +135,139 @@ namespace Game {
 
             var drillDirectionRangeCheck = desiredDrillDirection.x >= 0 && desiredDrillDirection.x < TilesHorizontal && desiredDrillDirection.y >= 0 && desiredDrillDirection.y < TilesVertical;
             if (!isDrillOn || !rangeCheck || !drillDirectionRangeCheck) return;
-
-            if (!canStartDrilling && movementDirection != Vector2Int.zero) {
-                canStartDrilling = true;
-            }
-
+            if (!canStartDrilling && movementDirection != Vector2Int.zero) canStartDrilling = true;
             var wantsToDrill = drillDirection != Vector2Int.zero;
             var isDrillingUp = drillDirection.y == -1;
             var hasGroundUnder = playerY + 1 == TilesVertical || tiles[playerX, playerY + 1] != ObjectType.Empty;
+
             if (canStartDrilling && tiles[desiredDrillDirection.x, desiredDrillDirection.y] == ObjectType.Stone) {
                 SoundManager.Instance.Play("stoneHit");
                 canStartDrilling = false;
             }
 
             if (canStartDrilling && wantsToDrill && !isDrillingUp && hasGroundUnder && Settings.Instance.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].Drillable) {
-                if (lastDrillDirection != drillDirection || !startedDrilling) {
-                    SoundManager.Instance.Play("drilling");
-                    drillTimeOriginal = drillSpeed * Settings.Instance.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].TimeToDrill;
-                    drillTimeLeft = drillTimeOriginal;
-                }
-
-                player.AnimationState = AnimationState.Drilling;
-                drillProgressIndicator.visible = true;
-                drillProgressIndicator.SetXY(desiredDrillDirection.x * Globals.TILE_SIZE, desiredDrillDirection.y * Globals.TILE_SIZE);
-                startedDrilling = true;
+                BeginDrilling(drillDirection, desiredDrillDirection);
             } else {
-                if (startedDrilling)
-                    SoundManager.Instance.Stop("drilling");
-                player.AnimationState = AnimationState.DrillOn;
-                drillProgressIndicator.Alpha = 0f;
-                drillProgressIndicator.visible = false;
-                startedDrilling = false;
-                canStartDrilling = false;
+                StopDrilling();
             }
 
             // BREAK TILE IF TIME IS DONE
             if (startedDrilling && drillTimeLeft <= 0) {
-                Score += Settings.Instance.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].ScoreAmount;
-                fuelBar.FuelAmount += Settings.Instance.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].FuelAmount;
-                player.Move(drillDirection.ToWorld().ToVec2());
-                tiles[playerX, playerY] = ObjectType.Empty;
-                var minedTile = tiles[desiredDrillDirection.x, desiredDrillDirection.y];
-                tiles[desiredDrillDirection.x, desiredDrillDirection.y] = ObjectType.Player;
-                movedThisFrame = true;
-
-                player.AnimationState = AnimationState.DrillOn;
-                drillProgressIndicator.Alpha = 0f;
-                drillProgressIndicator.visible = false;
-                startedDrilling = false;
-                canStartDrilling = false;
-
-                    // Do something if a special tile was mined
-                    // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-                    switch (minedTile) {
-                        case ObjectType.DrillingSpeedUpgrade: {
-                            drillSpeed += Settings.Instance.DrillSpeedUpgradeMultiplier;
-                            SoundManager.Instance.Play("UpgradeMined");
-                            break;
-                        }
-                        case ObjectType.ViewDistanceUpgrade: {
-                            visibility.scale *= Settings.Instance.ViewDistanceUpgradeMultiplier;
-                            SoundManager.Instance.Play("UpgradeMined");
-                            break;
-                        }
-                        case ObjectType.FuelCapacityUpgrade: {
-                            var oldFuelCapacity = fuelBar.FuelCapacity;
-                            fuelBar.FuelCapacity *= Settings.Instance.FuelCapacityUpgradeMultiplier;
-                            fuelBar.FuelAmount += (fuelBar.FuelCapacity - oldFuelCapacity);
-                            SoundManager.Instance.Play("UpgradeMined");
-                            break;
-                        }
-                        case ObjectType.Treasure: {
-                            hasTreasure = true;
-                            break;
-                        }
-                    case ObjectType.Coal:
-                    case ObjectType.MediumCoal:
-                    case ObjectType.HardCoal:
-                        {
-                            SoundManager.Instance.Play("gem1");
-                            break;
-                        }
-
-                    case ObjectType.Gold:
-                    case ObjectType.MediumGold:
-                    case ObjectType.HardGold:
-                        {
-                            SoundManager.Instance.Play("gem2");
-                            break;
-                        }
-
-                    case ObjectType.Emerald:
-                    case ObjectType.MediumEmerald:
-                    case ObjectType.HardEmerald:
-                        {
-                            SoundManager.Instance.Play("gem3");
-                            break;
-                        }
-
-                    case ObjectType.Sapphire:
-                    case ObjectType.MediumSapphire:
-                    case ObjectType.HardSapphire:
-                        {
-                            SoundManager.Instance.Play("gem4");
-                            break;
-                        }
-
-                }
-
-                // Recalculate position
-                (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
-                desiredPosition = movementDirection.Add(playerX, playerY);
-                rangeCheck = desiredPosition.x >= 0 && desiredPosition.x < TilesHorizontal && desiredPosition.y >= 0 && desiredPosition.y < TilesVertical;
+                BreakTile(ref desiredPosition, ref desiredDrillDirection, ref drillDirection, ref movementDirection, ref playerX, ref playerY, ref movedThisFrame, ref rangeCheck);
             }
 
             lastDrillDirection = drillDirection;
         }
 
+        private void BeginDrilling(Vector2Int drillDirection, Vector2Int desiredDrillDirection) {
+            if (lastDrillDirection != drillDirection || !startedDrilling) {
+                SoundManager.Instance.Play("drilling");
+                drillTimeOriginal = drillSpeed * Settings.Instance.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].TimeToDrill;
+                drillTimeLeft = drillTimeOriginal;
+            }
+
+            player.AnimationState = AnimationState.Drilling;
+            drillProgressIndicator.visible = true;
+            drillProgressIndicator.SetXY(desiredDrillDirection.x * Globals.TILE_SIZE, desiredDrillDirection.y * Globals.TILE_SIZE);
+            startedDrilling = true;
+        }
+
+        private void StopDrilling() {
+            if (startedDrilling)
+                SoundManager.Instance.Stop("drilling");
+            player.AnimationState = AnimationState.DrillOn;
+            drillProgressIndicator.Alpha = 0f;
+            drillProgressIndicator.visible = false;
+            startedDrilling = false;
+            canStartDrilling = false;
+        }
+
+        private void BreakTile(ref Vector2Int desiredPosition, ref Vector2Int desiredDrillDirection, ref Vector2Int drillDirection, ref Vector2Int movementDirection, ref int playerX, ref int playerY, ref bool movedThisFrame, ref bool rangeCheck) {
+            Score += Settings.Instance.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].ScoreAmount;
+            fuelBar.FuelAmount += Settings.Instance.Tiles.TypeToTile[tiles[desiredDrillDirection.x, desiredDrillDirection.y]].FuelAmount;
+            player.Move(drillDirection.ToWorld().ToVec2());
+            tiles[playerX, playerY] = ObjectType.Empty;
+            var minedTile = tiles[desiredDrillDirection.x, desiredDrillDirection.y];
+            tiles[desiredDrillDirection.x, desiredDrillDirection.y] = ObjectType.Player;
+            movedThisFrame = true;
+
+            player.AnimationState = AnimationState.DrillOn;
+            drillProgressIndicator.Alpha = 0f;
+            drillProgressIndicator.visible = false;
+            startedDrilling = false;
+            canStartDrilling = false;
+
+            // Do something if a special tile was mined
+            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+            ExecuteActionOnMinedTile(minedTile);
+
+            // Recalculate position
+            (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
+            desiredPosition = movementDirection.Add(playerX, playerY);
+            rangeCheck = desiredPosition.x >= 0 && desiredPosition.x < TilesHorizontal && desiredPosition.y >= 0 && desiredPosition.y < TilesVertical;
+        }
+
+        private void ExecuteActionOnMinedTile(ObjectType minedTile) {
+            switch (minedTile) {
+                case ObjectType.DrillingSpeedUpgrade:
+                case ObjectType.MediumDrillingSpeedUpgrade:
+                case ObjectType.HardDrillingSpeedUpgrade: {
+                    drillSpeed += Settings.Instance.DrillSpeedUpgradeMultiplier;
+                    SoundManager.Instance.Play("UpgradeMined");
+                    break;
+                }
+                case ObjectType.ViewDistanceUpgrade:
+                case ObjectType.MediumViewDistanceUpgrade:
+                case ObjectType.HardViewDistanceUpgrade: {
+                    visibility.scale *= Settings.Instance.ViewDistanceUpgradeMultiplier;
+                    SoundManager.Instance.Play("UpgradeMined");
+                    break;
+                }
+                case ObjectType.FuelCapacityUpgrade:
+                case ObjectType.MediumFuelCapacityUpgrade:
+                case ObjectType.HardFuelCapacityUpgrade: {
+                    var oldFuelCapacity = fuelBar.FuelCapacity;
+                    fuelBar.FuelCapacity *= Settings.Instance.FuelCapacityUpgradeMultiplier;
+                    fuelBar.FuelAmount += fuelBar.FuelCapacity - oldFuelCapacity;
+                    SoundManager.Instance.Play("UpgradeMined");
+                    break;
+                }
+                case ObjectType.Treasure: {
+                    hasTreasure = true;
+                    break;
+                }
+                case ObjectType.Coal:
+                case ObjectType.MediumCoal:
+                case ObjectType.HardCoal: {
+                    SoundManager.Instance.Play("gem1");
+                    break;
+                }
+
+                case ObjectType.Gold:
+                case ObjectType.MediumGold:
+                case ObjectType.HardGold: {
+                    SoundManager.Instance.Play("gem2");
+                    break;
+                }
+
+                case ObjectType.Emerald:
+                case ObjectType.MediumEmerald:
+                case ObjectType.HardEmerald: {
+                    SoundManager.Instance.Play("gem3");
+                    break;
+                }
+
+                case ObjectType.Sapphire:
+                case ObjectType.MediumSapphire:
+                case ObjectType.HardSapphire: {
+                    SoundManager.Instance.Play("gem4");
+                    break;
+                }
+            }
+        }
+
         private void UpdateMovement(ref int playerX, ref int playerY, ref bool rangeCheck, ref bool movedThisFrame, ref Vector2Int movementDirection, ref Vector2Int desiredPosition) {
             if (movementDirection == Vector2Int.zero) return;
-
             if (movementDirection.x == -1) player.Flip = false;
             else if (movementDirection.x == 1) player.Flip = true;
 
@@ -263,15 +277,11 @@ namespace Game {
                 player.Move(movementDirection.ToWorld().ToVec2());
                 tiles[playerX, playerY] = ObjectType.Empty;
                 tiles[desiredPosition.x, desiredPosition.y] = ObjectType.Player;
+
                 // Recalculate position
                 (playerX, playerY) = new Vector2(player.x, player.y).ToGrid().ToInt().Unpack();
                 desiredPosition = movementDirection.Add(playerX, playerY);
                 rangeCheck = desiredPosition.x >= 0 && desiredPosition.x < TilesHorizontal && desiredPosition.y >= 0 && desiredPosition.y < TilesVertical;
-                if (playerY <= Settings.Instance.World.TopOffset && hasTreasure) {
-                    GotTreasure = true;
-                    FinishGame();
-                    return;
-                }
             }
 
             timeSinceLastMovement = 0f;
@@ -307,6 +317,7 @@ namespace Game {
             fuelBar.ChangeFuel(Settings.Instance.IdleFuelConsumption * Time.deltaTime);
             if (isDrillOn) fuelBar.ChangeFuel(Settings.Instance.DrillOnFuelConsumption * Time.deltaTime);
             if (startedDrilling) fuelBar.ChangeFuel(Settings.Instance.DrillingFuelConsumption * Time.deltaTime);
+            if (hasTreasure) fuelBar.ChangeFuel(Settings.Instance.TreasureFuelConsumption * Time.deltaTime);
 
             if (fuelBar.FuelAmount <= 0) {
                 FinishGame();
@@ -330,9 +341,23 @@ namespace Game {
             camera.y = Mathf.Clamp(camera.y, Globals.HEIGHT / 2f - Globals.TILE_SIZE * 2, (Settings.Instance.World.Depth + Settings.Instance.World.TopOffset) * Globals.TILE_SIZE - Globals.HEIGHT / 2f);
         }
 
+        private void PostUpdateChecks(ref int playerY) {
+            if (playerY <= Settings.Instance.World.TopOffset && hasTreasure) {
+                GotTreasure = true;
+                FinishGame();
+                return;
+            }
+
+            if (playerY <= Settings.Instance.World.TopOffset + 3) {
+                var alpha = Math.Map(playerY, Settings.Instance.World.TopOffset + 2, Settings.Instance.World.TopOffset - 1, 1f, 0f);
+                if (playerY < Settings.Instance.World.TopOffset) alpha = 0f;
+                visibility.Alpha = alpha;
+            } else visibility.Alpha = 1f;
+        }
+
         private void FinishGame() {
-            Score += (int)(fuelStation.FuelAmount / 100);
-            Score += (int)(fuelStation2.FuelAmount / 100);
+            Score += (int) (fuelStation.FuelAmount / 100);
+            Score += (int) (fuelStation2.FuelAmount / 100);
             GameManager.Instance.ShouldStopPlaying = true;
             SoundManager.Instance.Play("gameover");
         }
@@ -369,7 +394,7 @@ namespace Game {
             for (var x = 0; x < TilesHorizontal; x++) {
                 for (var y = 0; y < Settings.Instance.World.Depth; y++) {
                     var gridY = y + Settings.Instance.World.TopOffset;
-                    var hardness = y > Settings.Instance.World.HardDirtStartDepth ? 2 : y > Settings.Instance.World.MediumDirtStartDepth ? 1 : 0;
+                    var hardness = gridY > Settings.Instance.World.HardDirtStartDepth ? 2 : gridY > Settings.Instance.World.MediumDirtStartDepth ? 1 : 0;
 
                     tilesBackground[x, gridY] = ObjectType.Background;
                     var spawnTypeChance = Rand.Value;
@@ -418,18 +443,20 @@ namespace Game {
             //Make room underground for Fuelstation2
             for (var y = 6; y <= 9; y++) {
                 for (var x = 5; x <= 8; x++) {
-                    tiles[x, Settings.Instance.World.TopOffset + FuelStationRoomDepth] = ObjectType.Empty;
+                    tiles[x, Settings.Instance.World.TopOffset + fuelStationRoomDepth] = ObjectType.Empty;
                 }
-                FuelStationRoomDepth += 1;
+
+                fuelStationRoomDepth += 1;
             }
-            for (var x = 5; x < 8; x++)
-            {
-                tiles[x, Settings.Instance.World.TopOffset +FuelStationRoomDepth] = ObjectType.MediumStone;
+
+            for (var x = 5; x <= 8; x++) {
+                tiles[x, Settings.Instance.World.TopOffset + fuelStationRoomDepth] = ObjectType.MediumStone;
             }
 
             var (treasureX, treasureY) = (Rand.Range(0, TilesHorizontal), Rand.Range(TilesVertical - 10, TilesVertical - 1));
             tiles[treasureX, treasureY] = ObjectType.Treasure;
             playerSpawnLocation = new Vector2Int(Rand.Range(6, TilesHorizontal - 1), Settings.Instance.World.TopOffset - 1);
+            // playerSpawnLocation.y = 200;
             tiles[playerSpawnLocation.x, playerSpawnLocation.y] = ObjectType.Player;
         }
     }
