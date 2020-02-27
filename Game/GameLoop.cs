@@ -17,6 +17,7 @@ namespace Game {
         private float drillTimeOriginal;
         private float drillSpeed = 1f;
         private float cameraVelocity;
+        private int FuelStationRoomDepth = 246;
 
         private bool startedDrilling;
         private bool canStartDrilling;
@@ -30,6 +31,7 @@ namespace Game {
         private Player player;
         private FuelBar fuelBar;
         private FuelStation fuelStation;
+        private FuelStation fuelStation2;
         private VisibilitySystem visibility;
         private DrillProgressIndicator drillProgressIndicator;
         private Vector2Int lastDrillDirection = Vector2Int.zero;
@@ -90,6 +92,8 @@ namespace Game {
             drillProgressIndicator = new DrillProgressIndicator {Alpha = 0};
             fuelStation = new FuelStation("data/fuel_station.png", 3, Settings.Instance.World.TopOffset - 1, Settings.Instance.FirstFuelStationFuel);
             fuelStation.Move(0, 2 * Globals.TILE_SIZE);
+            fuelStation2 = new FuelStation("data/fuel_station.png", 8, 255, Settings.Instance.InitialFuelRefills2);
+            fuelStation2.Move(5 *Globals.TILE_SIZE, 252 * Globals.TILE_SIZE);
 
             player = new Player();
             player.SetXY(playerSpawnLocation * Globals.TILE_SIZE, (Settings.Instance.World.TopOffset - 1) * Globals.TILE_SIZE);
@@ -113,6 +117,7 @@ namespace Game {
             camera.LateAddChild(HUD);
 
             AddChild(fuelStation);
+            AddChild(fuelStation2);
             AddChild(visibility);
             AddChild(player);
             AddChild(drillProgressIndicator);
@@ -253,10 +258,16 @@ namespace Game {
                 fuelStation.Refuel(fuelBar);
             }
 
+            if (fuelStation2.IsPlayerOnRefillPoint(playerX, playerY) && Input.GetButtonDown("Refuel") && fuelStation2.CanPlayerRefill())
+            {
+                fuelBar.Refuel();
+                fuelStation2.ReduceRefillsLeft();
+            }
+
             fuelBar.ChangeFuel(Settings.Instance.IdleFuelConsumption * Time.deltaTime);
             if (isDrillOn) fuelBar.ChangeFuel(Settings.Instance.DrillOnFuelConsumption * Time.deltaTime);
             if (startedDrilling) fuelBar.ChangeFuel(Settings.Instance.DrillingFuelConsumption * Time.deltaTime);
-            
+
             if (fuelBar.FuelAmount <= 0) {
                 gameManager.ShouldStopPlaying = true;
             }
@@ -298,9 +309,10 @@ namespace Game {
         protected override void RenderSelf(GLContext glContext) {
             glContext.SetColor(0xff, 0xff, 0xff, 0xff);
             topBackground.Bind();
-            glContext.DrawQuad(topBackground.TextureVertices(1, offset: new Vector2(0, -2 * Globals.TILE_SIZE)), Globals.QUAD_UV);
-            fuelStation.Draw(glContext);
+            glContext.DrawQuad(topBackground.TextureVertices(1, offset: new Vector2(0, -2*Globals.TILE_SIZE)), Globals.QUAD_UV);
             DrawTileGrid(glContext);
+            fuelStation.Draw(glContext);
+            fuelStation2.Draw(glContext);
             drillProgressIndicator.Draw(glContext);
             player.Draw(glContext);
             visibility.Draw(glContext);
@@ -351,6 +363,15 @@ namespace Game {
             // Make FuelStation ground stone 
             for (var x = 0; x < 4; x++) {
                 tiles[x, Settings.Instance.World.TopOffset] = ObjectType.Stone;
+            }
+
+            //Make room underground for Fuelstation2
+            for(var y = 6; y <= 9; y++) { 
+                
+                for (var x =5; x<=8; x++) { 
+                tiles[x, Settings.Instance.World.TopOffset+FuelStationRoomDepth] = ObjectType.Empty;
+                 }
+                FuelStationRoomDepth += 1;
             }
 
             playerSpawnLocation = Rand.Range(6, TilesHorizontal - 1);

@@ -35,7 +35,7 @@ namespace Game {
             get => fuelCapacity;
             set => fuelCapacity = value;
         }
-
+       
         private void Update() {
             shouldShowIndicator1 = fuelAmount <= Settings.Instance.FuelBarIndicatorThresholdMinor * fuelCapacity;
             shouldShowIndicator2 = fuelAmount <= Settings.Instance.FuelBarIndicatorThresholdMajor * fuelCapacity;

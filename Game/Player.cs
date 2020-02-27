@@ -58,7 +58,7 @@ namespace Game {
                     animationFrame * uvSize.x, animationStateValue * uvSize.y + uvSize.y
                 };
             }
-            
+           
             float[] verts = {x, y, x + Globals.TILE_SIZE, y, x + Globals.TILE_SIZE, y + Globals.TILE_SIZE, x, y + Globals.TILE_SIZE};
             playerTexture.Bind();
             glContext.DrawQuad(verts, uv);

@@ -28,6 +28,7 @@ namespace Game {
             fuelStationFuelBar = new FuelStationFuelBar(this);
             AddChild(fuelStationFuelBar);
         }
+        
         public bool IsPlayerOnRefillPoint(int playerX, int playerY) => playerX == refillPointX && playerY == refillPointY;
         public void Refuel(FuelBar fuelBar) {
             var requiredFuel = fuelBar.FuelCapacity - fuelBar.FuelAmount;

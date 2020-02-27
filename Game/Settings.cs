@@ -46,7 +46,6 @@ namespace Game {
         Sapphire,
         MediumSapphire,
         HardSapphire,
-
         DrillingSpeedUpgrade,
         ViewDistanceUpgrade,
         FuelCapacityUpgrade
