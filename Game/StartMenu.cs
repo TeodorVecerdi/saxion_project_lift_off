@@ -26,14 +26,14 @@ namespace Game {
         }
 
         private void Update() {
-            int choice = Input.GetKeyDown(Key.UP) ? -1 : Input.GetKeyDown(Key.DOWN) ? 1 : 0;
+            int choice = Input.GetKeyDown(Key.W) ? -1 : Input.GetKeyDown(Key.S) ? 1 : 0;
             selectedButton = (selectedButton + choice) % buttons.Count;
             if (selectedButton < 0) selectedButton += buttons.Count;
             buttons.ForEach(button => button.IsSelected = false);
             buttons[selectedButton].IsSelected = true;
-            if (Input.GetButtonDown("Drill")) buttons[selectedButton].Click();
+            if (Input.GetButtonDown("Refuel")) buttons[selectedButton].Click();
         }
-
+        
         protected override void RenderSelf(GLContext glContext) {
             glContext.SetColor(0xff,0xff,0xff,0xff);
             startMenuBackgroundTexture.Bind();

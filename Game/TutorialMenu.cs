@@ -12,10 +12,10 @@ namespace Game {
         }
 
         private void Update() {
-            if (Input.GetButtonDown("Drill")) {
+            if (Input.GetButtonDown("Refuel")) {
                 GameManager.Instance.ShouldStartPlaying = true;
             }
-            if (Input.GetAxisDown("Horizontal") != 0 || Input.GetAxisDown("Vertical") != 0 || Input.GetButtonDown("Refuel")) {
+            if (Input.GetAxisDown("Horizontal") != 0 || Input.GetAxisDown("Vertical") != 0) {
                 tutorialIndex++;
                 if (tutorialIndex >= tutorialTextures.Length) GameManager.Instance.ShouldStartPlaying = true;
             }

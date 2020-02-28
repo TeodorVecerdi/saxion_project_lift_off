@@ -12,7 +12,7 @@ namespace Game {
             
             //Setup Input
             Input.AddButton("Drill", Key.SPACE,true);
-            Input.AddButton("Refuel", Key.M, true);
+            Input.AddButton("Refuel", Key.X, true);
             Input.AddAxis("Horizontal", new List<int> {Key.A, Key.LEFT}, new List<int> {Key.D, Key.RIGHT});
             Input.AddAxis("Vertical", new List<int> {Key.W, Key.UP}, new List<int> {Key.S, Key.DOWN});
             
