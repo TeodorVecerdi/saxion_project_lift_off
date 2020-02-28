@@ -75,6 +75,7 @@ namespace GXPEngine.OpenGL {
         public const int FUNC_SUBTRACT = 0x800A;
         public const int FUNC_REVERSE_SUBTRACT = 0x800B;
         public const int GL_REPEAT = 0x2901;
+        public const int GL_VERSION = 7938;
 
         //----------------------------------------------------------------------------------------------------------------------
         //														GLFW
@@ -95,6 +96,9 @@ namespace GXPEngine.OpenGL {
 
         [DllImport("opengl32.dll", EntryPoint = "glBlendFunc")]
         public static extern void BlendFunc(int sourceFactor, int destFactor);
+
+        [DllImport("opengl32.dll", EntryPoint = "glGetString")]
+        public static extern string GetString(int name);
 
         [DllImport("opengl32.dll", EntryPoint = "glBlendEquation")]
         public static extern void BlendEquation(int mode);

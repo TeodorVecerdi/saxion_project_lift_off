@@ -35,6 +35,10 @@
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+      <HintPath>packages\Newtonsoft.Json.11.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -42,19 +46,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\Button.cs" />
+    <Compile Include="Game\DrillProgressIndicator.cs" />
+    <Compile Include="Game\FuelBar.cs" />
+    <Compile Include="Game\FuelStation.cs" />
+    <Compile Include="Game\FuelStationFuelBar.cs" />
+    <Compile Include="Game\GameOver.cs" />
+    <Compile Include="Game\GameOverWin.cs" />
     <Compile Include="Game\Globals.cs" />
-    <Compile Include="Game\Tiles.cs" />
+    <Compile Include="Game\GameLoop.cs" />
+    <Compile Include="Game\Leaderboard.cs" />
+    <Compile Include="Game\Player.cs" />
+    <Compile Include="Game\Settings.cs" />
+    <Compile Include="Game\SoundManager.cs" />
+    <Compile Include="Game\StartMenu.cs" />
+    <Compile Include="Game\TutorialMenu.cs" />
     <Compile Include="Game\Utils\Debug.cs" />
+    <Compile Include="Game\Utils\ExtensionMethods.cs" />
+    <Compile Include="Game\Utils\FontLoader.cs" />
     <Compile Include="Game\Utils\Math.cs" />
     <Compile Include="Game\Utils\Rand.cs" />
     <Compile Include="Game\Utils\RandomNumberGenerator.cs" />
-    <Compile Include="Game\Utils\XmlLoader.cs" />
     <Compile Include="Game\Program.cs" />
     <Compile Include="Game\Properties\AssemblyInfo.cs" />
-    <Compile Include="Game\World.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <Compile Include="Game\VisibilitySystem.cs" />
+    <Compile Include="Game\GameManager.cs" />
+    <Compile Include="Game\WorldGen\WeightedRandomizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="GXPEngine.csproj">
@@ -63,42 +80,31 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="lib" />
+    <Content Include="data\**" />
+    <Content Include="Game\TODO.md" />
+    <Content Include="lib\**" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="data\background.png" />
-    <Content Include="data\dirt.png" />
-    <Content Include="data\stone.png" />
-    <Content Include="data\test_tile.png" />
-    <Content Include="data\test_tile2.png" />
-    <Content Include="lib\COPYING.txt" />
-    <Content Include="lib\Fmod.License.txt" />
-    <Content Include="lib\fmodex.dll" />
-    <Content Include="lib\glfw.dll" />
-    <Content Include="lib\libfmodex-4.34.05.so" />
-    <Content Include="lib\libfmodex.dylib" />
-    <Content Include="lib\libglfw.dylib" />
-    <Content Include="lib\libglfw.so" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-         Other similar extension points exist, see Microsoft.Common.targets.     -->
   <PropertyGroup>
-    <DestinationDirectory>$(OutputPath)\data</DestinationDirectory>
-    <SourceDirectory>data</SourceDirectory>
+    <DataDestinationDirectory>$(OutputPath)\data</DataDestinationDirectory>
+    <DataSourceDirectory>data</DataSourceDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <LibDestinationDirectory>$(OutputPath)\lib</LibDestinationDirectory>
     <LibSourceDirectory>lib</LibSourceDirectory>
   </PropertyGroup>
+  <!--  Move data and lib folders to output on build -->
   <Target Name="BeforeBuild">
-    <CreateItem Include="$(SourceDirectory)\**\*.*">
+    <CreateItem Include="$(DataSourceDirectory)\**\*.*">
       <Output TaskParameter="Include" ItemName="DataFiles" />
     </CreateItem>
     <CreateItem Include="$(LibSourceDirectory)\**\*.*">
       <Output TaskParameter="Include" ItemName="LibFiles" />
     </CreateItem>
-    <Copy SourceFiles="@(DataFiles)" DestinationFiles="@(DataFiles->'$(DestinationDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(DataFiles)" DestinationFiles="@(DataFiles->'$(DataDestinationDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
     <Copy SourceFiles="@(LibFiles)" DestinationFiles="@(LibFiles->'$(LibDestinationDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
   <Target Name="AfterBuild">
